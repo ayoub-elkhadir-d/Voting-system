@@ -18,6 +18,13 @@ Route::get('/login', [AuthController::class, 'showLogin']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/resetpassword', [AuthController::class, 'showReset']);
+Route::post('/resetpassword', [AuthController::class, 'login_link']);
+
+
+Route::get('/login-link/{token}', [AuthController::class, 'verify']);
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard']);

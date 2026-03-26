@@ -2,11 +2,11 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8">
-      <title>Register</title>
+      <title>Reset Password</title>
       <style>
          *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
          body{background:#262728;height:100vh;display:flex;justify-content:center;align-items:center;}
-         .container{background:#2f3031;padding:40px;border-radius:12px;width:380px;box-shadow:0 10px 25px rgba(0,0,0,0.5);}
+         .container{background:#2f3031;padding:40px;border-radius:12px;width:360px;box-shadow:0 10px 25px rgba(0,0,0,0.5);}
          h2{color:#fff;text-align:center;margin-bottom:20px;}
          .input-group{margin-bottom:18px;}
          .input-group label{color:#ccc;font-size:14px;display:block;margin-bottom:5px;}
@@ -18,11 +18,19 @@
          .footer{text-align:center;margin-top:10px;}
          .footer a{color:#FCA311;text-decoration:none;}
          .error-box{background:red;color:white;padding:10px;margin-bottom:15px;border-radius:8px;}
+         .success-box{background:green;color:white;padding:10px;margin-bottom:15px;border-radius:8px;}
       </style>
    </head>
    <body>
       <div class="container">
-         <h2>Create Account</h2>
+         <h2>Reset Password</h2>
+         {{-- success message --}}
+         @if (session('status'))
+         <div class="success-box">
+            {{ session('status') }}
+         </div>
+         @endif
+         {{-- errors --}}
          @if ($errors->any())
          <div class="error-box">
             <ul>
@@ -32,20 +40,8 @@
             </ul>
          </div>
          @endif
-         <form method="POST" action="/register">
+         <form method="POST" action="/resetpassword">
             @csrf
-            <div class="input-group">
-               <label>Name</label>
-               <input 
-                  type="text" 
-                  name="name" 
-                  value="{{ old('name') }}"
-                  class="@error('name') error-input @enderror"
-                  >
-               @error('name')
-               <span class="error-text">{{ $message }}</span>
-               @enderror
-            </div>
             <div class="input-group">
                <label>Email</label>
                <input 
@@ -58,29 +54,10 @@
                <span class="error-text">{{ $message }}</span>
                @enderror
             </div>
-            <div class="input-group">
-               <label>Password</label>
-               <input 
-                  type="password" 
-                  name="password"
-                  class="@error('password') error-input @enderror"
-                  >
-               @error('password')
-               <span class="error-text">{{ $message }}</span>
-               @enderror
-            </div>
-            <div class="input-group">
-               <label>Confirm Password</label>
-               <input 
-                  type="password" 
-                  name="password_confirmation"
-                  class="@error('password') error-input @enderror"
-                  >
-            </div>
-            <button type="submit" class="btn">Register</button>
+            <button type="submit" class="btn">Send Password</button>
          </form>
          <div class="footer">
-            <a href="/login">Already have an account?</a>
+            <a href="/login">Back to Login</a>
          </div>
       </div>
    </body>
