@@ -37,7 +37,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($login)) {
             $request->session()->regenerate();
+
+             // Auth::login($);
             return redirect('/dashboard');
+
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.']);
@@ -53,9 +56,15 @@ class AuthController extends Controller
         // return $request;
     }
 
-    public function dashboard()
+    public function dashboard(User $user)
     {
-        return view('auth.dashboard');
+        if(!$user){
+         
+          return back()
+            ->withErrors(['message' => 'Not Auth']);
+        }
+
+        return view('Room.dashboard');
     }
 
     public function register(Request $request)

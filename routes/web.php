@@ -8,10 +8,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/room', [RoomController::class , 'getroom']);
+Route::post('/roomcreate', function(){
+     return view("Room.create");
+});
 Route::post('/room', [RoomController::class , 'create'])->name("createroom");
 
-Route::get('/register', [AuthController::class, 'showRegister']);
+Route::get('/register',function (){
+    return view('auth.register');
+});
+
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/login', [AuthController::class, 'showLogin']);

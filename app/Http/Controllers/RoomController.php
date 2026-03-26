@@ -8,10 +8,8 @@ class RoomController extends Controller
 {
 
    public function Create(Request $r){
-   
+    
    }
-   
-   public function getroom(){
-    return view("Room");
-   }
+
+  
 }
