@@ -45,7 +45,7 @@
             margin-bottom: 35px;
         }
 
-        /* Inputs & Textarea */
+        
         .input-field {
             width: 100%;
             background: #252525;
@@ -217,6 +217,52 @@
         .create-btn:active {
             transform: translateY(0);
         }
+.alert-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #e6f9f0;
+    border-left: 5px solid #28a745;
+    color: #155724;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    animation: slideIn 0.5s ease;
+    z-index: 9999;
+}
+
+.alert-success .icon {
+    font-size: 18px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    padding: 6px 9px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
     </style>
 </head>
 <body>
@@ -227,10 +273,19 @@
 
 
     <div class="container">
+  @if (session('success'))
+    <div id="successAlert" class="alert-success">
+        <span class="icon">✔</span>
+        <div>
+            <strong>Success</strong>
+            <p>{{ session('success') }}</p>
+        </div>
+    </div>
+@endif
         <form action="/createroom" method="POST" id="roomForm">
-            
+            @csrf
             <div class="main-grid">
-                <div class="left-col">
+                    <div class="left-col">
                     <div class="section">
                         <h3>Room info</h3>
                         <input type="text" name="room_name" placeholder="Enter Name Room .." class="input-field" required>
@@ -351,6 +406,13 @@
                 console.log(`${key}: ${value}`);
             }
         });
+       setTimeout(() => {
+    const alert = document.getElementById("successAlert");
+    if (alert) {
+        alert.classList.add("fade-out");
+        setTimeout(() => alert.remove(), 500);
+    }
+}, 3000);
     </script>
 </body>
 </html>
