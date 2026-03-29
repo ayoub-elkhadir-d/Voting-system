@@ -16,7 +16,7 @@
         body {
             background-color: #1a1a1a;
             color: #fff;
-            padding-top: 90px; /* مهم باش navbar */
+            padding-top: 90px;
         }
 
         /* ===== NAVBAR ===== */
@@ -42,22 +42,6 @@
             text-decoration: none;
         }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            color: #bbb;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #f39c12;
-        }
-
         /* ===== ROOMS ===== */
         .rooms-container {
             width: 100%;
@@ -69,7 +53,6 @@
         .title {
             color: #f39c12;
             margin-bottom: 30px;
-            font-size: 1.8rem;
         }
 
         .rooms-grid {
@@ -83,6 +66,7 @@
             border-radius: 15px;
             padding: 20px;
             border: 1px solid #2c2c2c;
+            position: relative;
             transition: 0.3s;
         }
 
@@ -99,140 +83,139 @@
         .room-desc {
             color: #aaa;
             font-size: 0.9rem;
-            margin-bottom: 20px;
         }
 
-        .room-actions {
-            display: flex;
-            justify-content: space-between;
+        /* ===== MENU ===== */
+        .menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
         }
 
-        .btn {
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
+        .menu-btn {
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: 0.3s;
+            font-size: 20px;
+            color: #aaa;
         }
 
-        .btn.enter {
-            background-color: #f39c12;
-            color: #fff;
+        .menu-btn:hover {
+            color: #f39c12;
         }
 
-        .btn.enter:hover {
-            background-color: #e67e22;
+        .menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 25px;
+            background: #121212;
+            border: 1px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 130px;
         }
 
-        .btn.delete {
-            background-color: #2c2c2c;
+        .menu-content a,
+        .menu-content button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            background: none;
+            border: none;
             color: #ccc;
+            cursor: pointer;
         }
 
-        .btn.delete:hover {
-            background-color: #e74c3c;
-            color: #fff;
+        .menu-content a:hover,
+        .menu-content button:hover {
+            background: #1f1f1f;
+            color: #f39c12;
         }
+
+        /* ALERT */
         .alert-success {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #e6f9f0;
-    border-left: 5px solid #28a745;
-    color: #155724;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    animation: slideIn 0.5s ease;
-    z-index: 9999;
-}
-
-.alert-success .icon {
-    font-size: 18px;
-    background: #28a745;
-    color: white;
-    border-radius: 50%;
-    padding: 6px 9px;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.fade-out {
-    animation: fadeOut 0.5s forwards;
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-}
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e6f9f0;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
- @include('components.navbar')
-  @if (session('success'))
-    <div id="successAlert" class="alert-success">
-        <span class="icon">✔</span>
-        <div>
-            <strong>Success</strong>
-            <p>{{ session('success') }}</p>
+    <!-- NAVBAR -->
+    @include('components.navbar')
+
+    <!-- ALERT -->
+    @if (session('success'))
+        <div id="successAlert" class="alert-success">
+            {{ session('success') }}
         </div>
-    </div>
-@endif
+    @endif
+
     <!-- ROOMS -->
     <div class="rooms-container">
         <h2 class="title">My Rooms</h2>
 
         <div class="rooms-grid">
 
-            <div class="rooms-grid">
-    @foreach($rooms as $room)
-        <div class="room-card">
-            <h3 class="room-name">{{ $room->name }}</h3>
-            <p class="room-desc">{{ $room->description }}</p>
+            @foreach($rooms as $room)
+                <div class="room-card">
 
-            <div class="room-actions">
-                <a href="/room/{{ $room->id }}" class="btn enter">Enter</a>
+                    <!-- MENU -->
+                    <div class="menu">
+                        <div class="menu-btn" onclick="toggleMenu(this)">⋮</div>
 
-                <form action="/delete/{{ $room->id }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn delete">Delete</button>
-                </form>
-            </div>
-        </div>
-    @endforeach
-</div>
+                        <div class="menu-content">
+                            <a href="/room/{{ $room->id }}">Start</a>
+                            <a href="/update/{{ $room->id }}">Edit</a>
 
-          
+                            <form action="/delete/{{ $room->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h3 class="room-name">{{ $room->name }}</h3>
+                    <p class="room-desc">{{ $room->description }}</p>
+
+                </div>
+            @endforeach
 
         </div>
     </div>
 
+    <!-- JS -->
+    <script>
+        function toggleMenu(btn) {
+            const menu = btn.nextElementSibling;
+
+            document.querySelectorAll('.menu-content').forEach(m => {
+                if (m !== menu) m.style.display = 'none';
+            });
+
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.menu')) {
+                document.querySelectorAll('.menu-content').forEach(m => {
+                    m.style.display = 'none';
+                });
+            }
+        });
+
+        // alert hide
+        setTimeout(() => {
+            const alert = document.getElementById("successAlert");
+            if (alert) alert.style.display = "none";
+        }, 3000);
+    </script>
+
 </body>
-<script>
-    
-  setTimeout(() => {
-    const alert = document.getElementById("successAlert");
-    if (alert) {
-        alert.classList.add("fade-out");
-        setTimeout(() => alert.remove(), 500);
-    }
-}, 3000);
-</script>
 </html>
