@@ -134,12 +134,66 @@
             background-color: #e74c3c;
             color: #fff;
         }
+        .alert-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #e6f9f0;
+    border-left: 5px solid #28a745;
+    color: #155724;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    animation: slideIn 0.5s ease;
+    z-index: 9999;
+}
+
+.alert-success .icon {
+    font-size: 18px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    padding: 6px 9px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
     </style>
 </head>
 <body>
 
  @include('components.navbar')
-
+  @if (session('success'))
+    <div id="successAlert" class="alert-success">
+        <span class="icon">✔</span>
+        <div>
+            <strong>Success</strong>
+            <p>{{ session('success') }}</p>
+        </div>
+    </div>
+@endif
     <!-- ROOMS -->
     <div class="rooms-container">
         <h2 class="title">My Rooms</h2>
@@ -155,7 +209,7 @@
             <div class="room-actions">
                 <a href="/room/{{ $room->id }}" class="btn enter">Enter</a>
 
-                <form action="/room/{{ $room->id }}" method="POST">
+                <form action="/delete/{{ $room->id }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button class="btn delete">Delete</button>
@@ -171,4 +225,14 @@
     </div>
 
 </body>
+<script>
+    
+  setTimeout(() => {
+    const alert = document.getElementById("successAlert");
+    if (alert) {
+        alert.classList.add("fade-out");
+        setTimeout(() => alert.remove(), 500);
+    }
+}, 3000);
+</script>
 </html>
