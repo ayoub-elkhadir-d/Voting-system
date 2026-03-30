@@ -126,7 +126,7 @@ body {
 
     <ul class="nav-links">
         <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Rooms</a></li>
+        <li><a href="/myrooms">Rooms</a></li>
         <li><a href="#">Statistiques</a></li>
     </ul>
 
@@ -143,7 +143,7 @@ body {
     <img src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg" alt="avatar">
 </div>
        
-        <form action="/roomcreate" method="post">
+        <form action="/roomcreate" method="get">
             @csrf
             <button class="btn">Create Room</button>
         </form>

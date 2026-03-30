@@ -164,13 +164,13 @@
 
             @foreach($rooms as $room)
                 <div class="room-card">
-
+                
                     <!-- MENU -->
                     <div class="menu">
                         <div class="menu-btn" onclick="toggleMenu(this)">⋮</div>
 
                         <div class="menu-content">
-                            <a href="/room/{{ $room->id }}">Start</a>
+                            <a href="/show/{{$room->id}}">Start</a>
                             <a href="/update/{{ $room->id }}">Edit</a>
 
                             <form action="/delete/{{ $room->id }}" method="POST">
@@ -183,7 +183,7 @@
 
                     <h3 class="room-name">{{ $room->name }}</h3>
                     <p class="room-desc">{{ $room->description }}</p>
-
+                    
                 </div>
             @endforeach
 

@@ -67,7 +67,6 @@
             resize: none;
         }
 
-        /* Member Settings */
         .settings-row {
             display: flex;
             gap: 50px;
