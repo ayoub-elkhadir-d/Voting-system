@@ -3,16 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TopicController;
 use App\Models\Room;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/roomcreate', function(){
-     return view("Room.create");
-});
-Route::post('/createroom', [RoomController::class , 'store']);
+
 
 Route::get('/register',function (){
     return view('auth.register');
@@ -30,14 +28,20 @@ Route::post('/resetpassword', [AuthController::class, 'login_link']);
 
 Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
-Route::get('/myrooms',[RoomController::class , 'rooms']);
-Route::delete('/delete/{id}',[RoomController::class , 'delete']);
-Route::get('/update/{id}',function($id){
-    $data = Room::find($id);
-    return view('Room/update',['data'=>$data]);
-});
-Route::get('/show/{id}',[RoomController::class ,'show']);
-Route::post('/update/{id}',[RoomController::class ,'update']);
+Route::post('/rooms/{room}/topic', [TopicController::class, 'store']);
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
+    Route::get('/myrooms',[RoomController::class , 'rooms']);
+    Route::delete('/delete/{id}',[RoomController::class , 'delete']);
+    Route::get('/update/{id}',function($id){
+        $data = Room::find($id);
+        return view('Room/update',['data'=>$data]);
+    });
+    Route::get('/show/{id}',[RoomController::class ,'show']);
+    Route::post('/update/{id}',[RoomController::class ,'update']);
+    Route::get('/roomcreate', function(){
+     return view("Room.create");
+});
+    Route::post('/createroom', [RoomController::class , 'store']);
 });

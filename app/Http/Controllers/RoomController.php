@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Room;
+
 class RoomController extends Controller
 {
     public function store(Request $r)
@@ -29,8 +30,8 @@ class RoomController extends Controller
                 "vote_method" => $r->vote_method,
                 "created_at" => now(),
                 "updated_at" => now(),
-            ]);
 
+            ]);
             return redirect("/roomcreate")->with(
                 "success",
                 "Registration successful!"
