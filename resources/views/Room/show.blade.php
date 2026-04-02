@@ -93,8 +93,9 @@ button{
 
 <label class="label">Vote Method</label>
 <select name="vote_method" class="input" onchange="changeMethod(this.value)">
-    <option value="custom">Custom</option>
+   
     <option value="percentage">Percentage</option>
+     <option value="custom">Custom</option>
     <option value="scale">Scale 1-10</option>
     <option value="fibonacci">Fibonacci</option>
 </select>
@@ -157,12 +158,12 @@ function changeMethod(method){
     let c=document.getElementById("choices-container");
     c.innerHTML="";
 
-    if(method==="custom"){
+    if(method === "custom"){
         c.innerHTML ="";
         c.innerHTML=`<input type="text" name="choices[]" class="input" placeholder="Choice 1">`;
     }
 
-    if(method==="percentage"){
+    if(method === "percentage"){
         c.innerHTML ="";
         c.innerHTML=`
         <input type="number" name="choices[]" class="input" placeholder="0%">
@@ -171,14 +172,14 @@ function changeMethod(method){
         `;
     }
 
-    if(method==="scale"){
+    if(method === "scale"){
         c.innerHTML ="";
         for(let i=1;i<=10;i++){
             c.innerHTML+=`<input type="text" name="choices[]" value="${i}" class="input">`;
         }
     }
 
-    if(method==="fibonacci"){
+    if(method === "fibonacci"){
         c.innerHTML ="";
         let fib=[1,2,3,5,8,13];
         fib.forEach(v=>{
