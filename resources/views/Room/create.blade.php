@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: #00000;
+          background-color: #1a1a1a;
             color: #fff;
             display: flex;
             justify-content: center;

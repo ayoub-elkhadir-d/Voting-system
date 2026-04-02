@@ -30,6 +30,9 @@ Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
 Route::post('/rooms/{room}/topic', [TopicController::class, 'store']);
 
+Route::get('/rooms/{room}/gettopics',[TopicController::class, 'get_all_topics']);
+
+    
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
     Route::get('/myrooms',[RoomController::class , 'rooms']);
@@ -38,7 +41,7 @@ Route::middleware('auth')->group(function () {
         $data = Room::find($id);
         return view('Room/update',['data'=>$data]);
     });
-    Route::get('/show/{id}',[RoomController::class ,'show']);
+Route::get('/show/{room}', [RoomController::class, 'show'])->name('room.show');
     Route::post('/update/{id}',[RoomController::class ,'update']);
     Route::get('/roomcreate', function(){
      return view("Room.create");

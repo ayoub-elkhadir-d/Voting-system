@@ -14,8 +14,8 @@
 }
 
 body {
-    background: #000;
-    color: #fff;
+ background-color: #1a1a1a;
+            color: #fff;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -148,13 +148,14 @@ body {
 </head>
 
 <body>
-
+     <!-- NAVBAR -->
+    @include('components.navbar')
+ 
+  
 <div class="wrapper">
 
-    <!-- NAVBAR -->
-    @include('components.navbar')
-
-    <!-- ALERT -->
+   
+  <!-- ALERT -->
     @if (session('success'))
         <div style="background:green;padding:10px;margin-bottom:10px;border-radius:6px;">
             {{ session('success') }}
@@ -171,7 +172,7 @@ body {
 
                 <!-- QUESTION -->
                 <label class="label">Topic</label>
-                <input type="text" name="question" class="input" placeholder="Enter question">
+                <input type="text" name="topic_name" class="input" placeholder="Enter question">
 
                 <!-- CHOIX -->
                 <label class="label">Choices</label>
@@ -186,10 +187,10 @@ body {
                 <div class="duration">
                     <label class="label">Duration</label><br>
 
-                    <label><input type="radio" name="duration" value="15"> 15s</label>
-                    <label><input type="radio" name="duration" value="30"> 30s</label>
-                    <label><input type="radio" name="duration" value="60"> 1min</label>
-                    <label><input type="radio" name="duration" value="120"> 2min</label>
+                    <label><input type="radio" name="duration" value="00:00:15"> 15s</label>
+                    <label><input type="radio" name="duration" value="00:00:30"> 30s</label>
+                    <label><input type="radio" name="duration" value="00:01:00"> 1min</label>
+                    <label><input type="radio" name="duration" value="00:02:00"> 2min</label>
                 </div>
 
                 <button class="save-btn">Save Topic</button>
@@ -203,10 +204,21 @@ body {
         <!-- RIGHT -->
         <div class="right">
 
-            <h3>Questions</h3>
-
-
-
+            <h3>Topics</h3>
+@if(isset($topics))
+   @foreach($topics as $index => $q)
+                <div class="question">
+                    <div class="q-left">
+                        <div class="q-number">{{ $index + 1 }}</div>
+                        <div>{{ $q->name }}</div>
+                    </div>
+                    
+                    <span class="time">
+                        {{ $q->duration }} s
+                    </span>
+                </div>
+            @endforeach
+@endif
             <button class="start-all">Start All</button>
 
         </div>

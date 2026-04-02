@@ -65,9 +65,12 @@ class RoomController extends Controller
         return redirect("/myrooms")->with("success", "Update successful!");
     }
 
-    public function show($id)
-    {
-        $room = Room::find($id);
-        return view("Room/show", ["data" => $room]);
-    }
+public function show(Room $room)
+{
+    return view("Room.show", [
+        "data" => $room,
+        "topics" => $room->topics
+    ]);
+}
+
 }
