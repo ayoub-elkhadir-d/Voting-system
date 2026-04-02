@@ -9,6 +9,8 @@ use App\Models\choix;
 
 class Topic extends Model
 {
+
+protected $fillable = ['name','duration','room_id','user_id'];
      public function user()
     {
         return $this->belongsTo(User::class);
@@ -19,7 +21,7 @@ class Topic extends Model
         return $this->belongsTo(Room::class);
 
     }
-    
+
 public function choix(){
     return $this->hasmany(choix::class);
 }

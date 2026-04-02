@@ -37,23 +37,31 @@ class TopicController extends Controller
         ]);
 
          if ($data) {
-            DB::table("topics")->insert([
-                "name" => $r->topic_name,
-                "duration"=>$r->duration,
-                "user_id" => Auth::id(),
-                "room_id" => $room->id,
+       $topic = Topic::create([
+            "name" => $data["topic_name"],
+            "duration" => $data["duration"],
+            "user_id" => Auth::id(),
+            "room_id" => $room->id,
+            "created_at" => now(),
+            "updated_at" => now(),
+          ]);
+
+
+
+        foreach ($r->choices as $choix) {
+            DB::table("choixes")->insert([
+                "name" => $choix,
+                "room_id"=>$room->id,
+                "topic_id" =>  $topic->id,
                 "created_at" => now(),
                 "updated_at" => now(),
-
             ]);
-
+        }
            
         return redirect()->route('room.show', $room->id);
-        // foreach ($r->choices as $choix) {
-        //     print_r($choix);
-        // }
+      
        
-   
+   }
 }
     
 
