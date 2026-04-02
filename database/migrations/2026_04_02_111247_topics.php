@@ -14,8 +14,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->time('duration');
+            $table->enum('vote_methode', ['custom', 'scale', 'fibonacci','percentage']);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('room_id');
+
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');

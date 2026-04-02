@@ -40,6 +40,7 @@ class TopicController extends Controller
        $topic = Topic::create([
             "name" => $data["topic_name"],
             "duration" => $data["duration"],
+            "vote_methode" =>$r->vote_method,
             "user_id" => Auth::id(),
             "room_id" => $room->id,
             "created_at" => now(),
@@ -60,7 +61,7 @@ class TopicController extends Controller
            
         return redirect()->route('room.show', $room->id);
       
-       
+     
    }
 }
     

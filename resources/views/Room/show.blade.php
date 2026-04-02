@@ -108,10 +108,10 @@ button{
 
 <label class="label">Duration</label>
 <select name="duration" class="input">
-    <option value="15">15s</option>
-    <option value="30">30s</option>
-    <option value="60">1min</option>
-    <option value="120">2min</option>
+    <option value="00:00:15">15s</option>
+    <option value="00:00:30">30s</option>
+    <option value="00:01:00">1min</option>
+    <option value="00:02:00">2min</option>
 </select>
 
 <button>Save Topic</button>
