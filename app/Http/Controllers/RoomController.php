@@ -67,7 +67,7 @@ class RoomController extends Controller
 
 public function show(Room $room)
 {
-    return view("Room.show", [
+    return view("Topic.create", [
         "data" => $room,
         "topics" => $room->topics
     ]);

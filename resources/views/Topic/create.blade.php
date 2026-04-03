@@ -39,7 +39,32 @@ body{
     padding:12px;
     border-radius:8px;
     color:#fff;
+}
+
+/* SCROLL CHOICES */
+#choices-container{
+    max-height:200px;
+    overflow-y:auto;
+    padding-right:5px;
     margin-bottom:10px;
+}
+
+/* CHOICE ITEM */
+.choice-item{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.remove-btn{
+    background:red;
+    border:none;
+    color:#fff;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    width:auto;
 }
 
 button{
@@ -72,6 +97,10 @@ button{
 
 <body>
 
+<span>
+@include('components.navbar')
+</span>
+
 <div class="wrapper">
 
 @if(session('success'))
@@ -93,17 +122,14 @@ button{
 
 <label class="label">Vote Method</label>
 <select name="vote_method" class="input" onchange="changeMethod(this.value)">
-   
+    <option value="custom">Custom</option>
     <option value="percentage">Percentage</option>
-     <option value="custom">Custom</option>
     <option value="scale">Scale 1-10</option>
     <option value="fibonacci">Fibonacci</option>
 </select>
 
 <label class="label">Choices</label>
-<div id="choices-container">
-    <input type="text" name="choices[]" class="input" placeholder="Choice 1">
-</div>
+<div id="choices-container"></div>
 
 <button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
 
@@ -128,13 +154,17 @@ button{
 
 @if(isset($topics))
 @foreach($topics as $index => $q)
-<div class="question">
-    <div style="display:flex;gap:10px;">
-        <div class="q-number">{{ $index+1 }}</div>
-        <div>{{ $q->name }}</div>
+
+<a href="/topics/{{$q->id}}" style="text-decoration:none;color:inherit;">
+    <div class="question">
+        <div style="display:flex;gap:10px;">
+            <div class="q-number">{{ $index+1 }}</div>
+            <div>{{ $q->name }}</div>
+        </div>
+        <span class="time">{{ $q->duration }}</span>
     </div>
-    <span class="time">{{ $q->duration }}s</span>
-</div>
+</a>
+
 @endforeach
 @endif
 
@@ -145,48 +175,66 @@ button{
 
 <script>
 
+function createChoice(value = "", placeholder="New Choice"){
+    let div = document.createElement("div");
+    div.className = "choice-item";
+
+    let input = document.createElement("input");
+    input.type = "text";
+    input.name = "choices[]";
+    input.className = "input";
+    input.value = value;
+    input.placeholder = placeholder;
+
+    let btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "remove-btn";
+    btn.innerText = "-";
+
+    btn.onclick = function(){
+        div.remove();
+    };
+
+    div.appendChild(input);
+    div.appendChild(btn);
+
+    document.getElementById("choices-container").appendChild(div);
+}
+
 function addChoice(){
-    let input=document.createElement("input");
-    input.type="text";
-    input.name="choices[]";
-    input.className="input";
-    input.placeholder="New Choice";
-    document.getElementById("choices-container").appendChild(input);
+    createChoice();
 }
 
 function changeMethod(method){
-    let c=document.getElementById("choices-container");
-    c.innerHTML="";
+    let c = document.getElementById("choices-container");
+    c.innerHTML = "";
 
     if(method === "custom"){
-        c.innerHTML ="";
-        c.innerHTML=`<input type="text" name="choices[]" class="input" placeholder="Choice 1">`;
+        createChoice("", "Choice 1");
     }
 
     if(method === "percentage"){
-        c.innerHTML ="";
-        c.innerHTML=`
-        <input type="number" name="choices[]" class="input" placeholder="0%">
-        <input type="number" name="choices[]" class="input" placeholder="50%">
-        <input type="number" name="choices[]" class="input" placeholder="100%">
-        `;
+        createChoice("0","0%");
+        createChoice("50","50%");
+        createChoice("100","100%");
     }
 
     if(method === "scale"){
-        c.innerHTML ="";
         for(let i=1;i<=10;i++){
-            c.innerHTML+=`<input type="text" name="choices[]" value="${i}" class="input">`;
+            createChoice(i);
         }
     }
 
     if(method === "fibonacci"){
-        c.innerHTML ="";
         let fib=[1,2,3,5,8,13];
-        fib.forEach(v=>{
-            c.innerHTML+=`<input type="text" name="choices[]" value="${v}" class="input">`;
-        });
+        fib.forEach(v=> createChoice(v));
     }
 }
+
+
+window.onload = () => {
+    createChoice("", "Choice 1");
+};
 
 </script>
 

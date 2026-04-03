@@ -60,8 +60,7 @@ class TopicController extends Controller
         }
            
         return redirect()->route('room.show', $room->id);
-      
-     
+        
    }
 }
     
@@ -87,8 +86,8 @@ class TopicController extends Controller
      */
     public function get_all_topics(Room $room)
     {
-       
-        return $room->topics;
+     
+      return $room->topics;
     }
    
 }
