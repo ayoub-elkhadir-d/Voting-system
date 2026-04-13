@@ -19,7 +19,7 @@ class RoomController extends Controller
             "visibility" => "required",
             "vote_method" => "required",
         ]);
-
+        
         if ($data) {
             DB::table("rooms")->insert([
                 "name" => $r->room_name,

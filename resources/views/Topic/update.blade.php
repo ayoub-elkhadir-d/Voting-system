@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Topics & Voting</title>
+<title>Update Topic</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
@@ -61,10 +61,15 @@ body{
     background:red;
     border:none;
     color:#fff;
-    padding:8px 10px;
-    border-radius:6px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
     cursor:pointer;
-    width:auto;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
 }
 
 button{
@@ -114,18 +119,18 @@ button{
 <!-- LEFT -->
 <div class="left">
 
-<form method="POST" action="/rooms/{{$data->id}}/topic">
+<form method="POST" action="/update/topic/{{$data->id}}/room/{{$data->room_id}}">
 @csrf
 
 <label class="label">Topic</label>
-<input type="text" name="topic_name" class="input" placeholder="Enter topic">
+<input type="text" name="topic_name" class="input" value="{{ $data->name }}">
 
 <label class="label">Vote Method</label>
-<select name="vote_method" class="input" onchange="changeMethod(this.value)">
-    <option value="custom">Custom</option>
-    <option value="percentage">Percentage</option>
-    <option value="scale">Scale 1-10</option>
-    <option value="fibonacci">Fibonacci</option>
+<select name="vote_method" class="input" onchange="if(confirm('Reset choices?')) changeMethod(this.value)">
+    <option value="custom" {{ $data->vote_method == 'custom' ? 'selected' : '' }}>Custom</option>
+    <option value="percentage" {{ $data->vote_method == 'percentage' ? 'selected' : '' }}>Percentage</option>
+    <option value="scale" {{ $data->vote_method == 'scale' ? 'selected' : '' }}>Scale 1-10</option>
+    <option value="fibonacci" {{ $data->vote_method == 'fibonacci' ? 'selected' : '' }}>Fibonacci</option>
 </select>
 
 <label class="label">Choices</label>
@@ -135,15 +140,29 @@ button{
 
 <label class="label">Duration</label>
 <select name="duration" class="input">
-    <option value="00:00:15">15s</option>
-    <option value="00:00:30">30s</option>
-    <option value="00:01:00">1min</option>
-    <option value="00:02:00">2min</option>
+    <option value="00:00:15" {{ $data->duration == '00:00:15' ? 'selected' : '' }}>15s</option>
+    <option value="00:00:30" {{ $data->duration == '00:00:30' ? 'selected' : '' }}>30s</option>
+    <option value="00:01:00" {{ $data->duration == '00:01:00' ? 'selected' : '' }}>1min</option>
+    <option value="00:02:00" {{ $data->duration == '00:02:00' ? 'selected' : '' }}>2min</option>
 </select>
 
-<button>Save Topic</button>
+<button>Update Topic</button>
 
 </form>
+
+<!-- START VOTING BUTTON -->
+@if($data->status != 'started')
+<form method="POST" action="/start/voting/{{$data->id}}">
+    @csrf
+    <button onclick="return confirm('Start voting now?')" style="background:green;">
+        Start Voting
+    </button>
+</form>
+@else
+<div style="background:#333;padding:10px;border-radius:8px;margin-top:10px;text-align:center;">
+    Voting Already Started
+</div>
+@endif
 
 </div>
 
@@ -154,13 +173,17 @@ button{
 
 @if(isset($topics))
 @foreach($topics as $index => $q)
-<div class="question">
-    <div style="display:flex;gap:10px;">
-        <div class="q-number">{{ $index+1 }}</div>
-        <div>{{ $q->name }}</div>
+
+<a href="/update/topic/{{$q->id}}/room/{{$q->room_id}}" style="text-decoration:none;color:inherit;">
+    <div class="question">
+        <div style="display:flex;gap:10px;">
+            <div class="q-number">{{ $index+1 }}</div>
+            <div>{{ $q->name }}</div>
+        </div>
+        <span class="time">{{ $q->duration }}</span>
     </div>
-    <span class="time">{{ $q->duration }}</span>
-</div>
+</a>
+
 @endforeach
 @endif
 
@@ -170,6 +193,8 @@ button{
 </div>
 
 <script>
+
+let existingChoices = @json($choixes);
 
 function createChoice(value = "", placeholder="New Choice"){
     let div = document.createElement("div");
@@ -227,9 +252,14 @@ function changeMethod(method){
     }
 }
 
-
 window.onload = () => {
-    createChoice("", "Choice 1");
+    if(existingChoices.length > 0){
+        existingChoices.forEach(c => {
+            createChoice(c.name); 
+        });
+    }else{
+        createChoice("", "Choice 1");
+    }
 };
 
 </script>

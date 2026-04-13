@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Topic;
+use App\Models\choix;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 class TopicController extends Controller
@@ -60,7 +61,7 @@ class TopicController extends Controller
         }
            
         return redirect()->route('room.show', $room->id);
-        
+
    }
 }
     
@@ -76,14 +77,34 @@ class TopicController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $re,Room $room, string $id, string $room_id)
     {
-        //
+        $re->validate([
+            'topic_name' => 'required|string|max:255',
+            'duration'   => 'required',
+            'choices'    => 'required|array|min:1',
+        ]);
+
+        $topic = Topic::findOrFail($id);
+        $topic->update([
+            'name'         => $re->topic_name,
+            'duration'     => $re->duration,
+            'vote_methode' => $re->vote_method,
+        ]);
+
+        
+        choix::where('topic_id', $id)->delete();
+        foreach ($re->choices as $choice) {
+            choix::create([
+                'name'     => $choice,
+                'topic_id' => $id,
+                'room_id'  => $room_id,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Topic updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function get_all_topics(Room $room)
     {
      

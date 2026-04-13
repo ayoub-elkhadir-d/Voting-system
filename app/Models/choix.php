@@ -7,6 +7,8 @@ use App\Models\Topic;
 
 class choix extends Model
 {
+    protected $fillable = ['name', 'topic_id', 'room_id'];
+
     public function topic()
     {
         return $this->belongsTo(Topic::class);

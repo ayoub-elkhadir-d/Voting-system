@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
 
 body{
-    background:#1a1a1a;
+    background:linear-gradient(135deg,#0f0f0f,#1f1f1f);
     color:#fff;
     display:flex;
     justify-content:center;
@@ -17,164 +17,246 @@ body{
     min-height:100vh;
 }
 
-.wrapper{width:1100px;}
+/* WRAPPER */
+.wrapper{
+    width:1150px;
+}
 
-.container{display:flex;gap:40px;}
+/* ALERT */
+.alert{
+    background:#00C853;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+    text-align:center;
+    font-weight:bold;
+}
 
-.left,.right{
-    background:#111;
+/* CONTAINER */
+.container{
+    display:flex;
+    gap:30px;
+}
+
+/* CARDS */
+.card{
+    background:#121212;
     padding:25px;
-    border-radius:15px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
 }
 
 .left{width:65%;}
 .right{width:35%;}
 
-.label{color:#FCA311;margin-bottom:6px;display:block;}
+/* INPUT */
+.label{
+    color:#FCA311;
+    margin:12px 0 6px;
+    display:block;
+    font-size:14px;
+}
 
 .input{
     width:100%;
     background:#1B1B1B;
     border:none;
     padding:12px;
-    border-radius:8px;
+    border-radius:10px;
     color:#fff;
+    outline:none;
+    transition:0.2s;
 }
 
-/* SCROLL CHOICES */
+.input:focus{
+    border:1px solid #FCA311;
+}
+
+/* BUTTONS */
+button{
+    border:none;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.2s;
+}
+
+.primary{
+    background:#FCA311;
+    width:100%;
+}
+
+.primary:hover{background:#ffb733;}
+
+.success{
+    background:#00C853;
+    width:100%;
+    margin-bottom:15px;
+}
+
+.success:hover{background:#00e676;}
+
+.add-btn{
+    background:#333;
+    color:#fff;
+    padding:8px 12px;
+    margin-top:10px;
+}
+
+.add-btn:hover{background:#444;}
+
+.remove-btn{
+    background:#d32f2f;
+    color:#fff;
+    padding:8px 10px;
+}
+
+.remove-btn:hover{background:#ff5252;}
+
+/* CHOICES */
 #choices-container{
     max-height:200px;
     overflow-y:auto;
-    padding-right:5px;
-    margin-bottom:10px;
+    margin-top:5px;
 }
 
-/* CHOICE ITEM */
 .choice-item{
     display:flex;
     gap:10px;
-    align-items:center;
     margin-bottom:8px;
 }
 
-.remove-btn{
-    background:red;
-    border:none;
-    color:#fff;
-    padding:8px 10px;
-    border-radius:6px;
-    cursor:pointer;
-    width:auto;
-}
-
-button{
-    background:#FCA311;
-    border:none;
-    padding:12px;
-    border-radius:8px;
-    cursor:pointer;
-    width:100%;
-    margin-top:10px;
-    font-weight:bold;
-}
-
-.add-btn{width:auto;padding:8px 12px;}
-
+/* TOPICS */
 .question{
     display:flex;
     justify-content:space-between;
+    align-items:center;
     background:#1B1B1B;
-    padding:10px;
-    border-radius:8px;
+    padding:12px;
+    border-radius:10px;
     margin-bottom:10px;
+    transition:0.2s;
 }
 
-.q-number{background:#333;padding:5px 10px;border-radius:6px;}
+.question:hover{
+    background:#252525;
+    transform:scale(1.02);
+}
 
-.time{background:#FCA311;color:#000;padding:4px 8px;border-radius:6px;}
+.q-number{
+    background:#333;
+    padding:5px 10px;
+    border-radius:6px;
+}
+
+.time{
+    background:#FCA311;
+    color:#000;
+    padding:4px 8px;
+    border-radius:6px;
+}
+
+/* TITLE */
+.title{
+    margin-bottom:10px;
+    color:#FCA311;
+}
+
+/* NAVBAR FIX */
+.navbar{
+    position:absolute;
+    top:0;
+    width:100%;
+}
 </style>
+
 </head>
 
 <body>
 
-<span>
 @include('components.navbar')
-</span>
 
 <div class="wrapper">
 
-@if(session('success'))
-<div style="background:green;padding:10px;margin-bottom:10px;border-radius:6px;">
-    {{ session('success') }}
-</div>
-@endif
+    @if(session('success'))
+        <div class="alert">{{ session('success') }}</div>
+    @endif
 
-<div class="container">
+    <div class="container">
 
-<!-- LEFT -->
-<div class="left">
+        <!-- LEFT -->
+        <div class="card left">
 
-<form method="POST" action="/rooms/{{$data->id}}/topic">
-@csrf
+            <h3 class="title">Create Topic</h3>
 
-<label class="label">Topic</label>
-<input type="text" name="topic_name" class="input" placeholder="Enter topic">
+            <form method="POST" action="/rooms/{{$data->id}}/topic">
+                @csrf
 
-<label class="label">Vote Method</label>
-<select name="vote_method" class="input" onchange="changeMethod(this.value)">
-    <option value="custom">Custom</option>
-    <option value="percentage">Percentage</option>
-    <option value="scale">Scale 1-10</option>
-    <option value="fibonacci">Fibonacci</option>
-</select>
+                <label class="label">Topic</label>
+                <input type="text" name="topic_name" class="input" placeholder="Enter topic">
 
-<label class="label">Choices</label>
-<div id="choices-container"></div>
+                <label class="label">Vote Method</label>
+                <select name="vote_method" class="input" onchange="changeMethod(this.value)">
+                    <option value="custom">Custom</option>
+                    <option value="percentage">Percentage</option>
+                    <option value="scale">Scale 1-10</option>
+                    <option value="fibonacci">Fibonacci</option>
+                </select>
 
-<button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
+                <label class="label">Choices</label>
+                <div id="choices-container"></div>
 
-<label class="label">Duration</label>
-<select name="duration" class="input">
-    <option value="00:00:15">15s</option>
-    <option value="00:00:30">30s</option>
-    <option value="00:01:00">1min</option>
-    <option value="00:02:00">2min</option>
-</select>
+                <button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
 
-<button>Save Topic</button>
+                <label class="label">Duration</label>
+                <select name="duration" class="input">
+                    <option value="00:00:15">15s</option>
+                    <option value="00:00:30">30s</option>
+                    <option value="00:01:00">1min</option>
+                    <option value="00:02:00">2min</option>
+                </select>
 
-</form>
+                <button class="primary">Save Topic</button>
+            </form>
 
-</div>
-
-<!-- RIGHT -->
-<div class="right">
-
-<h3 style="color:#FCA311;margin-bottom:10px;">Topics</h3>
-
-@if(isset($topics))
-@foreach($topics as $index => $q)
-
-<a href="/topics/{{$q->id}}" style="text-decoration:none;color:inherit;">
-    <div class="question">
-        <div style="display:flex;gap:10px;">
-            <div class="q-number">{{ $index+1 }}</div>
-            <div>{{ $q->name }}</div>
         </div>
-        <span class="time">{{ $q->duration }}</span>
+
+        <!-- RIGHT -->
+        <div class="card right">
+
+            <!-- START ROOM -->
+            <form method="POST" action="/rooms/{{$data->id}}/start">
+                @csrf
+                @if($data->status !== 'started')
+                    <button class="success">▶ Start Room</button>
+                @else
+                    <button disabled style="background:gray;width:100%;">Room Started</button>
+                @endif
+            </form>
+
+            <h3 class="title">Topics</h3>
+
+            @if(isset($topics))
+                @foreach($topics as $index => $q)
+                <a href="/update/topic/{{$q->id}}/room/{{$q->room_id}}" style="text-decoration:none;color:inherit;">
+                    <div class="question">
+                        <div style="display:flex;gap:10px;">
+                            <div class="q-number">{{ $index+1 }}</div>
+                            <div>{{ $q->name }}</div>
+                        </div>
+                        <span class="time">{{ $q->duration }}</span>
+                    </div>
+                </a>
+                @endforeach
+            @endif
+
+        </div>
+
     </div>
-</a>
-
-@endforeach
-@endif
-
-</div>
-
-</div>
 </div>
 
 <script>
-
 function createChoice(value = "", placeholder="New Choice"){
     let div = document.createElement("div");
     div.className = "choice-item";
@@ -231,11 +313,9 @@ function changeMethod(method){
     }
 }
 
-
 window.onload = () => {
     createChoice("", "Choice 1");
 };
-
 </script>
 
 </body>
