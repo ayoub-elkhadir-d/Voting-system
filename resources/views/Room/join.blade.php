@@ -270,12 +270,12 @@ function joinRoom(){
 
     if(code.length < 6){
         document.getElementById("result").innerText =
-            "❌ Please enter full numeric code";
+            "Please enter full numeric code";
         return;
     }
 
     document.getElementById("result").innerText =
-        "✅ Joining room: " + code;
+        "Joining room: " + code;
 }
 </script>
 

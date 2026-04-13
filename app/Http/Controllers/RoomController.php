@@ -11,8 +11,13 @@ class RoomController extends Controller
 {
     public function store(Request $r)
     {
+        $fakeNumber = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+    
+   
         $data = $r->validate([
             "room_name" => "required|max:255",
+
             "room_desc" => "required",
             "member_type" => "required",
             "member_limit" => "required|integer",
@@ -23,6 +28,7 @@ class RoomController extends Controller
         if ($data) {
             DB::table("rooms")->insert([
                 "name" => $r->room_name,
+                 "code" => $fakeNumber,
                 "description" => $r->room_desc,
                 "user_id" => Auth::id(),
                 "member_limit" => $r->member_limit,
@@ -34,7 +40,7 @@ class RoomController extends Controller
             ]);
             return redirect("/roomcreate")->with(
                 "success",
-                "Registration successful!"
+                "Registration successful !!"
             );
         }
         return;
@@ -65,12 +71,18 @@ class RoomController extends Controller
         return redirect("/myrooms")->with("success", "Update successful!");
     }
 
-public function show(Room $room)
-{
-    return view("Topic.create", [
-        "data" => $room,
-        "topics" => $room->topics
-    ]);
+    public function show(Room $room)
+    {
+        return view("Topic.create", ["data" => $room, "topics" => $room->topics]);
+    }
+
+public function start(Room $room_id) {
+    $fakeNumber = $room_id->code;
+    
+    $codeArray = str_split($fakeNumber);
+
+     return view('Room.code', ["code" => $codeArray]);
+    // return $room_id;
 }
 
 }

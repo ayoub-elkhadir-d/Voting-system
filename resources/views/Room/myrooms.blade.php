@@ -1,221 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Rooms</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Rooms</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
 
-        body {
-            background-color: #1a1a1a;
-            color: #fff;
-            padding-top: 90px;
-        }
+body{
+    background:radial-gradient(circle at top,#1a1a1a,#0b0b0f);
+    color:#fff;
+    padding-top:90px;
+}
 
-        /* ===== NAVBAR ===== */
-        .navbar {
-            width: 100%;
-            height: 70px;
-            background-color: #121212;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 50px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #333;
-        }
+.navbar{
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:10000;
+}
 
-        .nav-logo {
-            color: #f39c12;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-        }
+.rooms-container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
 
-        /* ===== ROOMS ===== */
-        .rooms-container {
-            width: 100%;
-            max-width: 1100px;
-            margin: auto;
-            padding: 20px;
-        }
+.title{
+    font-size:26px;
+    font-weight:bold;
+    margin-bottom:25px;
+    background:linear-gradient(135deg,#ffb703,#ff6a00);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
 
-        .title {
-            color: #f39c12;
-            margin-bottom: 30px;
-        }
+.rooms-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:25px;
+}
 
-        .rooms-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
+.room-card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:20px;
+    position:relative;
+    cursor:pointer;
+    transition:0.3s;
+    overflow:visible;
+}
 
-        .room-card {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid #2c2c2c;
-            position: relative;
-            transition: 0.3s;
-        }
+.room-card.active-menu {
+    z-index: 1001;
+}
 
-        .room-card:hover {
-            transform: translateY(-5px);
-            border-color: #f39c12;
-        }
+.room-card:hover{
+    transform:translateY(-6px) scale(1.02);
+    border-color:#ffb703;
+}
 
-        .room-name {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
+.room-name{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
 
-        .room-desc {
-            color: #aaa;
-            font-size: 0.9rem;
-        }
+.room-desc{
+    color:#aaa;
+    font-size:14px;
+}
 
-        /* ===== MENU ===== */
-        .menu {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-        }
+.menu{
+    position:absolute;
+    top:12px;
+    right:12px;
+    z-index:1000;
+}
 
-        .menu-btn {
-            cursor: pointer;
-            font-size: 20px;
-            color: #aaa;
-        }
+.menu-btn{
+    font-size:20px;
+    cursor:pointer;
+    color:#bbb;
+    padding:6px 8px;
+    border-radius:8px;
+    transition:0.2s;
+}
 
-        .menu-btn:hover {
-            color: #f39c12;
-        }
+.menu-btn:hover{
+    background:rgba(255,255,255,0.1);
+    color:#ffb703;
+}
 
-        .menu-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 25px;
-            background: #121212;
-            border: 1px solid #333;
-            border-radius: 10px;
-            overflow: hidden;
-            min-width: 130px;
-        }
+.menu-content{
+    position:absolute;
+    top:35px;
+    right:0;
+    background:rgba(0,0,0,0.95);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px;
+    min-width:160px;
+    display:none;
+    backdrop-filter:blur(10px);
+    z-index:9999;
+    animation:fadeIn 0.2s ease;
+}
 
-        .menu-content a,
-        .menu-content button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            text-align: left;
-            background: none;
-            border: none;
-            color: #ccc;
-            cursor: pointer;
-        }
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(-5px);}
+    to{opacity:1; transform:translateY(0);}
+}
 
-        .menu-content a:hover,
-        .menu-content button:hover {
-            background: #1f1f1f;
-            color: #f39c12;
-        }
+.menu-content a,
+.menu-content button{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    padding:10px 12px;
+    background:none;
+    border:none;
+    color:#ccc;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.2s;
+}
 
-        /* ALERT */
-        .alert-success {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #e6f9f0;
-            color: #155724;
-            padding: 15px;
-            border-radius: 10px;
-        }
-    </style>
+.menu-content a:hover,
+.menu-content button:hover{
+    background:rgba(255,255,255,0.08);
+    color:#ffb703;
+}
+
+.alert-success{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#00e676;
+    color:#000;
+    padding:12px 16px;
+    border-radius:10px;
+    z-index:99999;
+}
+
+@media(max-width:600px){
+    .title{font-size:20px;}
+}
+</style>
 </head>
+
 <body>
 
-    <!-- NAVBAR -->
-    @include('components.navbar')
+@include('components.navbar')
 
-    <!-- ALERT -->
-    @if (session('success'))
-        <div id="successAlert" class="alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+@if (session('success'))
+<div class="alert-success">{{ session('success') }}</div>
+@endif
 
-    <!-- ROOMS -->
-    <div class="rooms-container">
-        <h2 class="title">My Rooms</h2>
+<div class="rooms-container">
+    <h2 class="title">My Rooms</h2>
 
-        <div class="rooms-grid">
-
-            @foreach($rooms as $room)
-                <div class="room-card">
-                
-                    <!-- MENU -->
-                    <div class="menu">
-                        <div class="menu-btn" onclick="toggleMenu(this)">⋮</div>
-
-                        <div class="menu-content">
-                            <a href="/show/{{$room->id}}">Start</a>
-                            <a href="/update/{{ $room->id }}">Edit</a>
-
-                            <form action="/delete/{{ $room->id }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <h3 class="room-name">{{ $room->name }}</h3>
-                    <p class="room-desc">{{ $room->description }}</p>
-                    
+    <div class="rooms-grid">
+        @foreach($rooms as $room)
+        <div class="room-card" onclick="goToRoom(event, {{$room->id}})">
+            <div class="menu">
+                <div class="menu-btn" onclick="toggleMenu(event,this)">⋮</div>
+                <div class="menu-content">
+                    <a href="/show/{{$room->id}}">▶ Start</a>
+                    <a href="/update/{{$room->id}}">✏ Edit</a>
+                    <form action="/delete/{{$room->id}}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit">🗑 Delete</button>
+                    </form>
                 </div>
-            @endforeach
-
+            </div>
+            <h3 class="room-name">{{ $room->name }}</h3>
+            <p class="room-desc">{{ $room->description }}</p>
         </div>
+        @endforeach
     </div>
+</div>
 
-    <!-- JS -->
-    <script>
-        function toggleMenu(btn) {
-            const menu = btn.nextElementSibling;
+<script>
+function goToRoom(e, id){
+    if(e.target.closest('.menu')) return;
+    window.location.href = "/show/" + id;
+}
 
-            document.querySelectorAll('.menu-content').forEach(m => {
-                if (m !== menu) m.style.display = 'none';
-            });
+function toggleMenu(e,btn){
+    e.stopPropagation();
+    const menu = btn.nextElementSibling;
+    const card = btn.closest('.room-card');
 
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    document.querySelectorAll('.menu-content').forEach(m=>{
+        if(m!==menu) {
+            m.style.display='none';
+            m.closest('.room-card').classList.remove('active-menu');
         }
+    });
 
-        window.addEventListener('click', function(e) {
-            if (!e.target.closest('.menu')) {
-                document.querySelectorAll('.menu-content').forEach(m => {
-                    m.style.display = 'none';
-                });
-            }
-        });
+    if(menu.style.display === 'block'){
+        menu.style.display = 'none';
+        card.classList.remove('active-menu');
+    } else {
+        menu.style.display = 'block';
+        card.classList.add('active-menu');
+    }
+}
 
-        // alert hide
-        setTimeout(() => {
-            const alert = document.getElementById("successAlert");
-            if (alert) alert.style.display = "none";
-        }, 3000);
-    </script>
+window.addEventListener('click',()=>{
+    document.querySelectorAll('.menu-content').forEach(m=>{
+        m.style.display='none';
+        const card = m.closest('.room-card');
+        if(card) card.classList.remove('active-menu');
+    });
+});
+</script>
 
 </body>
 </html>

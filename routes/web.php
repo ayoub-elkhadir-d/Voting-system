@@ -29,12 +29,9 @@ Route::post('/resetpassword', [AuthController::class, 'login_link']);
 
 Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
-Route::post('/rooms/7/start',function(){
-return view('/room.code');
-});
-Route::get('/rooms/7/start',function(){
-return view('/room.join');
-});
+Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
+
+
 
 Route::post('/rooms/{room}/topic', [TopicController::class, 'store']);
 

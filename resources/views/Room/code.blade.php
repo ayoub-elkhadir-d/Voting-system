@@ -271,12 +271,10 @@ body{
 
         <!-- CODE -->
         <div class="code" id="codeBox">
-            <div class="box">9</div>
-            <div class="box">1</div>
-            <div class="box">7</div>
-            <div class="box">9</div>
-            <div class="box">3</div>
-            <div class="box">4</div>
+            @foreach($code as $c)
+            <div class="box">{{$c}}</div>
+             @endforeach
+          
         </div>
 
         <!-- RIGHT -->
@@ -292,7 +290,7 @@ body{
                 <button onclick="copyLink()">Copy</button>
             </div>
 
-            <button class="regen" onclick="regenerateCode()">Regenerate Code</button>
+            <button class="regen" >Regenerate Code</button>
 
         </div>
 
@@ -305,30 +303,9 @@ body{
 </div>
 
 <script>
-function randomCode(){
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
 
-function regenerateCode(){
-    let code = randomCode();
 
-    let boxes = document.querySelectorAll(".box");
-    boxes.forEach((b, i) => {
-        b.textContent = code[i];
-    });
 
-    document.getElementById("roomLink").value =
-        "https://voteroom.com/join/" + code;
-
-    document.getElementById("qrImg").src =
-        "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + code;
-}
-
-function copyLink(){
-    let input = document.getElementById("roomLink");
-    navigator.clipboard.writeText(input.value);
-    alert("Link copied!");
-}
 </script>
 
 </body>

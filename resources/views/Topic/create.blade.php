@@ -226,7 +226,7 @@ button{
         <div class="card right">
 
             <!-- START ROOM -->
-            <form method="POST" action="/rooms/{{$data->id}}/start">
+            <form method="GET" action="/rooms/{{$data->id}}/start">
                 @csrf
                 @if($data->status !== 'started')
                     <button class="success">▶ Start Room</button>
@@ -237,7 +237,7 @@ button{
 
             <h3 class="title">Topics</h3>
 
-            @if(isset($topics))
+            @if(isset($topics)) 
                 @foreach($topics as $index => $q)
                 <a href="/update/topic/{{$q->id}}/room/{{$q->room_id}}" style="text-decoration:none;color:inherit;">
                     <div class="question">
