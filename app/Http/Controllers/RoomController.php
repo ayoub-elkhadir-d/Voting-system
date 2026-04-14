@@ -90,4 +90,22 @@ public function get_join(){
     return view('Room.join');
 }
 
+public function join_user(Request $request){
+    $data = $request->except('_token');
+    ksort($data);
+    $roomCode = implode('', $data);
+    $room = Room::where('code', $roomCode)->first();
+       if($room){
+         DB::table("memberships")->insert([
+                    "room_id" => $room->id,
+                     "role" => "user",
+                     "status" =>"active",
+                    "user_id" => Auth::id(),
+                    
+
+             ]);
+       }
+  return view("/Room.waiting");
+}
+
 }

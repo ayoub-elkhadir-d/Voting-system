@@ -180,38 +180,37 @@ body{
 </head>
 
 <body>
+@include('components.navbar')
 
 <div class="bg-shape shape1"></div>
 <div class="bg-shape shape2"></div>
 
-<div class="nav">
-    <div class="logo">VoteRoom</div>
-    <div class="links">
-        <a href="#">Home</a>
-        <a href="#">Rooms</a>
-        <a href="#">Join</a>
-        <a href="#">About</a>
-    </div>
-</div>
+
 
 <div class="title">
     <span>Join</span> Room
 </div>
 
 <div class="container">
+    <form method="POST" action="/rooms/join">
+       @csrf
     <div class="card">
 
         <!-- INPUTS -->
         <div class="code-inputs">
-            <input maxlength="1" oninput="handleInput(this,1)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" oninput="handleInput(this,2)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" oninput="handleInput(this,3)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" oninput="handleInput(this,4)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" oninput="handleInput(this,5)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" oninput="handleInput(this,6)" onkeydown="blockInvalid(event)">
+            <input maxlength="1" name="1" oninput="handleInput(this,1)" onkeydown="blockInvalid(event)">
+            <input maxlength="1" name="2" oninput="handleInput(this,2)" onkeydown="blockInvalid(event)">
+            <input maxlength="1" name="3" oninput="handleInput(this,3)" onkeydown="blockInvalid(event)">
+            <input maxlength="1" name="4" oninput="handleInput(this,4)" onkeydown="blockInvalid(event)">
+            <input maxlength="1" name="5" oninput="handleInput(this,5)" onkeydown="blockInvalid(event)">
+            <input maxlength="1" name="6" oninput="handleInput(this,6)" onkeydown="blockInvalid(event)">
         </div>
+  <button class="join-btn" >Join Room</button>
 
-        <button class="join-btn" onclick="joinRoom()">Join Room</button>
+    </div>
+   
+</form>
+       
 
         <div class="result" id="result"></div>
 

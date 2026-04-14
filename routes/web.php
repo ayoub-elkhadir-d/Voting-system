@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TopicController;
+use Illuminate\Http\Request;
+
 use App\Models\Room;
 use App\Models\Topic;
 use App\Models\choix;
@@ -30,7 +32,9 @@ Route::post('/resetpassword', [AuthController::class, 'login_link']);
 Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
 Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
-Route::get('/rooms/{room_id}/join', [RoomController::class, 'get_join']);
+Route::get('/rooms/join', [RoomController::class, 'get_join']);
+Route::post('/rooms/join', [RoomController::class, 'join_user']);
+
 
 
 
