@@ -30,6 +30,7 @@ Route::post('/resetpassword', [AuthController::class, 'login_link']);
 Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
 Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
+Route::get('/rooms/{room_id}/join', [RoomController::class, 'get_join']);
 
 
 

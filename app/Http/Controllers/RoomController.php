@@ -13,8 +13,6 @@ class RoomController extends Controller
     {
         $fakeNumber = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-    
-   
         $data = $r->validate([
             "room_name" => "required|max:255",
 
@@ -77,12 +75,19 @@ class RoomController extends Controller
     }
 
 public function start(Room $room_id) {
+
     $fakeNumber = $room_id->code;
     
-    $codeArray = str_split($fakeNumber);
+    return view('Room.code', [
+        "rawCode" => $fakeNumber, 
+        "codeArray" => str_split($fakeNumber) ,
+        "room_id" => $room_id->id
+    ]);
 
-     return view('Room.code', ["code" => $codeArray]);
     // return $room_id;
+}
+public function get_join(){
+    return view('Room.join');
 }
 
 }
