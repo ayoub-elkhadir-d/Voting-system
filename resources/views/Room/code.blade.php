@@ -4,343 +4,250 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Join Room</title>
+
 <style>
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Segoe UI, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
 }
+
 body {
   background: #0b0b0f;
   color: #fff;
-  overflow-x: hidden;
   min-height: 100vh;
+  overflow-x: hidden;
 }
+
+/* Background Decor */
 .bg-shape {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.4;
-  z-index: 0;
+  z-index: -1;
 }
-.shape1 {
-  width: 300px;
-  height: 300px;
-  background: #ff9f0a;
-  top: -80px;
-  left: -80px;
-}
-.shape2 {
-  width: 250px;
-  height: 250px;
-  background: #6c5ce7;
-  bottom: -80px;
-  right: -80px;
-}
-.nav {
-  height: 65px;
-  background: rgba(20, 20, 25, 0.7);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-  z-index: 10;
-}
-.nav .logo {
-  font-weight: bold;
-  font-size: 18px;
-  color: #ff9f0a;
-}
-.nav .links {
-  display: flex;
-  gap: 25px;
-}
-.nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-  opacity: 0.7;
-  transition: 0.3s;
-}
-.nav a:hover {
-  opacity: 1;
-  color: #ff9f0a;
-}
+.shape1 { width:300px; height:300px; background:#ff9f0a; top:-80px; left:-80px; }
+.shape2 { width:250px; height:250px; background:#6c5ce7; bottom:-80px; right:-80px; }
+
 .title {
   text-align: center;
   margin-top: 40px;
   font-size: 32px;
   font-weight: bold;
-  position: relative;
-  z-index: 2;
 }
-.title span {
-  color: #ff9f0a;
-}
+.title span { color:#ff9f0a; }
 
-.main-content-layout {
+/* Layout */
+.main {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
-  position: relative;
-  z-index: 2;
+  margin-top: 50px;
 }
 
-.center-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-  position: relative;
-}
-
+/* Card */
 .card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255,255,255,0.05);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 30px;
   border-radius: 20px;
   display: flex;
   gap: 30px;
   align-items: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
+/* Code Boxes */
 .code {
   display: flex;
   gap: 10px;
 }
+
 .box {
   width: 55px;
   height: 75px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   border-radius: 12px;
   font-weight: bold;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.5s ease;
+  cursor: pointer;
 }
+
+/* ERROR STYLE */
+.box.error {
+  border: 1px solid #ff4d4f;
+  box-shadow: 0 0 10px rgba(255,77,79,0.6);
+  animation: shake 0.3s;
+}
+
+.input-error {
+  color: #ff4d4f;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+  transition: opacity 0.5s ease; /* Smooth fade out */
+}
+
+/* Animations */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(-5px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* Right side */
 .right {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
 }
+
 .qr img {
   width: 140px;
   height: 140px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
 }
-.qr p {
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 8px;
-  text-align: center;
-}
+
 .copy-box {
   display: flex;
   gap: 8px;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0,0,0,0.3);
   padding: 8px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
 }
+
 .copy-box input {
   background: transparent;
   border: none;
   color: #fff;
-  outline: none;
   width: 150px;
-  font-size: 12px;
+  outline: none;
 }
+
 .copy-box button {
   background: #ff9f0a;
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 12px;
-}
-.regen {
-  background: rgba(108, 92, 231, 0.2);
-  border: 1px solid #6c5ce7;
-  padding: 10px 14px;
-  border-radius: 10px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 13px;
-  transition: 0.3s;
-}
-.regen:hover {
-  background: #6c5ce7;
+  font-weight: 600;
+  transition: 0.2s;
 }
 
-/* زر أصغر ومتمركز */
+.copy-box button:active { transform: scale(0.95); }
+
+/* Button */
 .start-btn {
-  background: linear-gradient(135deg, #ff9f0a, #ff6a00);
+  display: block;
+  width: fit-content;
+  margin: 25px auto 0;
+  background: linear-gradient(135deg,#ff9f0a,#ff6a00);
   border: none;
   padding: 12px 40px;
-  font-size: 16px;
   border-radius: 14px;
+  font-weight: bold;
+  color: white;
   cursor: pointer;
-  font-weight: bold;
-  color: #000;
-  box-shadow: 0 8px 20px rgba(255, 159, 10, 0.2);
   transition: 0.3s;
-  width: auto; /* يجعل الحجم حسب النص */
-  min-width: 200px;
-}
-.start-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(255, 159, 10, 0.4);
 }
 
-.users-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  width: 260px;
-  padding: 20px;
-  height: 380px;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: calc(100% + 25px);
-  top: 0;
-}
-
-.users-card h3 {
-  font-size: 16px;
-  margin-bottom: 15px;
-  color: #ff9f0a;
-  display: flex;
-  justify-content: space-between;
-}
-.users-list {
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.user-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 8px 12px;
-  border-radius: 12px;
-}
-.user-avatar {
-  width: 35px;
-  height: 35px;
-  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-}
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background: #00e676;
-  border-radius: 50%;
-  margin-left: auto;
-  box-shadow: 0 0 10px #00e676;
-}
-
-@media (max-width: 1200px) {
-  .main-content-layout {
-    flex-direction: column;
-    align-items: center;
-  }
-  .users-card {
-    position: static;
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    margin-top: 20px;
-  }
-}
+.start-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
 </style>
 </head>
+
 <body>
-    @include('components.navbar')
 
 <div class="bg-shape shape1"></div>
 <div class="bg-shape shape2"></div>
-<div class="nav">
-    <div class="logo">VoteRoom</div>
-    <div class="links"><a href="#">Home</a><a href="#">Rooms</a><a href="#">Join</a></div>
-</div>
+
 <div class="title"><span>Join</span> Room</div>
 
-<div class="main-content-layout">
-    <div class="center-section">
-        <div class="card">
-            <div class="code">
-                @foreach($codeArray as $c)
-                    <div class="box">{{$c}}</div>
-                @endforeach
+<div class="main">
+  <div>
+    
+    <div class="card">
+      
+      <div>
+        <div class="code" id="codeBoxes">
+          @foreach($codeArray as $c)
+            <div class="box {{ session('error') ? 'error' : '' }}" data-digit="{{$c}}">
+              {{$c}}
             </div>
-            <div class="right">
-                <div class="qr">
-                    <p>Scan to join instantly</p>
-                    @php
-                        $fullUrl = url("/join/{$rawCode}");
-                        $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($fullUrl);
-                    @endphp
-                    <img src="{{ $qrUrl }}" alt="QR">       
-                </div>
-                <div class="copy-box">
-                    <input id="roomLink" value="{{ $fullUrl }}" readonly>
-                    <button onclick="copyLink()">Copy</button>
-                </div>
-                <button class="regen">Regenerate Code</button>
-            </div>
+          @endforeach
         </div>
-        
-        <form action="/rooms/{{$room_id}}/join" method="GET">
-            <button type="submit" class="start-btn">Start Voting</button>
-        </form>
 
-        <div class="users-card">
-            <h3>Connected Users <span id="userCount">1</span></h3>
-            <div class="users-list">
-                <div class="user-item">
-                    <div class="user-avatar">Y</div>
-                    <div class="user-name">You (Admin)</div>
-                    <div class="status-dot"></div>
-                </div>
-                <div class="user-item" style="opacity: 0.5;">
-                    <div class="user-avatar" style="background: #444;">?</div>
-                    <div class="user-name">Waiting...</div>
-                </div>
-            </div>
+        @if (session('error'))
+          <div class="input-error" id="errorMsg">
+            {{ session('error') }}
+          </div>
+        @endif
+      </div>
+
+      <div class="right">
+        <div class="qr">
+          @php
+            $fullUrl = url("/join/{$rawCode}");
+            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($fullUrl);
+          @endphp
+          <img src="{{ $qrUrl }}" alt="QR Code">
         </div>
+
+        <div class="copy-box">
+          <input id="roomLink" value="{{ $fullUrl }}" readonly>
+          <button onclick="copyLink()">Copy</button>
+        </div>
+      </div>
+
     </div>
+
+    <form action="/rooms/{{$room_id}}/join" method="GET">
+      <button type="submit" class="start-btn">Start Voting</button>
+    </form>
+
+  </div>
 </div>
 
 <script>
 function copyLink() {
-    const link = document.getElementById('roomLink');
-    link.select();
-    document.execCommand('copy');
-    alert('Link copied!');
+  const link = document.getElementById('roomLink');
+  link.select();
+  document.execCommand('copy');
+  
+  // Optional: change button text briefly
+  const btn = event.target;
+  const originalText = btn.innerText;
+  btn.innerText = "Copied!";
+  setTimeout(() => btn.innerText = originalText, 2000);
 }
+
+setTimeout(() => {
+  const errText = document.getElementById('errorMsg');
+  if (errText) {
+    errText.style.opacity = "0";
+  }
+
+  const errorBoxes = document.querySelectorAll('.box.error');
+  errorBoxes.forEach(box => {
+    box.classList.remove('error');
+  });
+}, 1000);
 </script>
+
 </body>
 </html>

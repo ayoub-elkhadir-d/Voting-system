@@ -64,24 +64,6 @@ body{
     color:#ff9f0a;
 }
 
-.nav .links{
-    display:flex;
-    gap:25px;
-}
-
-.nav a{
-    color:#fff;
-    text-decoration:none;
-    font-size:14px;
-    opacity:0.7;
-    transition:0.3s;
-}
-
-.nav a:hover{
-    opacity:1;
-    color:#ff9f0a;
-}
-
 /* TITLE */
 .title{
     text-align:center;
@@ -138,7 +120,6 @@ body{
     transition:0.3s;
 }
 
-/* focus effect */
 .code-inputs input:focus{
     border-color:#ff9f0a;
     transform:scale(1.05);
@@ -167,7 +148,16 @@ body{
     font-size:14px;
     color:#aaa;
 }
-
+.alert-success{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#00e676;
+    color:#000;
+    padding:12px 16px;
+    border-radius:10px;
+    z-index:99999;
+}
 /* RESPONSIVE */
 @media(max-width:768px){
     .code-inputs input{
@@ -182,10 +172,12 @@ body{
 <body>
 @include('components.navbar')
 
+@if (session('success'))
+<div class="alert-success">{{ session('success') }}</div>
+@endif
+
 <div class="bg-shape shape1"></div>
 <div class="bg-shape shape2"></div>
-
-
 
 <div class="title">
     <span>Join</span> Room
@@ -194,88 +186,80 @@ body{
 <div class="container">
     <form method="POST" action="/rooms/join">
        @csrf
+
     <div class="card">
+
+        <!-- ERROR -->
+        @if(session('error'))
+        <div style="background:#d32f2f;color:#fff;padding:12px 20px;border-radius:10px;text-align:center;font-weight:bold;">
+            {{ session('error') }}
+        </div>
+        @endif
 
         <!-- INPUTS -->
         <div class="code-inputs">
-            <input maxlength="1" name="1" oninput="handleInput(this,1)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" name="2" oninput="handleInput(this,2)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" name="3" oninput="handleInput(this,3)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" name="4" oninput="handleInput(this,4)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" name="5" oninput="handleInput(this,5)" onkeydown="blockInvalid(event)">
-            <input maxlength="1" name="6" oninput="handleInput(this,6)" onkeydown="blockInvalid(event)">
+            <input name="d1" maxlength="1">
+            <input name="d2" maxlength="1">
+            <input name="d3" maxlength="1">
+            <input name="d4" maxlength="1">
+            <input name="d5" maxlength="1">
+            <input name="d6" maxlength="1">
         </div>
-  <button class="join-btn" >Join Room</button>
+
+        <button class="join-btn">Join Room</button>
 
     </div>
-   
 </form>
-       
 
-        <div class="result" id="result"></div>
+<div class="result" id="result"></div>
 
-    </div>
 </div>
 
 <script>
 
-function handleInput(el, index){
-    // allow only numbers
-    el.value = el.value.replace(/[^0-9]/g, '');
+const inputs = document.querySelectorAll(".code-inputs input");
 
-    if(el.value.length === 1){
-        let next = el.nextElementSibling;
-        if(next) next.focus();
-    }
-}
+/* INPUT HANDLING */
+inputs.forEach((input, index) => {
 
-/* FIX BACKSPACE BEHAVIOR */
-document.querySelectorAll(".code-inputs input").forEach((input, index, arr) => {
-    input.addEventListener("keydown", function(e){
+    input.addEventListener("input", () => {
+        input.value = input.value.replace(/[^0-9]/g, '');
 
-        // BACKSPACE FIX
-        if(e.key === "Backspace"){
-            if(this.value === ""){
-                let prev = this.previousElementSibling;
-                if(prev){
-                    prev.focus();
-                    prev.value = ""; // clear previous box
-                    e.preventDefault();
-                }
-            }
+        if(input.value && inputs[index + 1]){
+            inputs[index + 1].focus();
         }
 
+        checkAutoSubmit();
     });
+
+    input.addEventListener("keydown", (e) => {
+        if(e.key === "Backspace" && input.value === "" && inputs[index - 1]){
+            inputs[index - 1].focus();
+        }
+    });
+
+    input.addEventListener("paste", (e) => {
+        e.preventDefault();
+
+        let pasteData = e.clipboardData.getData("text")
+            .replace(/[^0-9]/g, '');
+
+        pasteData.split("").forEach((char, i) => {
+            if(inputs[index + i]){
+                inputs[index + i].value = char;
+            }
+        });
+
+        let last = index + pasteData.length - 1;
+        if(inputs[last]) inputs[last].focus();
+
+        
+    });
+
 });
-function blockInvalid(e){
-    const allowed = [8,9,37,38,39,40,46];
 
-    if(
-        allowed.includes(e.keyCode) ||
-        (e.key >= '0' && e.key <= '9')
-    ){
-        return true;
-    }
 
-    e.preventDefault();
-}
 
-/* JOIN */
-function joinRoom(){
-    let inputs = document.querySelectorAll(".code-inputs input");
-    let code = "";
-
-    inputs.forEach(i => code += i.value);
-
-    if(code.length < 6){
-        document.getElementById("result").innerText =
-            "Please enter full numeric code";
-        return;
-    }
-
-    document.getElementById("result").innerText =
-        "Joining room: " + code;
-}
 </script>
 
 </body>

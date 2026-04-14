@@ -50,7 +50,6 @@ Route::post('/update/topic/{id}/room/{room_id}', [TopicController::class, 'updat
 
 Route::get('/rooms/{room}/gettopics',[TopicController::class, 'get_all_topics']);
 
-    
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
     Route::get('/myrooms',[RoomController::class , 'rooms']);
