@@ -172,6 +172,7 @@ body {
 </head>
 
 <body>
+@include('components.navbar')
 
 <div class="bg-shape shape1"></div>
 <div class="bg-shape shape2"></div>

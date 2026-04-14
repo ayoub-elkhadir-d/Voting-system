@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UserJoined;
 use App\Models\Room;
 
 class RoomController extends Controller
@@ -77,7 +78,10 @@ class RoomController extends Controller
 public function start(Room $room_id) {
 
     $fakeNumber = $room_id->code;
-    
+     $room = Room::find($room_id->id);
+    $room->status = "pending";
+    $room->save();
+
     return view('Room.code', [
         "rawCode" => $fakeNumber, 
         "codeArray" => str_split($fakeNumber) ,
@@ -101,13 +105,14 @@ if($room){
      $isMember = DB::table("memberships")
         ->where("room_id", $room->id)
         ->where("user_id", Auth::id())
-        ->exists();
+        ->first();
 }else{
     return redirect("/rooms/join")->with("error", "Invalid room code!");
 }
 
     if($isMember){
-         return redirect("/rooms/waiting-participants");
+   
+         return redirect("/rooms/waiting-participants")->with('user_name',$isMember->username)->with('room_id',$room->id);
     }
         // return dd($isMember);
    if($room && !$isMember) {
@@ -146,10 +151,13 @@ public function join_confirm(Request $request) {
             "status"     => "active",
             "created_at" => now(),
         ]);
+
+       broadcast(new UserJoined($request->user_name, $request->room_id))->toOthers();
+
     }elseif($isMember){
         return redirect("/rooms/waiting-participants");
-
     }
+
 
     return redirect("/rooms/waiting-participants");
 }

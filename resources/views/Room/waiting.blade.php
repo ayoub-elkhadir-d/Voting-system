@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Waiting Room | Laravel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+    @vite(['resources/js/app.js'])
     <style>
         :root {
             --bg-dark: #1e1e1e;
@@ -69,12 +69,11 @@
 
         .room-display h1 {
             color: var(--accent-orange);
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 1px;
         }
 
-        /* --- New Loading & Text Layout --- */
         .loading-wrapper {
             display: flex;
             align-items: center;
@@ -149,12 +148,16 @@
             <svg viewBox="0 0 24 24">
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
             </svg>
-            <span>12/25</span>
+            <span id="total">0</span>
         </div>
 
-        <div class="room-display">
-            <h1>User-4585452</h1>
-        </div>
+       <div class="room-display">
+    @if(session('user_name'))
+        <h1>{{ session('user_name') }}</h1>
+    @else
+        <h1>Welcome, Guest</h1>
+    @endif
+    </div>
 
         <div class="loading-wrapper">
             <h2 class="waiting-text">Waiting For Participants</h2>
@@ -176,4 +179,23 @@
     </main>
 
 </body>
+<script>
+    window.addEventListener('load', () => {
+        let roomId = "{{ session('room_id') }}";
+        let totalElement = document.getElementById('total');
+        let users_total = 0;
+
+        if (roomId ) {
+           Echo.channel('room.' + roomId)
+                .listen('.user.joined', (e) => {
+                    console.log('User Joined:', e.username);
+                    users_total++;
+                    totalElement.innerText = users_total;
+                });
+        } else {
+            console.error('Echo not ready or Room ID missing.');
+
+        }
+    });
+</script>
 </html>
