@@ -33,7 +33,15 @@ Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
 Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
 Route::get('/rooms/join', [RoomController::class, 'get_join']);
-Route::post('/rooms/join', [RoomController::class, 'join_user']);
+Route::post('/rooms/join', [RoomController::class, 'check_room']);
+Route::post('/rooms/confirm-join', [RoomController::class, 'join_confirm']);
+Route::get('/rooms/waiting-participants',function (){
+    return view("/Room.waiting");
+});
+
+Route::get('/rooms/{room_id}/enter_username',function (Room $room_id){
+    return view("/Room.enter_username",["room_id"=>$room_id->id]);
+});
 
 
 

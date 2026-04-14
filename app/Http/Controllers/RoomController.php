@@ -84,40 +84,73 @@ public function start(Room $room_id) {
         "room_id" => $room_id->id
     ]);
 
+    // return $room_id;
 }
 public function get_join(){
     return view('Room.join');
 }
 
-public function join_user(Request $request){
+
+public function check_room(Request $request) {
     $data = $request->except('_token');
     ksort($data);
     $roomCode = implode('', $data);
 
     $room = Room::where('code', $roomCode)->first();
-
-    if($room){
-
-       
-        $exists = DB::table("memberships")
-            ->where("room_id", $room->id)
-            ->where("user_id", Auth::id())
-            ->exists();
-
-        if(!$exists){
-            DB::table("memberships")->insert([
-                "room_id" => $room->id,
-                "role" => "user",
-                "status" => "active",
-                "user_id" => Auth::id(),
-            ]);
-        }
-
-        return view("/Room.waiting");
-
-    }else{
-        return redirect("/rooms/join")->with("error", "Invalid room code!");
-    }
+if($room){
+     $isMember = DB::table("memberships")
+        ->where("room_id", $room->id)
+        ->where("user_id", Auth::id())
+        ->exists();
+}else{
+    return redirect("/rooms/join")->with("error", "Invalid room code!");
 }
 
+    if($isMember){
+         return redirect("/rooms/waiting-participants");
+    }
+        // return dd($isMember);
+   if($room && !$isMember) {
+      return redirect("/rooms/{$room->id}/enter_username");
+  } 
+
+  
+}
+
+public function join_confirm(Request $request) {
+    $request->validate([
+        'room_id'   => 'required',
+        'user_name' => 'required|string|max:20',
+    ]);
+
+    $nameTaken = DB::table("memberships")
+        ->where("room_id", $request->room_id)
+        ->where("username", $request->user_name)
+        ->exists();
+
+    if ($nameTaken) {
+        return back()->with("error", "this username alredy taken !!!");
+    }
+
+    $isMember = DB::table("memberships")
+        ->where("room_id", $request->room_id)
+        ->where("user_id", Auth::id())
+        ->exists();
+    
+    if (!$isMember) {
+        DB::table("memberships")->insert([
+            "room_id"    => $request->room_id,
+            "user_id"    => Auth::id(),
+            "username"   => $request->user_name,
+            "role"       => "user",
+            "status"     => "active",
+            "created_at" => now(),
+        ]);
+    }elseif($isMember){
+        return redirect("/rooms/waiting-participants");
+
+    }
+
+    return redirect("/rooms/waiting-participants");
+}
 }

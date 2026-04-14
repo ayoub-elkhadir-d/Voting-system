@@ -179,6 +179,8 @@ body {
 <div class="title"><span>Join</span> Room</div>
 
 <div class="main">
+     
+
   <div>
     
     <div class="card">
@@ -223,13 +225,13 @@ body {
   </div>
 </div>
 
+
 <script>
 function copyLink() {
   const link = document.getElementById('roomLink');
   link.select();
   document.execCommand('copy');
   
-  // Optional: change button text briefly
   const btn = event.target;
   const originalText = btn.innerText;
   btn.innerText = "Copied!";
