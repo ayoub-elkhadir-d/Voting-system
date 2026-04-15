@@ -19,7 +19,6 @@ body{
     overflow-x:hidden;
 }
 
-/* BACKGROUND */
 .bg-shape{
     position:absolute;
     border-radius:50%;

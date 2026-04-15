@@ -10,26 +10,25 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 body {
-  background: #0b0b0f;
-  color: #fff;
+  background: #222831;
+  color: #DDDDDD;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Background Decor */
 .bg-shape {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.4;
+  opacity: 0.2;
   z-index: -1;
 }
-.shape1 { width:300px; height:300px; background:#ff9f0a; top:-80px; left:-80px; }
-.shape2 { width:250px; height:250px; background:#6c5ce7; bottom:-80px; right:-80px; }
+.shape1 { width:300px; height:300px; background:#F05454; top:-80px; left:-80px; }
+.shape2 { width:250px; height:250px; background:#30475E; bottom:-80px; right:-80px; }
 
 .title {
   text-align: center;
@@ -37,28 +36,26 @@ body {
   font-size: 32px;
   font-weight: bold;
 }
-.title span { color:#ff9f0a; }
+.title span { color:#F05454; }
 
-/* Layout */
 .main {
   display: flex;
   justify-content: center;
   margin-top: 50px;
 }
 
-/* Card */
 .card {
-  background: rgba(255,255,255,0.05);
+  background: #1a1e23;
   backdrop-filter: blur(15px);
   padding: 30px;
   border-radius: 20px;
   display: flex;
   gap: 30px;
   align-items: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  border: 1px solid rgba(221, 221, 221, 0.1);
 }
 
-/* Code Boxes */
 .code {
   display: flex;
   gap: 10px;
@@ -67,35 +64,33 @@ body {
 .box {
   width: 55px;
   height: 75px;
-  background: rgba(0,0,0,0.4);
+  background: #222831;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   border-radius: 12px;
   font-weight: bold;
-  border: 1px solid rgba(255,255,255,0.1);
+  color: #F05454;
+  border: 1px solid rgba(221, 221, 221, 0.1);
   transition: all 0.5s ease;
   cursor: pointer;
 }
 
-/* ERROR STYLE */
 .box.error {
-  border: 1px solid #ff4d4f;
-  box-shadow: 0 0 10px rgba(255,77,79,0.6);
+  border: 1px solid #F05454;
+  box-shadow: 0 0 10px rgba(240, 84, 84, 0.6);
   animation: shake 0.3s;
 }
 
 .input-error {
-  color: #ff4d4f;
+  color: #F05454;
   font-size: 13px;
   margin-top: 12px;
   text-align: center;
   animation: fadeIn 0.3s ease;
-  transition: opacity 0.5s ease; /* Smooth fade out */
 }
 
-/* Animations */
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-6px); }
@@ -109,7 +104,6 @@ body {
   to { opacity:1; transform:translateY(0); }
 }
 
-/* Right side */
 .right {
   display: flex;
   flex-direction: column;
@@ -121,42 +115,44 @@ body {
   width: 140px;
   height: 140px;
   border-radius: 12px;
+  border: 3px solid #222831;
 }
 
 .copy-box {
   display: flex;
   gap: 8px;
-  background: rgba(0,0,0,0.3);
+  background: #222831;
   padding: 8px 12px;
   border-radius: 10px;
+  border: 1px solid rgba(221, 221, 221, 0.1);
 }
 
 .copy-box input {
   background: transparent;
   border: none;
-  color: #fff;
+  color: #DDDDDD;
   width: 150px;
   outline: none;
 }
 
 .copy-box button {
-  background: #ff9f0a;
+  background: #F05454;
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
+  color: white;
   font-weight: 600;
   transition: 0.2s;
 }
 
 .copy-box button:active { transform: scale(0.95); }
 
-/* Button */
 .start-btn {
   display: block;
   width: fit-content;
   margin: 25px auto 0;
-  background: linear-gradient(135deg,#ff9f0a,#ff6a00);
+  background: #F05454;
   border: none;
   padding: 12px 40px;
   border-radius: 14px;
@@ -164,10 +160,14 @@ body {
   color: white;
   cursor: pointer;
   transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(240, 84, 84, 0.3);
 }
 
-.start-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
+.start-btn:hover { 
+  background: #d44646;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 84, 84, 0.4);
+}
 </style>
 </head>
 
