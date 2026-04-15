@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Events\UserJoined;
 use App\Models\Room;
+use App\Models\membership;
 
 class RoomController extends Controller
 {
@@ -160,6 +161,16 @@ public function join_confirm(Request $request) {
 
 
     return redirect("/rooms/waiting-participants");
+}
+
+public function left_room($room_id){
+    // $total = DB::table('memberships')
+    // ->where('room_id', $room_id)
+    // ->count();
+    Membership::where('user_id',Auth::id())->delete();
+   return redirect("/rooms/join");
+
+
 }
 
 }

@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <form action="#" method="POST">
+        <form action="/rooms/{{ session('room_id') }}/left" method="POST">
             @csrf
             <button type="submit" class="btn-leave">Leave Room</button>
         </form>

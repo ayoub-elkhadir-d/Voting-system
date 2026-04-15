@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Topic;
+use App\Models\membership;
 class Room extends Model
 {
     protected $fillable = ['name', 'description', 'user_id'];
@@ -18,4 +19,8 @@ class Room extends Model
     
     return $this->hasMany(Topic::class);
     }
+    public function memberships()
+{
+    return $this->hasMany(Membership::class);
+}
 }

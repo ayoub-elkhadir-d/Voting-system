@@ -42,7 +42,7 @@ Route::get('/rooms/waiting-participants',function (){
 Route::get('/rooms/{room_id}/enter_username',function (Room $room_id){
     return view("/Room.enter_username",["room_id"=>$room_id->id]);
 });
-
+Route::post('/rooms/{room_id}/left', [RoomController::class, 'left_room']);
 
 
 
