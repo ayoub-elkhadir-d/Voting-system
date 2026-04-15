@@ -112,8 +112,10 @@ if($room){
 }
 
     if($isMember){
-   
-         return redirect("/rooms/waiting-participants")->with('user_name',$isMember->username)->with('room_id',$room->id);
+      $participantsCount = membership::where('room_id', $room->id)->count();
+
+     return view("/Room.waiting",['user_name'=>$isMember->username,'room_id'=>$room->id,'total_users'=>$participantsCount]);
+ 
     }
         // return dd($isMember);
    if($room && !$isMember) {
@@ -155,12 +157,11 @@ public function join_confirm(Request $request) {
 
        broadcast(new UserJoined($request->user_name, $request->room_id))->toOthers();
 
-    }elseif($isMember){
-        return redirect("/rooms/waiting-participants");
     }
 
-
-    return redirect("/rooms/waiting-participants");
+      $participantsCount = membership::where('room_id', $request->room_id)->count();
+    // return redirect("/rooms/waiting-participants")->with("users_total",$participantsCount);
+      return $participantsCount;
 }
 
 public function left_room($room_id){

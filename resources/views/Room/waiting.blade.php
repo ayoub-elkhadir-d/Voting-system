@@ -101,12 +101,15 @@
             <svg viewBox="0 0 24 24">
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
             </svg>
-            <span id="total">0</span>
+             
+               <span id="total">{{ $total_users }}</span>
+              
+          
         </div>
 
         <div class="room-display">
             @if(session('user_name'))
-                <h1>{{ session('user_name') }}</h1>
+                <h1>{{ $user_name }}</h1>
             @else
                 <h1>Welcome, Guest</h1>
             @endif
@@ -125,7 +128,7 @@
             </div>
         </div>
 
-        <form action="/rooms/{{ session('room_id') }}/left" method="POST">
+        <form action="/rooms/{{ $room_id }}/left" method="POST">
             @csrf
             <button type="submit" class="btn-leave">Leave Room</button>
         </form>
@@ -134,7 +137,8 @@
 </body>
 <script>
     window.addEventListener('load', () => {
-        let roomId = "{{ session('room_id') }}";
+        let roomId = "{{ $room_id }}";
+
         let totalElement = document.getElementById('total');
         let users_total = 0;
 
