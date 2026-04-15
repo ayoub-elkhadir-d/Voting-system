@@ -161,4 +161,5 @@ public function join_confirm(Request $request) {
 
     return redirect("/rooms/waiting-participants");
 }
+
 }

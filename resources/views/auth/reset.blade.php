@@ -4,33 +4,31 @@
       <meta charset="UTF-8">
       <title>Reset Password</title>
       <style>
-         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-         body{background:#262728;height:100vh;display:flex;justify-content:center;align-items:center;}
-         .container{background:#2f3031;padding:40px;border-radius:12px;width:360px;box-shadow:0 10px 25px rgba(0,0,0,0.5);}
-         h2{color:#fff;text-align:center;margin-bottom:20px;}
+         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+         body{background:#f5f7fa;height:100vh;display:flex;justify-content:center;align-items:center;}
+         .container{background:#fff;padding:40px;border-radius:16px;width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border-top:4px solid #1a73e8;}
+         h2{color:#1a1a2e;text-align:center;margin-bottom:24px;font-size:1.5rem;font-weight:800;}
          .input-group{margin-bottom:18px;}
-         .input-group label{color:#ccc;font-size:14px;display:block;margin-bottom:5px;}
-         .input-group input{width:100%;padding:12px;border:none;border-radius:8px;background:#1B1B1B;color:#fff;outline:none;}
-         .input-group input:focus{border:1px solid #FCA311;}
-         .error-input{border:1px solid red;}
-         .error-text{color:red;font-size:13px;}
-         .btn{width:100%;padding:12px;background:#FCA311;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;}
-         .footer{text-align:center;margin-top:10px;}
-         .footer a{color:#FCA311;text-decoration:none;}
-         .error-box{background:red;color:white;padding:10px;margin-bottom:15px;border-radius:8px;}
-         .success-box{background:green;color:white;padding:10px;margin-bottom:15px;border-radius:8px;}
+         .input-group label{color:#555;font-size:13px;font-weight:600;display:block;margin-bottom:6px;}
+         .input-group input{width:100%;padding:13px 14px;border:2px solid #e0e0e0;border-radius:10px;background:#fff;color:#1a1a2e;outline:none;font-size:14px;transition:0.2s;}
+         .input-group input:focus{border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,0.12);}
+         .error-input{border-color:#e74c3c !important;}
+         .error-text{color:#e74c3c;font-size:12px;margin-top:4px;display:block;}
+         .btn{width:100%;padding:13px;background:#1a73e8;border:none;border-radius:10px;color:#fff;font-weight:800;font-size:15px;cursor:pointer;transition:0.2s;box-shadow:0 4px 14px rgba(26,115,232,0.25);}
+         .btn:hover{background:#1558b0;transform:translateY(-2px);}
+         .footer{text-align:center;margin-top:14px;font-size:13px;}
+         .footer a{color:#1a73e8;text-decoration:none;font-weight:600;}
+         .error-box{background:rgba(231,76,60,0.08);border:1px solid #e74c3c;color:#e74c3c;padding:12px;margin-bottom:18px;border-radius:10px;font-size:13px;}
+         .error-box ul{padding-left:16px;}
+         .success-box{background:rgba(39,174,96,0.1);border:1px solid #27ae60;color:#27ae60;padding:12px;margin-bottom:18px;border-radius:10px;font-size:13px;}
       </style>
    </head>
    <body>
       <div class="container">
          <h2>Reset Password</h2>
-         {{-- success message --}}
          @if (session('status'))
-         <div class="success-box">
-            {{ session('status') }}
-         </div>
+         <div class="success-box">{{ session('status') }}</div>
          @endif
-         {{-- errors --}}
          @if ($errors->any())
          <div class="error-box">
             <ul>
@@ -44,12 +42,7 @@
             @csrf
             <div class="input-group">
                <label>Email</label>
-               <input 
-                  type="email" 
-                  name="email" 
-                  value="{{ old('email') }}"
-                  class="@error('email') error-input @enderror"
-                  >
+               <input type="email" name="email" value="{{ old('email') }}" class="@error('email') error-input @enderror">
                @error('email')
                <span class="error-text">{{ $message }}</span>
                @enderror

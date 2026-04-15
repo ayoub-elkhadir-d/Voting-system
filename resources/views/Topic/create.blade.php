@@ -9,22 +9,20 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
 
 body{
-    background:linear-gradient(135deg,#0f0f0f,#1f1f1f);
-    color:#fff;
+    background:#f5f7fa;
+    color:#1a1a2e;
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
 }
 
-/* WRAPPER */
-.wrapper{
-    width:1150px;
-}
+.wrapper{ width:1150px; }
 
-/* ALERT */
 .alert{
-    background:#00C853;
+    background:rgba(39,174,96,0.1);
+    border:1px solid #27ae60;
+    color:#27ae60;
     padding:12px;
     border-radius:8px;
     margin-bottom:15px;
@@ -32,47 +30,34 @@ body{
     font-weight:bold;
 }
 
-/* CONTAINER */
-.container{
-    display:flex;
-    gap:30px;
-}
+.container{ display:flex; gap:30px; }
 
-/* CARDS */
 .card{
-    background:#121212;
+    background:#fff;
     padding:25px;
     border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    border:1px solid #e0e0e0;
 }
 
 .left{width:65%;}
 .right{width:35%;}
 
-/* INPUT */
-.label{
-    color:#FCA311;
-    margin:12px 0 6px;
-    display:block;
-    font-size:14px;
-}
+.label{ color:#1a73e8; margin:12px 0 6px; display:block; font-size:14px; }
 
 .input{
     width:100%;
-    background:#1B1B1B;
-    border:none;
+    background:#f5f7fa;
+    border:2px solid #e0e0e0;
     padding:12px;
     border-radius:10px;
-    color:#fff;
+    color:#1a1a2e;
     outline:none;
     transition:0.2s;
 }
 
-.input:focus{
-    border:1px solid #FCA311;
-}
+.input:focus{ border-color:#1a73e8; background:#fff; }
 
-/* BUTTONS */
 button{
     border:none;
     padding:12px;
@@ -82,93 +67,43 @@ button{
     transition:0.2s;
 }
 
-.primary{
-    background:#FCA311;
-    width:100%;
-}
+.primary{ background:#1a73e8; color:#fff; width:100%; }
+.primary:hover{ background:#1558b0; }
 
-.primary:hover{background:#ffb733;}
+.success{ background:#27ae60; color:#fff; width:100%; margin-bottom:15px; }
+.success:hover{ background:#219a52; }
 
-.success{
-    background:#00C853;
-    width:100%;
-    margin-bottom:15px;
-}
+.add-btn{ background:#e0e0e0; color:#1a1a2e; padding:8px 12px; margin-top:10px; }
+.add-btn:hover{ background:#d0d0d0; }
 
-.success:hover{background:#00e676;}
+.remove-btn{ background:#e74c3c; color:#fff; padding:8px 10px; }
+.remove-btn:hover{ background:#c0392b; }
 
-.add-btn{
-    background:#333;
-    color:#fff;
-    padding:8px 12px;
-    margin-top:10px;
-}
+#choices-container{ max-height:200px; overflow-y:auto; margin-top:5px; }
 
-.add-btn:hover{background:#444;}
+.choice-item{ display:flex; gap:10px; margin-bottom:8px; }
 
-.remove-btn{
-    background:#d32f2f;
-    color:#fff;
-    padding:8px 10px;
-}
-
-.remove-btn:hover{background:#ff5252;}
-
-/* CHOICES */
-#choices-container{
-    max-height:200px;
-    overflow-y:auto;
-    margin-top:5px;
-}
-
-.choice-item{
-    display:flex;
-    gap:10px;
-    margin-bottom:8px;
-}
-
-/* TOPICS */
 .question{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:#1B1B1B;
+    background:#f5f7fa;
     padding:12px;
     border-radius:10px;
     margin-bottom:10px;
     transition:0.2s;
+    border:1px solid #e0e0e0;
 }
 
-.question:hover{
-    background:#252525;
-    transform:scale(1.02);
-}
+.question:hover{ background:#f0f4ff; transform:scale(1.02); border-color:#1a73e8; }
 
-.q-number{
-    background:#333;
-    padding:5px 10px;
-    border-radius:6px;
-}
+.q-number{ background:#e0e0e0; color:#1a1a2e; padding:5px 10px; border-radius:6px; }
 
-.time{
-    background:#FCA311;
-    color:#000;
-    padding:4px 8px;
-    border-radius:6px;
-}
+.time{ background:#1a73e8; color:#fff; padding:4px 8px; border-radius:6px; }
 
-/* TITLE */
-.title{
-    margin-bottom:10px;
-    color:#FCA311;
-}
+.title{ margin-bottom:10px; color:#1a73e8; }
 
-/* NAVBAR FIX */
-.navbar{
-    position:absolute;
-    top:0;
-    width:100%;
-}
+.navbar{ position:absolute; top:0; width:100%; }
 </style>
 
 </head>
@@ -187,7 +122,6 @@ button{
 
         <!-- LEFT -->
         <div class="card left">
-
             <h3 class="title">Create Topic</h3>
 
             <form method="POST" action="/rooms/{{$data->id}}/topic">
@@ -219,25 +153,22 @@ button{
 
                 <button class="primary">Save Topic</button>
             </form>
-
         </div>
 
         <!-- RIGHT -->
         <div class="card right">
-
-            <!-- START ROOM -->
             <form method="GET" action="/rooms/{{$data->id}}/start">
                 @csrf
                 @if($data->status !== 'started')
                     <button class="success">▶ Start Room</button>
                 @else
-                    <button disabled style="background:gray;width:100%;">Room Started</button>
+                    <button disabled style="background:#ccc;color:#888;width:100%;">Room Started</button>
                 @endif
             </form>
 
             <h3 class="title">Topics</h3>
 
-            @if(isset($topics)) 
+            @if(isset($topics))
                 @foreach($topics as $index => $q)
                 <a href="/update/topic/{{$q->id}}/room/{{$q->room_id}}" style="text-decoration:none;color:inherit;">
                     <div class="question">
@@ -250,7 +181,6 @@ button{
                 </a>
                 @endforeach
             @endif
-
         </div>
 
     </div>
@@ -272,50 +202,25 @@ function createChoice(value = "", placeholder="New Choice"){
     btn.type = "button";
     btn.className = "remove-btn";
     btn.innerText = "-";
-
-    btn.onclick = function(){
-        div.remove();
-    };
+    btn.onclick = function(){ div.remove(); };
 
     div.appendChild(input);
     div.appendChild(btn);
-
     document.getElementById("choices-container").appendChild(div);
 }
 
-function addChoice(){
-    createChoice();
-}
+function addChoice(){ createChoice(); }
 
 function changeMethod(method){
     let c = document.getElementById("choices-container");
     c.innerHTML = "";
-
-    if(method === "custom"){
-        createChoice("", "Choice 1");
-    }
-
-    if(method === "percentage"){
-        createChoice("0","0%");
-        createChoice("50","50%");
-        createChoice("100","100%");
-    }
-
-    if(method === "scale"){
-        for(let i=1;i<=10;i++){
-            createChoice(i);
-        }
-    }
-
-    if(method === "fibonacci"){
-        let fib=[1,2,3,5,8,13];
-        fib.forEach(v=> createChoice(v));
-    }
+    if(method === "custom"){ createChoice("", "Choice 1"); }
+    if(method === "percentage"){ createChoice("0","0%"); createChoice("50","50%"); createChoice("100","100%"); }
+    if(method === "scale"){ for(let i=1;i<=10;i++) createChoice(i); }
+    if(method === "fibonacci"){ [1,2,3,5,8,13].forEach(v=> createChoice(v)); }
 }
 
-window.onload = () => {
-    createChoice("", "Choice 1");
-};
+window.onload = () => { createChoice("", "Choice 1"); };
 </script>
 
 </body>

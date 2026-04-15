@@ -3,28 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiting Room | Laravel</title>
+    <title>Waiting Room | SystemVote</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/js/app.js'])
 <style>
-    :root {
-        --bg-light: #DDDDDD;
-        --bg-navy: #222831;
-        --card-dark: #30475E;
-        --accent-red: #F05454;
-        --text-white: #FFFFFF;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
 
     body {
-        background-color: var(--bg-navy);
-        color: var(--text-white);
+        background-color: #dfdfdf;
+        color: #1a1a2e;
         height: 100vh;
         display: flex;
         flex-direction: column;
@@ -42,100 +29,67 @@
 
     .participant-stats {
         position: absolute;
-        top: 50px;
-        right: 60px;
+        top: 50px; right: 60px;
         display: flex;
         align-items: center;
         gap: 10px;
         font-size: 2rem;
         font-weight: 700;
-        color: var(--bg-light);
+        color: #1a73e8;
     }
 
-    .participant-stats svg {
-        width: 35px;
-        height: 35px;
-        fill: var(--bg-light);
-    }
+    .participant-stats svg { width:35px; height:35px; fill:#1a73e8; }
 
     .room-display {
-        background-color: #1a1e23;
-        padding: 25px 80px;
-        border-radius: 12px;
-        margin-bottom: 60px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        background:#fff;
+        padding:25px 80px;
+        border-radius:12px;
+        margin-bottom:60px;
+        text-align:center;
+        box-shadow:0 4px 20px rgba(0,0,0,0.08);
+        border:1px solid #e0e0e0;
     }
 
-    .room-display h1 {
-        color: var(--text-white);
-        font-size: 1.5rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
+    .room-display h1 { color:#1a1a2e; font-size:1.5rem; font-weight:700; letter-spacing:1px; }
 
-    .loading-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 70px;
-    }
+    .loading-wrapper { display:flex; align-items:center; gap:20px; margin-bottom:70px; }
 
-    .waiting-text {
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: var(--bg-light);
-    }
+    .waiting-text { font-size:2.2rem; font-weight:800; color:#1a1a2e; }
 
-    .loading-spinner {
-        display: flex;
-        align-items: center;
-    }
-
-    .loading-spinner-inner {
-        display: flex;
-        gap: 6px;
-    }
+    .loading-spinner { display:flex; align-items:center; }
+    .loading-spinner-inner { display:flex; gap:6px; }
 
     .loading-spinner-circle {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: var(--accent-red);
-        animation: loading-spinner 1s ease-in-out infinite;
+        width:12px; height:12px;
+        border-radius:50%;
+        background-color:#1a73e8;
+        animation:loading-spinner 1s ease-in-out infinite;
     }
 
-    .loading-spinner-circle:nth-child(2) { animation-delay: 0.2s; }
-    .loading-spinner-circle:nth-child(3) { animation-delay: 0.4s; }
-    .loading-spinner-circle:nth-child(4) { animation-delay: 0.6s; }
-    .loading-spinner-circle:nth-child(5) { animation-delay: 0.8s; }
+    .loading-spinner-circle:nth-child(2){ animation-delay:0.2s; }
+    .loading-spinner-circle:nth-child(3){ animation-delay:0.4s; }
+    .loading-spinner-circle:nth-child(4){ animation-delay:0.6s; }
+    .loading-spinner-circle:nth-child(5){ animation-delay:0.8s; }
 
     @keyframes loading-spinner {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.5); opacity: 0.4; }
+        0%,100%{ transform:scale(1); opacity:1; }
+        50%{ transform:scale(1.5); opacity:0.4; }
     }
 
     .btn-leave {
-        background-color: var(--accent-red);
-        color: var(--text-white);
-        border: none;
-        padding: 15px 45px;
-        border-radius: 8px;
-        font-size: 1.4rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        background-color:#e74c3c;
+        color:#fff;
+        border:none;
+        padding:15px 45px;
+        border-radius:8px;
+        font-size:1.4rem;
+        font-weight:700;
+        cursor:pointer;
+        transition:all 0.2s ease;
     }
 
-    .btn-leave:hover {
-        transform: translateY(-3px);
-        filter: brightness(1.1);
-        box-shadow: 0 8px 20px rgba(240, 84, 84, 0.3);
-    }
-
-    .btn-leave:active {
-        transform: translateY(1px);
-    }
+    .btn-leave:hover { transform:translateY(-3px); filter:brightness(1.1); box-shadow:0 8px 20px rgba(231,76,60,0.25); }
+    .btn-leave:active { transform:translateY(1px); }
 </style>
 </head>
 <body>
@@ -150,13 +104,13 @@
             <span id="total">0</span>
         </div>
 
-       <div class="room-display">
-    @if(session('user_name'))
-        <h1>{{ session('user_name') }}</h1>
-    @else
-        <h1>Welcome, Guest</h1>
-    @endif
-    </div>
+        <div class="room-display">
+            @if(session('user_name'))
+                <h1>{{ session('user_name') }}</h1>
+            @else
+                <h1>Welcome, Guest</h1>
+            @endif
+        </div>
 
         <div class="loading-wrapper">
             <h2 class="waiting-text">Waiting For Participants</h2>
@@ -184,16 +138,14 @@
         let totalElement = document.getElementById('total');
         let users_total = 0;
 
-        if (roomId ) {
+        if (roomId) {
            Echo.channel('room.' + roomId)
                 .listen('.user.joined', (e) => {
-                    //console.log('User Joined:', e.username);
                     users_total++;
                     totalElement.innerText = users_total;
            });
         } else {
             console.log('Echo not ready or Room ID missing');
-
         }
     });
 </script>
