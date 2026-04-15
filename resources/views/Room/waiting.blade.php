@@ -136,21 +136,29 @@
 
 </body>
 <script>
-    window.addEventListener('load', () => {
-        let roomId = "{{ $room_id }}";
 
-        let totalElement = document.getElementById('total');
-        let users_total = 0;
+window.addEventListener('DOMContentLoaded', () => {
+    let roomId = "{{ $room_id }}";
 
-        if (roomId) {
-           Echo.channel('room.' + roomId)
-                .listen('.user.joined', (e) => {
-                    users_total++;
-                    totalElement.innerText = users_total;
-           });
-        } else {
-            console.log('Echo not ready or Room ID missing');
-        }
-    });
+    let totalElement = document.getElementById('total');
+
+    let users_total = {{ $total_users }};
+
+    totalElement.innerText = users_total;
+
+    if (roomId && typeof Echo !== 'undefined') {
+       Echo.channel('room.' + roomId)
+            .listen('.user.joined', (e) => {
+                console.log(e);
+
+                users_total = e.count;
+                totalElement.innerText = users_total;
+            });
+    } else {
+        console.log('Echo not ready or roomId missing');
+    }
+});
+
+
 </script>
 </html>

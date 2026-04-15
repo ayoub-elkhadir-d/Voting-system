@@ -113,7 +113,7 @@ if($room){
 
     if($isMember){
       $participantsCount = membership::where('room_id', $room->id)->count();
-
+        // broadcast(new UserJoined($request->user_name, $request->room_id))->toOthers();
      return view("/Room.waiting",['user_name'=>$isMember->username,'room_id'=>$room->id,'total_users'=>$participantsCount]);
  
     }
@@ -154,14 +154,17 @@ public function join_confirm(Request $request) {
             "status"     => "active",
             "created_at" => now(),
         ]);
-
-       broadcast(new UserJoined($request->user_name, $request->room_id))->toOthers();
-
+$participantsCount = membership::where('room_id', $request->room_id)->count();
+broadcast(new UserJoined($request->user_name, $request->room_id,$participantsCount));
     }
 
-      $participantsCount = membership::where('room_id', $request->room_id)->count();
-    // return redirect("/rooms/waiting-participants")->with("users_total",$participantsCount);
-      return $participantsCount;
+
+     return view("Room.waiting", [
+    'room_id' => $request->room_id,
+    'total_users' => $participantsCount,
+    'user_name' => $request->user_name
+]);
+
 }
 
 public function left_room($room_id){

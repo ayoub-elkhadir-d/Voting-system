@@ -16,11 +16,13 @@ class UserJoined implements ShouldBroadcast
 
     public $username;
     public $roomId;
+    public $count;
 
-    public function __construct($username, $roomId)
+    public function __construct($username, $roomId, $count)
     {
         $this->username = $username;
         $this->roomId = $roomId;
+        $this->count = $count;
     }
 
     public function broadcastOn()
