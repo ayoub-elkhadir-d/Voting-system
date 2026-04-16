@@ -25,7 +25,7 @@ This project demonstrates core concepts of full-stack development including auth
   6) users join
   7) click start vote to start voting 
 
-## 🏗️ Tech Stack
+##  Tech Stack
 
 This project is built using the following technologies:
 
@@ -52,15 +52,6 @@ This project is built using the following technologies:
 
 ---
 
-## ⚙️ How It Works
-
-1. User registers or logs in
-2. System displays list of candidates
-3. User selects a candidate and submits a vote
-4. Vote is stored in the database
-5. Results are updated and displayed in real-time or on refresh
-
----
 
 
 ##  Author
