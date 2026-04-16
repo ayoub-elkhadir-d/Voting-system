@@ -137,7 +137,7 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
       <div class="right">
         <div class="qr">
           @php
-            $fullUrl = url("/join/{$rawCode}");
+            $fullUrl = url("/rooms/join/{$rawCode}");
             $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($fullUrl);
           @endphp
           <img src="{{ $qrUrl }}" alt="QR Code">
