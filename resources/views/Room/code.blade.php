@@ -150,9 +150,10 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
       </div>
     </div>
 
-    <form action="/rooms/{{$room_id}}/join" method="GET">
-      <button type="submit" class="start-btn">Start Voting</button>
-    </form>
+  <form action="/rooms/{{ $room_id }}/start" method="POST">
+    @csrf
+    <button type="submit" class="start-btn">▶ Start Voting</button>
+</form>
   </div>
 </div>
 

@@ -5,10 +5,12 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Http\Request;
-
+use App\Events\roomstart;
 use App\Models\Room;
 use App\Models\Topic;
 use App\Models\choix;
+use App\Http\Controllers\VoteController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -31,20 +33,26 @@ Route::post('/resetpassword', [AuthController::class, 'login_link']);
 
 Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 
-Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
 Route::get('/rooms/join', [RoomController::class, 'get_join']);
 Route::post('/rooms/join', [RoomController::class, 'check_room']);
 Route::post('/rooms/confirm-join', [RoomController::class, 'join_confirm']);
-Route::get('/rooms/waiting-participants',function (){
+Route::get('/rooms/waiting-participants', function () {
     return view("/Room.waiting");
 });
+Route::post('/rooms/vote/submit', [VoteController::class, 'submit']);
 
-Route::get('/rooms/{room_id}/enter_username',function (Room $room_id){
-    return view("/Room.enter_username",["room_id"=>$room_id->id]);
+Route::get('/rooms/{room}/vote', [VoteController::class, 'show']);
+Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
+
+Route::post('/rooms/{room}/start',function(Room $room){
+        broadcast(new roomstart($room->id));
+
+});
+
+Route::get('/rooms/{room_id}/enter_username', function (Room $room_id) {
+    return view("/Room.enter_username", ["room_id" => $room_id->id]);
 });
 Route::post('/rooms/{room_id}/left', [RoomController::class, 'left_room']);
-
-
 
 Route::post('/rooms/{room}/topic', [TopicController::class, 'store']);
 

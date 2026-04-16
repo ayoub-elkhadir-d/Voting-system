@@ -168,13 +168,9 @@ broadcast(new UserJoined($request->user_name, $request->room_id,$participantsCou
 }
 
 public function left_room($room_id){
-    // $total = DB::table('memberships')
-    // ->where('room_id', $room_id)
-    // ->count();
+   
     Membership::where('user_id',Auth::id())->delete();
    return redirect("/rooms/join");
-
-
 }
 
 }

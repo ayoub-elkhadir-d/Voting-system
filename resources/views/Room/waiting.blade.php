@@ -108,11 +108,9 @@
         </div>
 
         <div class="room-display">
-            @if(session('user_name'))
+           
                 <h1>{{ $user_name }}</h1>
-            @else
-                <h1>Welcome, Guest</h1>
-            @endif
+        
         </div>
 
         <div class="loading-wrapper">
@@ -149,10 +147,12 @@ window.addEventListener('DOMContentLoaded', () => {
     if (roomId && typeof Echo !== 'undefined') {
        Echo.channel('room.' + roomId)
             .listen('.user.joined', (e) => {
-                console.log(e);
-
                 users_total = e.count;
                 totalElement.innerText = users_total;
+            })
+
+            .listen('.started.room', () => {
+             window.location.href = `/rooms/${roomId}/vote`;
             });
     } else {
         console.log('Echo not ready or roomId missing');

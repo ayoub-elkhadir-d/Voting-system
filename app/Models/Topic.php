@@ -24,7 +24,7 @@ protected $fillable = ['name','duration','room_id','user_id','vote_methode'];
     }
 
 public function choix(){
-    return $this->hasmany(choix::class);
+    return $this->hasMany(choix::class);
 }
 
 }
