@@ -31,10 +31,15 @@ Route::post('/rooms/confirm-join', [RoomController::class, 'join_confirm']);
 
 Route::post('/rooms/vote/submit', [VoteController::class, 'submit']);
 Route::get('/rooms/{room}/vote', [VoteController::class, 'show']);
+Route::get('/rooms/{room}/admin', [VoteController::class, 'adminShow']);
+Route::post('/rooms/{room}/topic/{topic}/stop', [VoteController::class, 'stopTopic']);
+Route::post('/rooms/{room}/topic/{topic}/start', [VoteController::class, 'startTopic']);
+Route::get('/rooms/{room}/topic/{topic}/votes', [VoteController::class, 'topicVotes']);
 
 Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
 Route::post('/rooms/{room}/start', function (Room $room) {
     broadcast(new roomstart($room->id));
+    return redirect("/rooms/{$room->id}/admin");
 });
 
 Route::post('/rooms/{room_id}/left', [RoomController::class, 'left_room']);

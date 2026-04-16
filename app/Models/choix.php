@@ -12,6 +12,10 @@ class choix extends Model
     public function topic()
     {
         return $this->belongsTo(Topic::class);
+    }
 
+    public function votes()
+    {
+        return $this->hasMany(\App\Models\Vote::class);
     }
 }

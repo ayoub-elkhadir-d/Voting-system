@@ -4,18 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vote — {{ $room->name }}</title>
-
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
+@vite(['resources/js/app.js'])
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
 
-body{
+body {
     background:#022C43;
     color:#fff;
     min-height:100vh;
@@ -26,73 +20,68 @@ body{
     padding:30px 20px;
 }
 
-/* progress bar */
-.progress-wrap{
-    width:100%;
-    max-width:680px;
-    margin-bottom:15px;
+/* waiting screen */
+.waiting-screen {
+    text-align:center;
 }
 
-.progress-bar-bg{
-    width:100%;
-    height:6px;
-    background:rgba(255,255,255,0.2);
-    border-radius:10px;
-    overflow:hidden;
+.waiting-screen h2 {
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#FFD700;
 }
 
-.progress-bar-fill{
-    height:100%;
+.dots { display:flex; gap:8px; justify-content:center; }
+
+.dot {
+    width:12px; height:12px;
+    border-radius:50%;
     background:#FFD700;
-    transition:width 1s linear;
+    animation:bounce 1s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay:0.2s; }
+.dot:nth-child(3) { animation-delay:0.4s; }
+
+@keyframes bounce {
+    0%,100% { transform:scale(1); opacity:1; }
+    50%      { transform:scale(1.5); opacity:0.4; }
 }
 
-/* card */
-.vote-card{
+/* vote card */
+.vote-card {
     background:#053F5E;
     border-radius:20px;
     padding:40px;
     width:100%;
     max-width:680px;
     box-shadow:0 16px 48px rgba(0,0,0,0.5);
+    display:none;
 }
 
-/* header */
-.card-header{
+.card-header {
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin-bottom:20px;
 }
 
-.timer{
-    background:#022C43;
-    padding:6px 14px;
-    border-radius:20px;
-    font-weight:bold;
-    color:#FFD700;
-}
+.topic-label { font-size:14px; color:#aaa; }
 
-.timer.urgent{
-    color:red;
-}
-
-.topic-name{
+.topic-name {
     font-size:24px;
     font-weight:bold;
     margin-bottom:25px;
     text-align:center;
 }
 
-/* ✅ GRID LIKE IMAGE */
-.choices{
+.choices {
     display:grid;
     grid-template-columns:repeat(3, 1fr);
     gap:20px;
 }
 
-/* buttons */
-.choice-btn{
+.choice-btn {
     background:#6b4a4a;
     border:none;
     padding:25px 0;
@@ -104,16 +93,10 @@ body{
     transition:0.2s;
 }
 
-.choice-btn:hover{
-    transform:scale(1.05);
-}
+.choice-btn:hover { transform:scale(1.05); }
+.choice-btn.selected { background:#ff2d2d; }
 
-.choice-btn.selected{
-    background:#ff2d2d;
-}
-
-/* submit */
-#submitBtn{
+#submitBtn {
     margin-top:30px;
     width:200px;
     padding:14px;
@@ -128,172 +111,130 @@ body{
     margin-right:auto;
 }
 
-/* voted */
-.voted-badge{
+.voted-badge {
     margin-top:15px;
     color:#FFD700;
     display:none;
     text-align:center;
 }
-
-/* finish */
-.finished-screen{
-    text-align:center;
-}
 </style>
 </head>
-
 <body>
 
 @include('components.navbar')
 
 @php
-$topicsJson = $topics->map(fn($t) => [
-    'id' => $t->id,
-    'name' => $t->name,
-    'duration_seconds' => $t->duration_seconds,
-    'choices' => $t->choix->map(fn($c) => [
-        'id'=>$c->id,
-        'name'=>$c->name
-    ])
-])->toJson();
+    // $activeTopic is passed directly from the controller
 @endphp
 
-<div class="progress-wrap">
-    <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progressBar"></div>
+{{-- Waiting screen --}}
+<div class="waiting-screen" id="waitingScreen" style="{{ $activeTopic ? 'display:none' : '' }}">
+    <h2>⏳ Waiting for the next topic…</h2>
+    <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
     </div>
 </div>
 
-<div class="vote-card" id="voteCard">
-
+{{-- Vote card --}}
+<div class="vote-card" id="voteCard" style="{{ $activeTopic ? 'display:block' : 'display:none' }}">
     <div class="card-header">
-        <span id="topicCounter"></span>
-        <div class="timer" id="timer"></div>
+        <span class="topic-label" id="topicLabel"></span>
     </div>
-
     <div class="topic-name" id="topicName"></div>
-
     <div class="choices" id="choicesContainer"></div>
-
     <button id="submitBtn">Submit</button>
-
-    <div class="voted-badge" id="votedBadge">
-        ✔ Vote submitted
-    </div>
-
-</div>
-
-<div class="vote-card finished-screen" id="finishedScreen" style="display:none;">
-    <h2>🎉 Voting Complete!</h2>
+    <div class="voted-badge" id="votedBadge">✔ Vote submitted</div>
 </div>
 
 <script>
-const topics = @json(json_decode($topicsJson));
 const roomId = {{ $room->id }};
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+const colors = ['#6b4a4a','#8b4a4a','#a94444','#c94c4c','#e74c3c','#ff1a1a'];
 
-let index = 0;
-let time = 0;
-let timer = null;
 let selected = null;
 let alreadyVoted = false;
+let currentTopicId = null;
 
-// elements
-const timerEl = document.getElementById('timer');
+const waitingScreen = document.getElementById('waitingScreen');
+const voteCard = document.getElementById('voteCard');
+
 const topicNameEl = document.getElementById('topicName');
-const choicesEl = document.getElementById('choicesContainer');
-const counterEl = document.getElementById('topicCounter');
-const progressBar = document.getElementById('progressBar');
+const topicLabelEl = document.getElementById('topicLabel');
+
+const choicesContainer = document.getElementById('choicesContainer');
+
 const submitBtn = document.getElementById('submitBtn');
 const votedBadge = document.getElementById('votedBadge');
 
-const colors = ['#6b4a4a','#8b4a4a','#a94444','#c94c4c','#e74c3c','#ff1a1a'];
 
-// load topic
-function showTopic(i){
-    if(i >= topics.length){
-        document.getElementById('voteCard').style.display='none';
-        document.getElementById('finishedScreen').style.display='block';
-        return;
-    }
-
-    let topic = topics[i];
-
-    // reset
-    time = topic.duration_seconds;
+function showTopic(topic) {
+    currentTopicId = topic.id;
     selected = null;
     alreadyVoted = false;
-    submitBtn.style.display = 'none';
-    votedBadge.style.display = 'none';
-    choicesEl.innerHTML = '';
 
-    counterEl.innerText = `Topic ${i+1}/${topics.length}`;
+    topicLabelEl.innerText = topic.name;
     topicNameEl.innerText = topic.name;
 
-    // choices
-    topic.choices.forEach((choice, cIndex) => {
-        let btn = document.createElement('button');
-        btn.className = 'choice-btn';
-        btn.innerText = choice.name;
-        btn.style.background = colors[cIndex] || '#022C43';
+    submitBtn.style.display = 'none';
+    votedBadge.style.display = 'none';
 
-        btn.onclick = () => selectChoice(btn, topic.id, choice.id);
+    choicesContainer.innerHTML = '';
 
-        choicesEl.appendChild(btn);
+    topic.choices.forEach(function(choice, index) {
+        const button = document.createElement('button');
+
+        button.className = 'choice-btn';
+        button.innerText = choice.name;
+        button.style.background = colors[index] || '#022C43';
+
+        button.onclick = function () {
+            selectChoice(button, topic.id, choice.id);
+        };
+
+        choicesContainer.appendChild(button);
     });
 
-    startTimer(topic.duration_seconds);
+    waitingScreen.style.display = 'none';
+    voteCard.style.display = 'block';
 }
 
-// select choice
-function selectChoice(btn, topicId, choixId){
-    if(alreadyVoted) return;
 
-    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+function showWaiting() {
+    voteCard.style.display = 'none';
+    waitingScreen.style.display = 'block';
+}
 
-    btn.classList.add('selected');
+
+function selectChoice(button, topicId, choiceId) {
+    if (alreadyVoted) return;
+
+    document.querySelectorAll('.choice-btn').forEach(function(btn) {
+        btn.classList.remove('selected');
+    });
+
+    button.classList.add('selected');
 
     selected = {
         topicId: topicId,
-        choixId: choixId
+        choixId: choiceId
     };
 
     submitBtn.style.display = 'block';
 }
 
-function startTimer(duration){
-    clearInterval(timer);
 
-    timer = setInterval(() => {
-        time--;
-
-        timerEl.innerText = time + 's';
-        progressBar.style.width = (time / duration) * 100 + '%';
-
-        if(time <= 5){
-            timerEl.classList.add('urgent');
-        }
-
-        if(time <= 0){
-            clearInterval(timer);
-            index++;
-            showTopic(index);
-        }
-
-    }, 1000);
-}
-
-submitBtn.onclick = function(){
-    if(!selected || alreadyVoted) return;
+submitBtn.onclick = function () {
+    if (!selected || alreadyVoted) return;
 
     alreadyVoted = true;
 
     submitBtn.style.display = 'none';
     votedBadge.style.display = 'block';
 
-    document.querySelectorAll('.choice-btn').forEach(b=>{
-        b.style.pointerEvents='none';
+    document.querySelectorAll('.choice-btn').forEach(function(btn) {
+        btn.style.pointerEvents = 'none';
     });
 
     fetch('/rooms/vote/submit', {
@@ -310,9 +251,35 @@ submitBtn.onclick = function(){
     });
 };
 
-// start
-showTopic(0);
-</script>
 
+@if($activeTopic)
+showTopic({
+    id: {{ $activeTopic->id }},
+    name: @json($activeTopic->name),
+    choices: @json($activeTopic->choix->map(function($c){
+        return ['id' => $c->id, 'name' => $c->name];
+    }))
+});
+@endif
+
+
+function registerEchoListeners() {
+    if (typeof Echo === 'undefined') {
+        setTimeout(registerEchoListeners, 100);
+        return;
+    }
+
+    Echo.channel('room.' + roomId)
+        .listen('.topic.started', function(event) {
+            showTopic(event.topic);
+        })
+        .listen('.topic.ended', function() {
+            showWaiting();
+        });
+}
+
+registerEchoListeners();
+
+</script>
 </body>
 </html>

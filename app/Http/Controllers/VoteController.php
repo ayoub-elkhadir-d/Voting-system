@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use App\Models\Topic;
 use App\Models\choix;
+use App\Events\TopicEnded;
+use App\Events\TopicStarted;
+use App\Events\VoteUpdated;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,19 +16,13 @@ use Illuminate\Support\Facades\DB;
 class VoteController extends Controller
 {
     public function show(Room $room)
-    {
-        $topics = Topic::where('room_id', $room->id)
-            ->with('choix')
-            ->get()
-            ->map(function ($topic) {
-                $parts = explode(':', $topic->duration);
-                $topic->duration_seconds = (int)$parts[0] * 3600 + (int)$parts[1] * 60 + (int)$parts[2];
-                return $topic;
-            });
-      
+{
+    $topics = Topic::where('room_id', $room->id)->with('choix')->get();
 
-        return view('Room.vote', compact('room', 'topics'));
-    }
+    $activeTopic = $topics->firstWhere('status', 'active');
+
+    return view('Room.vote', compact('room', 'topics', 'activeTopic'));
+}
 
     public function submit(Request $request)
     {
@@ -50,13 +47,72 @@ class VoteController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            $choices = choix::where('topic_id', $request->topic_id)
+                ->withCount(['votes as vote_count' => fn($q) => $q->where('room_id', $request->room_id)])
+                ->get(['id', 'name']);
+
+            broadcast(new VoteUpdated(
+                $request->room_id,
+                $request->topic_id,
+                $choices->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'votes' => $c->vote_count])
+            ));
         }
 
         return response()->json(['status' => 'ok']);
     }
-public function start(Room $room)
+public function adminShow(Room $room)
 {
+    $topics = Topic::where('room_id', $room->id)
+        ->with(['choix' => function ($q) use ($room) {
+            $q->withCount(['votes as vote_count' => function ($q) use ($room) {
+                $q->where('room_id', $room->id);
+            }]);
+        }])
+        ->whereIn('status', ['active', 'completed'])
+        ->orderBy('updated_at')
+        ->get();
 
-    return redirect()->back(); 
+    return view('Room.admin', compact('room', 'topics'));
+}
+
+public function stopTopic(Room $room, Topic $topic)
+{
+    $topic->status = 'completed';
+    $topic->save();
+
+    broadcast(new TopicEnded($room->id, $topic->id));
+
+    return back();
+}
+
+public function startTopic(Room $room, Topic $topic)
+{
+    Topic::where('room_id', $room->id)->where('status', 'active')->update(['status' => 'completed']);
+
+    $topic->status = 'active';
+    $topic->save();
+    $topic->load('choix');
+
+    broadcast(new TopicStarted($room->id, [
+        'id'      => $topic->id,
+        'name'    => $topic->name,
+        'choices' => $topic->choix->map(fn($c) => ['id' => $c->id, 'name' => $c->name]),
+    ]));
+
+    return back();
+}
+
+public function topicVotes(Room $room, Topic $topic)
+{
+    $choices = $topic->choix()->withCount(['votes as vote_count' => function ($q) use ($room) {
+        $q->where('room_id', $room->id);
+    }])->get(['id', 'name']);
+
+    return response()->json($choices->map(fn($c) => [
+        'id'    => $c->id,
+        'name'  => $c->name,
+        'votes' => $c->vote_count,
+    ]));
 }
 }
