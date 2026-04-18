@@ -10,15 +10,13 @@
 
 body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-direction:column; }
 
-/* ── layout ── */
 .layout {
     display:flex;
     flex:1;
     gap:0;
-    height:calc(100vh - 56px); /* subtract navbar height */
+    height:calc(100vh - 56px);
 }
 
-/* ── sidebar ── */
 .sidebar {
     width:280px;
     flex-shrink:0;
@@ -117,7 +115,6 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 .badge-live      { background:#e3f2fd; color:#1565c0; }
 .badge-pending   { background:#f5f5f5; color:#999; }
 
-/* start button inside sidebar */
 .sidebar-start-btn {
     margin-left:auto;
     background:#1a73e8;
@@ -133,7 +130,6 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 }
 .sidebar-start-btn:hover { background:#1558b0; }
 
-/* ── main content ── */
 .main {
     flex:1;
     overflow-y:auto;
@@ -149,7 +145,6 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 
 .main-title span { color:#1a73e8; }
 
-/* ── section label ── */
 .section-label {
     font-size:12px;
     font-weight:700;
@@ -159,103 +154,270 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
     margin:28px 0 12px;
 }
 
-/* ── topic card ── */
 .topic-card {
     background:#fff;
-    border-radius:16px;
-    padding:24px 28px;
-    margin-bottom:16px;
-    box-shadow:0 4px 16px rgba(0,0,0,0.06);
-    border:1px solid #e0e0e0;
+    border-radius:24px;
+    padding:32px 36px;
+    margin-bottom:20px;
+    box-shadow:0 8px 28px rgba(0,0,0,0.08);
+    border:1px solid #e6eaf0;
 }
 
 .topic-card.active-card {
     border:2px solid #1a73e8;
-    box-shadow:0 6px 24px rgba(26,115,232,0.14);
+    box-shadow:0 12px 32px rgba(26,115,232,0.16);
+    background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%);
 }
 
 .topic-header {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+    gap:12px;
 }
 
-.topic-name { font-size:18px; font-weight:700; }
+.topic-name { 
+    font-size:28px; 
+    font-weight:800; 
+    background: linear-gradient(135deg, #1a2a4f, #1a73e8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing:-0.3px;
+}
 
 .badge-completed {
     background:#e8f5e9;
     color:#2e7d32;
-    padding:4px 12px;
-    border-radius:20px;
-    font-size:12px;
+    padding:6px 16px;
+    border-radius:40px;
+    font-size:13px;
     font-weight:700;
 }
 
 .badge-active {
     background:#e3f2fd;
     color:#1565c0;
-    padding:4px 12px;
-    border-radius:20px;
-    font-size:12px;
+    padding:6px 18px;
+    border-radius:40px;
+    font-size:13px;
     font-weight:700;
     animation:pulse 1.5s infinite;
 }
 
-/* ── choice rows ── */
 .choice-row {
     display:flex;
     align-items:center;
-    gap:12px;
-    margin-bottom:10px;
+    gap:16px;
+    margin-bottom:14px;
 }
 
-.choice-label { width:140px; font-size:14px; font-weight:600; flex-shrink:0; }
+.choice-label { 
+    width:160px; 
+    font-size:15px; 
+    font-weight:700; 
+    flex-shrink:0;
+    color:#2c3e66;
+}
 
 .bar-wrap {
     flex:1;
-    background:#f0f0f0;
-    border-radius:8px;
-    height:22px;
+    background:#f0f4fc;
+    border-radius:12px;
+    height:28px;
     overflow:hidden;
 }
 
 .bar-fill {
     height:100%;
-    background:#1a73e8;
-    border-radius:8px;
-    transition:width 0.6s ease;
-    min-width:2px;
+    background:linear-gradient(90deg, #1a73e8, #4a9eff);
+    border-radius:12px;
+    transition:width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    min-width:4px;
+    box-shadow:0 1px 2px rgba(0,0,0,0.05);
 }
 
 .vote-count {
-    width:70px;
+    width:80px;
     text-align:right;
-    font-size:14px;
-    font-weight:700;
-    color:#555;
+    font-size:16px;
+    font-weight:800;
+    color:#1e293b;
+    font-feature-settings: "tnum";
 }
 
-/* ── stop button ── */
 .stop-btn {
-    margin-top:22px;
+    margin-top:32px;
     background:#e74c3c;
     color:#fff;
     border:none;
-    padding:11px 32px;
-    border-radius:10px;
-    font-weight:700;
+    padding:12px 36px;
+    border-radius:60px;
+    font-weight:800;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.2s;
+    letter-spacing:0.5px;
+}
+.stop-btn:hover { background:#c0392b; transform:translateY(-2px); box-shadow:0 6px 14px rgba(231,76,60,0.3); }
+
+.next-btn {
+    margin-top:22px;
+    margin-left:12px;
+    background:#1a73e8;
+    color:#fff;
+    border:none;
+    padding:12px 36px;
+    border-radius:60px;
+    font-weight:800;
     font-size:15px;
     cursor:pointer;
     transition:0.2s;
 }
-.stop-btn:hover { background:#c0392b; transform:translateY(-1px); }
+.next-btn:hover { background:#1558b0; transform:translateY(-2px); }
 
 .empty-state {
     text-align:center;
     color:#bbb;
     padding:60px 0;
     font-size:15px;
+}
+
+.topic-center-card {
+    background: #ffffff;
+    border-radius: 32px;
+    padding: 28px 36px;
+    margin-bottom: 28px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    position: relative;
+}
+
+.topic-name-large {
+    font-size: 36px;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(115deg, #0f2b4d, #1a73e8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+    margin: 12px 0 8px;
+    word-break: break-word;
+    line-height: 1.2;
+}
+
+.live-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef3fc;
+    border-radius: 100px;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a73e8;
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background: #FF0000;
+    border-radius: 50%;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1);}
+    50% { opacity: 0.6; transform: scale(1.2);}
+}
+
+.choice-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6c86a3;
+    letter-spacing: 1px;
+    margin: 28px 0 16px 0;
+    text-transform: uppercase;
+    border-left: 4px solid #1a73e8;
+    padding-left: 14px;
+}
+
+.choices-container {
+    margin-top: 6px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-start;
+    margin-top: 32px;
+}
+
+/* new compact timer - right aligned, smaller, prominent color */
+.compact-timer-wrapper {
+    position: absolute;
+    top: 28px;
+    right: 36px;
+    z-index: 5;
+}
+
+.compact-timer-card {
+    background: linear-gradient(145deg, #fff0e6, #ffe6d5);
+    border-radius: 60px;
+    padding: 8px 20px;
+    box-shadow: 0 6px 14px rgba(255, 87, 34, 0.25);
+    border: 1px solid rgba(255, 87, 34, 0.4);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    backdrop-filter: blur(2px);
+    transition: all 0.2s;
+}
+
+.timer-label-compact {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #e65100;
+    text-transform: uppercase;
+    background: rgba(255,255,200,0.5);
+    padding: 2px 8px;
+    border-radius: 30px;
+}
+
+.timer-digits-compact {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 22px;
+    font-weight: 800;
+    color: #d84315;
+    letter-spacing: 1px;
+    background: rgba(255,255,245,0.9);
+    padding: 2px 12px;
+    border-radius: 40px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.warning-timer {
+    background: linear-gradient(145deg, #ffded5, #ffc8b8);
+    border-color: #ff5722;
+    box-shadow: 0 6px 14px rgba(255, 87, 34, 0.45);
+}
+.warning-timer .timer-digits-compact {
+    color: #bf360c;
+    text-shadow: 0 0 4px rgba(255,60,0,0.3);
+}
+
+@media (max-width: 680px) {
+    .main { padding: 20px; }
+    .topic-name-large { font-size: 26px; }
+    .compact-timer-wrapper { position: relative; top: 0; right: 0; display: flex; justify-content: flex-end; margin-bottom: 16px; }
+    .topic-center-card { padding-top: 20px; }
+    .choice-label { width: 120px; font-size: 13px; }
+    .compact-timer-card { padding: 5px 14px; }
+    .timer-digits-compact { font-size: 18px; }
 }
 </style>
 </head>
@@ -272,7 +434,6 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 
 <div class="layout">
 
-    {{-- ── Sidebar ── --}}
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-title">Room</div>
@@ -299,7 +460,7 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
                         @if(!$active)
                             <form action="/rooms/{{ $room->id }}/topic/{{ $pt->id }}/start" method="POST">
                                 @csrf
-                                <button type="submit" class="sidebar-start-btn">▶ Start</button>
+                                <button type="submit" class="sidebar-start-btn">Start</button>
                             </form>
                         @else
                             <span class="sidebar-item-badge badge-pending">Pending</span>
@@ -311,53 +472,74 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
         </div>
     </aside>
 
-    {{-- ── Main ── --}}
     <main class="main">
         <div class="main-title">Admin — <span>{{ $room->name }}</span></div>
 
-        {{-- Active topic --}}
         <div class="section-label">Currently Voting</div>
 
         @if($active)
             @php $totalVotes = $active->choix->sum('vote_count'); @endphp
-            <div class="topic-card active-card" id="activeCard">
-                <div class="topic-header">
-                    <div class="topic-name">{{ $active->name }}</div>
-                    <span class="badge-active">● Live</span>
+            
+            <div class="topic-center-card" id="activeCard" style="position: relative;">
+                
+                <div class="compact-timer-wrapper">
+                    <div class="compact-timer-card" id="compactTimerCard">
+                        
+                        <span id="compactTimerDigits" class="timer-digits-compact">00:00</span>
+                    </div>
                 </div>
 
-                @foreach($active->choix as $choice)
-                    @php $pct = $totalVotes > 0 ? round($choice->vote_count / $totalVotes * 100) : 0; @endphp
-                    <div class="choice-row" data-choice-id="{{ $choice->id }}">
-                        <div class="choice-label">{{ $choice->name }}</div>
-                        <div class="bar-wrap">
-                            <div class="bar-fill" style="width:{{ $pct }}%"></div>
-                        </div>
-                        <div class="vote-count">
-                            <span class="count-val">{{ $choice->vote_count }}</span>
-                        </div>
-                    </div>
-                @endforeach
+              
+                
+                <div class="topic-name-large">{{ $active->name }}</div>
 
-                <form action="/rooms/{{ $room->id }}/topic/{{ $active->id }}/stop" method="POST">
-                    @csrf
-                    <button type="submit" class="stop-btn">⏹ Stop Voting</button>
-                </form>
+                <div class="choice-section-title"> Vote results</div>
+                <div class="choices-container">
+                    @foreach($active->choix as $choice)
+                        @php $pct = $totalVotes > 0 ? round($choice->vote_count / $totalVotes * 100) : 0; @endphp
+                        <div class="choice-row" data-choice-id="{{ $choice->id }}">
+                            <div class="choice-label">{{ $choice->name }}</div>
+                            <div class="bar-wrap">
+                                <div class="bar-fill" style="width:{{ $pct }}%"></div>
+                            </div>
+                            <div class="vote-count">
+                                <span class="count-val">{{ $choice->vote_count }}</span>
+                                <span style="font-size:12px; color:#7c8ea0;"> ({{ $pct }}%)</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="action-buttons">
+                    <form action="/rooms/{{ $room->id }}/topic/{{ $active->id }}/stop" method="POST">
+                        @csrf
+                        <button type="submit" class="stop-btn"> Stop Voting</button>
+                    </form>
+                </div>
             </div>
         @else
-            <div class="empty-state">No topic is currently being voted on.<br>Start one from the sidebar.</div>
+            <div class="empty-state">
+                No topic is currently being voted on.
+                @if($pending->isNotEmpty())
+                    <form action="/rooms/{{ $room->id }}/topic/{{ $pending->first()->id }}/start" method="POST" style="margin-top:20px">
+                        @csrf
+                        <button type="submit" class="next-btn">  Start Next Topic</button>
+                    </form>
+                @else
+                    <br>Start one from the sidebar.
+                @endif
+            </div>
         @endif
 
-        {{-- Completed topics --}}
         @if($completed->isNotEmpty())
-            <div class="section-label">Completed Topics</div>
+            <div class="section-label"> Completed Topics</div>
 
             @foreach($completed as $topic)
                 @php $totalVotes = $topic->choix->sum('vote_count'); @endphp
                 <div class="topic-card">
                     <div class="topic-header">
-                        <div class="topic-name">{{ $topic->name }}</div>
-                        <span class="badge-completed">✔ Completed</span>
+                        <div class="topic-name" style="font-size:20px; background:none; color:#1f3a6b;">{{ $topic->name }}</div>
+                        <span class="badge-completed">✓ Completed</span>
                     </div>
 
                     @foreach($topic->choix as $choice)
@@ -365,11 +547,11 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
                         <div class="choice-row">
                             <div class="choice-label">{{ $choice->name }}</div>
                             <div class="bar-wrap">
-                                <div class="bar-fill" style="width:{{ $pct }}%"></div>
+                                <div class="bar-fill" style="width:{{ $pct }}%; background:#9aaebf;"></div>
                             </div>
                             <div class="vote-count">
                                 {{ $choice->vote_count }}
-                                <small style="color:#aaa;font-weight:400">({{ $pct }}%)</small>
+                                <small style="color:#8895aa;">({{ $pct }}%)</small>
                             </div>
                         </div>
                     @endforeach
@@ -379,50 +561,126 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
     </main>
 
 </div>
-
-<script>
 <script>
 const roomId = {{ $room->id }};
 
 @if($active)
+
 const activeTopicId = {{ $active->id }};
+const activeDuration = @json($active->duration);
+const startedAt = {{ strtotime($active->started_at) }};
 
-if (typeof Echo !== 'undefined') {
+let interval = null;
+let timeout = null;
+
+function toSeconds(t) {
+    var p = t.split(':');
+    var h = +p[0];
+    var m = +p[1];
+    var s = +p[2];
+
+    return h * 3600 + m * 60 + s;
+}
+
+function format(s) {
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+
+    if (m < 10) m = '0' + m;
+    if (sec < 10) sec = '0' + sec;
+
+    return m + ':' + sec;
+}
+
+function updateVotes(data) {
+    let total = 0;
+
+    for (let i = 0; i < data.length; i++) {
+        total += data[i].votes;
+    }
+
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+
+        let row = document.querySelector('[data-choice-id="' + item.id + '"]');
+        if (!row) continue;
+
+        let percent = total > 0 ? Math.round((item.votes / total) * 100) : 0;
+
+        let fill = row.querySelector('.bar-fill');
+        let count = row.querySelector('.count-val');
+
+        if (fill) fill.style.width = percent + '%';
+        if (count) count.innerText = item.votes;
+    }
+}
+
+function startTimer() {
+    let total = toSeconds(activeDuration);
+    let now = Math.floor(Date.now() / 1000);
+    let remaining = total - (now - startedAt);
+
+    if (remaining < 0) remaining = 0;
+
+    let span = document.getElementById('compactTimerDigits');
+    let card = document.getElementById('compactTimerCard');
+
+    if (!span) return;
+
+    clearInterval(interval);
+    clearTimeout(timeout);
+
+    span.innerText = format(remaining);
+
+    interval = setInterval(function () {
+        remaining--;
+
+        if (remaining < 0) {
+            clearInterval(interval);
+            return;
+        }
+
+        span.innerText = format(remaining);
+
+        if (remaining <= 5) {
+            card.classList.add('warning-timer');
+        }
+
+    }, 1000);
+
+    timeout = setTimeout(function () {
+        fetch('/rooms/' + roomId + '/topic/' + activeTopicId + '/stop', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+    }, remaining * 1000);
+}
+
+function listen() {
+    if (typeof Echo === 'undefined') {
+        setTimeout(listen, 100);
+        return;
+    }
+
     Echo.channel('room.' + roomId)
-
-        .listen('.vote.updated', function(e) {
-
+        .listen('.vote.updated', function (e) {
             if (e.topicId === activeTopicId) {
-
-                const data = e.choices;
-
-                let total = 0;
-
-                data.forEach(function(item) {
-                    total = total + item.votes;
-                });
-
-                data.forEach(function(item) {
-
-                    const row = document.querySelector('[data-choice-id="' + item.id + '"]');
-                    if (!row) return;
-
-                    let percent = 0;
-
-                    if (total > 0) {
-                        percent = Math.round((item.votes / total) * 100);
-                    }
-
-                    row.querySelector('.bar-fill').style.width = percent + '%';
-                    row.querySelector('.count-val').innerText = item.votes;
-                });
+                updateVotes(e.choices);
             }
         })
-
-        .listen('.topic.ended', function() {
-            window.location.reload();
+        .listen('.topic.ended', function () {
+            location.reload();
+        })
+        .listen('.topic.started', function () {
+            location.reload();
         });
 }
+
+startTimer();
+listen();
+
 @endif
 </script>
 </body>

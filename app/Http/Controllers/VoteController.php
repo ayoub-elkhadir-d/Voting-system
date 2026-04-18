@@ -91,12 +91,15 @@ public function startTopic(Room $room, Topic $topic)
     Topic::where('room_id', $room->id)->where('status', 'active')->update(['status' => 'completed']);
 
     $topic->status = 'active';
+    $topic->started_at = now();
     $topic->save();
     $topic->load('choix');
 
     broadcast(new TopicStarted($room->id, [
         'id'      => $topic->id,
         'name'    => $topic->name,
+        'duration' => $topic->duration, 
+        'started_at' => strtotime($topic->started_at),
         'choices' => $topic->choix->map(fn($c) => ['id' => $c->id, 'name' => $c->name]),
     ]));
 
