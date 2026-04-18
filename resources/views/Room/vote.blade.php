@@ -309,7 +309,7 @@ body {
 <div class="vote-layout">
     <div class="vote-area">
         <div class="waiting-screen" id="waitingScreen" style="{{ $activeTopic ? 'display:none' : '' }}">
-            <h2>⏳ Waiting for the next topic…</h2>
+            <h2> Waiting for the next topic…</h2>
             <div class="dots">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -328,7 +328,7 @@ body {
             <div class="topic-name" id="topicName"></div>
             <div class="choices" id="choicesContainer"></div>
             <button id="submitBtn">Submit Vote</button>
-            <div class="voted-badge" id="votedBadge">✓ Vote recorded</div>
+            <div class="voted-badge" id="votedBadge"> Vote recorded</div>
         </div>
     </div>
 
