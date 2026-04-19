@@ -10,6 +10,7 @@ body{ background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
 .title{ text-align:center; margin-top:60px; font-size:34px; font-weight:800; position:relative; z-index:2; color:#1a1a2e; }
 .title span{ color:#1a73e8; }
 .container{ display:flex; justify-content:center; margin-top:50px; position:relative; z-index:2; padding-bottom:60px; }
+
 .card{
     background:#fff;
     border:1px solid #e0e0e0;

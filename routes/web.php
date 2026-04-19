@@ -99,8 +99,9 @@ Route::middleware('room.owner')->group(function () {
         return redirect("/rooms/{$room->id}/admin");
     });
 
-    Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
 });
+    Route::get('/rooms/{room_id}/start', [RoomController::class, 'start']);
+
     /*
     |--------------------------------------------------------------------------
     | Topics Management

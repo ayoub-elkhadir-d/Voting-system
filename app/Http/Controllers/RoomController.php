@@ -73,6 +73,7 @@ class RoomController extends Controller
 
     public function start(Room $room_id)
     {
+        $members = membership::where('room_id', $room_id->id)->get();
         $room = Room::find($room_id->id);
         $room->status = "pending";
         $room->save();
@@ -81,6 +82,7 @@ class RoomController extends Controller
             "rawCode"   => $room_id->code,
             "codeArray" => str_split($room_id->code),
             "room_id"   => $room_id->id,
+            'members' => $members,
         ]);
     }
 
@@ -159,12 +161,14 @@ class RoomController extends Controller
         }
 
         $participantsCount = membership::where('room_id', $request->room_id)->count();
+        
         broadcast(new UserJoined($request->user_name, $request->room_id, $participantsCount));
 
         return view('Room.waiting', [
             'room_id'     => $request->room_id,
             'total_users' => $participantsCount,
             'user_name'   => $request->user_name,
+
         ]);
     }
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  @vite(['resources/js/app.js'])
 <title>Join Room</title>
 
 <style>
@@ -13,8 +14,21 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
 .title { text-align:center; margin-top:40px; font-size:32px; font-weight:bold; }
 .title span { color:#1a73e8; }
 
-.main { display:flex; justify-content:center; margin-top:50px; }
+.main { display:flex; justify-content:center; gap: 30px; margin-top:50px; flex-wrap: wrap; }
 
+.activity-card {
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  width: 320px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.08);
+  border:1px solid #e0e0e0;
+}
+
+.activity-card h3 { color: #1a73e8; margin-bottom: 15px; font-size: 18px; }
+.log-list { list-style: none; max-height: 200px; overflow-y: auto; }
+.log-item { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; display: flex; justify-content: space-between; }
+.log-time { color: #888; font-size: 12px; }
 .card {
   background:#fff;
   padding:30px;
@@ -155,23 +169,84 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
     <button type="submit" class="start-btn">▶ Start Voting</button>
 </form>
   </div>
+  <div class="activity-card">
+    <h3>Room Activity</h3>
+        <ul class="log-list" id="logList">
+    @foreach($members as $m)
+        <li class="log-item">
+            <span>{{ $m->username }} joined</span>
+            <span class="log-time">{{ \Carbon\Carbon::parse($m->created_at)->format('H:i') }}</span>
+        </li>
+    @endforeach
+    </ul>
+  </div>
 </div>
 
 <script>
+window.addEventListener('DOMContentLoaded', () => {
+    let roomId = "{{ $room_id }}";
+    let totalElement = document.getElementById('total');
+    let logList = document.getElementById('logList');
+
+  
+    if (roomId && typeof Echo !== 'undefined') {
+
+        Echo.channel('room.' + roomId)
+
+           
+            .listen('.user.joined', (e) => {
+                console.log(e); 
+
+                let logList = document.getElementById('logList');
+
+                let li = document.createElement('li');
+                li.classList.add('log-item');
+
+                let nameSpan = document.createElement('span');
+                nameSpan.innerText = e.username + ' joined';
+
+                let timeSpan = document.createElement('span');
+                timeSpan.classList.add('log-time');
+
+                let now = new Date();
+                let time = now.getHours().toString().padStart(2, '0') + ':' +
+                           now.getMinutes().toString().padStart(2, '0');
+
+                timeSpan.innerText = time;
+
+                li.appendChild(nameSpan);
+                li.appendChild(timeSpan);
+
+                logList.prepend(li);
+});
+
+           
+
+    } else {
+        console.log('Echo not ready or roomId missing');
+    }
+});
+
+
+
 function copyLink() {
-  const link = document.getElementById('roomLink');
-  link.select();
-  document.execCommand('copy');
-  const btn = event.target;
-  const originalText = btn.innerText;
-  btn.innerText = "Copied!";
-  setTimeout(() => btn.innerText = originalText, 2000);
+    const link = document.getElementById('roomLink');
+    link.select();
+    document.execCommand('copy');
+
+    const btn = event.target;
+    const originalText = btn.innerText;
+
+    btn.innerText = "Copied!";
+    setTimeout(() => btn.innerText = originalText, 2000);
 }
 
 setTimeout(() => {
-  const errText = document.getElementById('errorMsg');
-  if (errText) errText.style.opacity = "0";
-  document.querySelectorAll('.box.error').forEach(box => box.classList.remove('error'));
+    const errText = document.getElementById('errorMsg');
+    if (errText) errText.style.opacity = "0";
+
+    document.querySelectorAll('.box.error')
+        .forEach(box => box.classList.remove('error'));
 }, 1000);
 </script>
 
