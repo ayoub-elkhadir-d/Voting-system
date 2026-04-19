@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\UserJoined;
 use App\Models\Room;
 use App\Models\membership;
+use App\Events\UserRemoved;
 
 class RoomController extends Controller
 {
@@ -177,12 +178,21 @@ class RoomController extends Controller
         membership::where('user_id', Auth::id())->delete();
         return redirect('/rooms/join');
     }
-    public function removeUser($roomId, $userId)
-{
-    membership::where('room_id', $roomId)
-        ->where('id', $userId)
-        ->delete();
 
-    return back();
-}
+    public function removeUser($roomId, $memberId){
+        
+        $member = membership::where('room_id', $roomId)
+            ->where('id', $memberId)
+            ->first();
+
+        if ($member) {
+            $userId = $member->user_id;
+
+            $member->delete();
+
+            broadcast(new UserRemoved($userId, $roomId));
+        }
+
+        return back();
+    }
 }

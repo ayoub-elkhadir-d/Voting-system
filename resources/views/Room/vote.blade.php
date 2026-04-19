@@ -341,6 +341,7 @@ body {
     </div>
 </div>
 <script>
+const USER_ID = {{ auth()->id() }};
 const roomId = {{ $room->id }};
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -530,7 +531,12 @@ function listenEvents() {
         })
         .listen('.topic.ended', function () {
             hideVote();
-        });
+        }).listen('.user.removed', (e) => {
+
+            if (e.userId == USER_ID) {
+                    window.location.href = "/rooms/join";
+                }
+            });
 }
 
 listenEvents();
