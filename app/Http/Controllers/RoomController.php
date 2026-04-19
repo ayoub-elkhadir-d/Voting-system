@@ -108,13 +108,19 @@ class RoomController extends Controller
             ->where('user_id', Auth::id())
             ->first();
 
-        if ($isMember) {
-            $count = membership::where('room_id', $room->id)->count();
-            return view('Room.waiting', [
-                'user_name'   => $isMember->username,
-                'room_id'     => $room->id,
-                'total_users' => $count,
-            ]);
+   if ($isMember) {
+
+       if($isMember && $room->status === 'pending'){
+                return redirect("/rooms/{$room->id}/vote");
+            }
+            else{
+               $count = membership::where('room_id', $room->id)->count();
+                return view('Room.waiting', [
+                    'user_name'   => $isMember->username,
+                    'room_id'     => $room->id,
+                    'total_users' => $count,
+                ]);
+            }
         }
 
         return view('Room.enter_username', ['room_id' => $room->id]);
