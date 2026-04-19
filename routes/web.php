@@ -138,5 +138,6 @@ Route::middleware('room.owner')->group(function () {
     Route::post('/rooms/{room}/topic/{topic}/start', [VoteController::class, 'startTopic']);
     Route::get('/rooms/{room}/topic/{topic}/votes', [VoteController::class, 'topicVotes']);
  Route::get('/rooms/{room}/admin', [VoteController::class, 'adminShow']);
+ Route::delete('/rooms/{room}/remove-user/{id}', [RoomController::class, 'removeUser']);
 });
 });

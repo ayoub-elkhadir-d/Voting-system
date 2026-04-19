@@ -492,6 +492,28 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
     text-shadow: 0 0 4px rgba(255,60,0,0.3);
 }
 
+.remove-btn {
+    background:#ffeaea;
+    border:none;
+    color:#e74c3c;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.2s;
+}
+
+.remove-btn:hover {
+    background:#e74c3c;
+    color:#fff;
+    transform:scale(1.1);
+}
+
 @media (max-width: 680px) {
     .main { padding: 20px; }
     .topic-name-large { font-size: 26px; }
@@ -578,15 +600,25 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
                         <span style="color: #1a73e8;">({{ count($members) }})</span>
                     </div>
                     @foreach($members as $member)
-                        <div class="sidebar-item">
-                            <div class="user-avatar">
-                                {{ strtoupper(substr($member->username ?? 'U', 0, 1)) }}
+                       <div class="sidebar-item" style="justify-content: space-between;">
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="user-avatar">
+                                    {{ strtoupper(substr($member->username ?? 'U', 0, 1)) }}
+                                </div>
+
+                                <div class="user-info">
+                                    <div class="user-name">{{ $member->username ?? 'Unknown User' }}</div>
+                                </div>
                             </div>
-                            <div class="user-info">
-                                <div class="user-name">{{ $member->username ?? 'Unknown User' }}</div>
-                              
-                            </div>
-                            
+
+                            <!-- remove button -->
+                            <form action="/rooms/{{ $room->id }}/remove-user/{{ $member->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="remove-btn">✕</button>
+                            </form>
+
                         </div>
                     @endforeach
                 @else

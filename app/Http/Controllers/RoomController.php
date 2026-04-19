@@ -177,4 +177,12 @@ class RoomController extends Controller
         membership::where('user_id', Auth::id())->delete();
         return redirect('/rooms/join');
     }
+    public function removeUser($roomId, $userId)
+{
+    membership::where('room_id', $roomId)
+        ->where('id', $userId)
+        ->delete();
+
+    return back();
+}
 }
