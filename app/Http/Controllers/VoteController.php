@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use App\Models\Topic;
 use App\Models\choix;
+use App\Models\membership;
 use App\Events\TopicEnded;
 use App\Events\TopicStarted;
 use App\Events\VoteUpdated;
@@ -61,8 +62,12 @@ class VoteController extends Controller
 
         return response()->json(['status' => 'ok']);
     }
+
+
 public function adminShow(Room $room)
-{
+{ 
+    $members = membership::where('room_id', $room->id)->get();
+    
     $topics = Topic::where('room_id', $room->id)
         ->with(['choix' => function ($q) use ($room) {
             $q->withCount(['votes as vote_count' => function ($q) use ($room) {
@@ -73,7 +78,7 @@ public function adminShow(Room $room)
         ->orderBy('updated_at')
         ->get();
 
-    return view('Room.admin', compact('room', 'topics'));
+    return view('Room.admin', compact('room', 'topics','members'));
 }
 
 public function stopTopic(Room $room, Topic $topic)

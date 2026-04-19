@@ -89,6 +89,7 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 
 .dot-active  { background:#1a73e8; animation:pulse 1.5s infinite; }
 .dot-pending { background:#ccc; }
+.dot-user { background:#4caf50; }
 
 @keyframes pulse {
     0%,100% { opacity:1; transform:scale(1); }
@@ -114,6 +115,7 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 
 .badge-live      { background:#e3f2fd; color:#1565c0; }
 .badge-pending   { background:#f5f5f5; color:#999; }
+.badge-user      { background:#e8f5e9; color:#2e7d32; }
 
 .sidebar-start-btn {
     margin-left:auto;
@@ -129,6 +131,91 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
     transition:0.2s;
 }
 .sidebar-start-btn:hover { background:#1558b0; }
+
+/* User section specific styles */
+.sidebar-nav {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 8px;
+}
+
+.sidebar-nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.sidebar-nav-item.active {
+    color: #1a73e8;
+    border-bottom-color: #1a73e8;
+}
+
+.sidebar-nav-item:hover {
+    color: #1a73e8;
+    background: #f5f9ff;
+}
+
+.sidebar-content-section {
+    display: none;
+}
+
+.sidebar-content-section.active {
+    display: block;
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a73e8, #4a9eff);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-email {
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-count {
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+}
 
 .main {
     flex:1;
@@ -329,11 +416,6 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
     animation: pulse 1.2s infinite;
 }
 
-@keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1);}
-    50% { opacity: 0.6; transform: scale(1.2);}
-}
-
 .choice-section-title {
     font-size: 14px;
     font-weight: 700;
@@ -440,35 +522,79 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
             <div class="room-name">{{ $room->name }}</div>
         </div>
 
-        <div class="sidebar-body">
+        <!-- Navigation Tabs -->
+        <div class="sidebar-nav">
+            <div class="sidebar-nav-item active" data-tab="topics">
+                Topics
+            </div>
+            <div class="sidebar-nav-item" data-tab="users">
+                Users 
+                @if(isset($members))
+                    <span class="user-count">{{ count($members) }}</span>
+                @endif
+            </div>
+        </div>
 
-            @if($active)
-                <div class="sidebar-section-label">Active</div>
-                <div class="sidebar-item is-active">
-                    <div class="sidebar-dot dot-active"></div>
-                    <div class="sidebar-item-name">{{ $active->name }}</div>
-                    <span class="sidebar-item-badge badge-live">Live</span>
-                </div>
-            @endif
+        <!-- Topics Content -->
+        <div class="sidebar-content-section active" id="topics-section">
+            <div class="sidebar-body">
 
-            @if($pending->isNotEmpty())
-                <div class="sidebar-section-label">Pending</div>
-                @foreach($pending as $pt)
-                    <div class="sidebar-item is-pending">
-                        <div class="sidebar-dot dot-pending"></div>
-                        <div class="sidebar-item-name">{{ $pt->name }}</div>
-                        @if(!$active)
-                            <form action="/rooms/{{ $room->id }}/topic/{{ $pt->id }}/start" method="POST">
-                                @csrf
-                                <button type="submit" class="sidebar-start-btn">Start</button>
-                            </form>
-                        @else
-                            <span class="sidebar-item-badge badge-pending">Pending</span>
-                        @endif
+                @if($active)
+                    <div class="sidebar-section-label">Active</div>
+                    <div class="sidebar-item is-active">
+                        <div class="sidebar-dot dot-active"></div>
+                        <div class="sidebar-item-name">{{ $active->name }}</div>
+                        <span class="sidebar-item-badge badge-live">Live</span>
                     </div>
-                @endforeach
-            @endif
+                @endif
 
+                @if($pending->isNotEmpty())
+                    <div class="sidebar-section-label">Pending</div>
+                    @foreach($pending as $pt)
+                        <div class="sidebar-item is-pending">
+                            <div class="sidebar-dot dot-pending"></div>
+                            <div class="sidebar-item-name">{{ $pt->name }}</div>
+                            @if(!$active)
+                                <form action="/rooms/{{ $room->id }}/topic/{{ $pt->id }}/start" method="POST">
+                                    @csrf
+                                    <button type="submit" class="sidebar-start-btn">Start</button>
+                                </form>
+                            @else
+                                <span class="sidebar-item-badge badge-pending">Pending</span>
+                            @endif
+                        </div>
+                    @endforeach
+                @endif
+
+            </div>
+        </div>
+
+        <!-- Users Content -->
+        <div class="sidebar-content-section" id="users-section">
+            <div class="sidebar-body">
+                @if(isset($members) && count($members) > 0)
+                    <div class="sidebar-section-label">
+                        Members 
+                        <span style="color: #1a73e8;">({{ count($members) }})</span>
+                    </div>
+                    @foreach($members as $member)
+                        <div class="sidebar-item">
+                            <div class="user-avatar">
+                                {{ strtoupper(substr($member->username ?? 'U', 0, 1)) }}
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">{{ $member->username ?? 'Unknown User' }}</div>
+                              
+                            </div>
+                            
+                        </div>
+                    @endforeach
+                @else
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <div style="font-size: 14px; color: #bbb;">No members yet</div>
+                    </div>
+                @endif
+            </div>
         </div>
     </aside>
 
@@ -561,6 +687,38 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
     </main>
 
 </div>
+
+<!-- Tab Switching Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navItems = document.querySelectorAll('.sidebar-nav-item');
+    const sections = {
+        topics: document.getElementById('topics-section'),
+        users: document.getElementById('users-section')
+    };
+
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            const tab = this.dataset.tab;
+            
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+            
+            
+            Object.keys(sections).forEach(key => {
+                if (sections[key]) {
+                    sections[key].classList.remove('active');
+                }
+            });
+            
+            if (sections[tab]) {
+                sections[tab].classList.add('active');
+            }
+        });
+    });
+});
+</script>
+
 <script>
 const roomId = {{ $room->id }};
 
