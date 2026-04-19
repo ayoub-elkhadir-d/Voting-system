@@ -172,12 +172,60 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
   <div class="activity-card">
     <h3>Room Activity</h3>
         <ul class="log-list" id="logList">
-    @foreach($members as $m)
-        <li class="log-item">
-            <span>{{ $m->username }} joined</span>
-            <span class="log-time">{{ \Carbon\Carbon::parse($m->created_at)->format('H:i') }}</span>
-        </li>
-    @endforeach
+@foreach($members as $m)
+    <li class="log-item" style="align-items:center; gap:10px;">
+        
+        <span>
+            {{ $m->username }}
+            
+            @if($m->status === 'pending')
+                <span style="color:#f39c12;">(pending)</span>
+            @else
+                joined
+            @endif
+        </span>
+
+        <span class="log-time">
+            {{ \Carbon\Carbon::parse($m->created_at)->format('H:i') }}
+        </span>
+
+        
+        @if($room->visibility === 'private' && $m->status === 'pending')
+            <div style="display:flex; gap:6px; margin-left:auto;">
+
+                {{-- Accept --}}
+                <form action="/rooms/{{ $room->id }}/approve/{{ $m->id }}" method="POST">
+                    @csrf
+                    <button style="
+                        background:#2ecc71;
+                        border:none;
+                        padding:4px 10px;
+                        border-radius:6px;
+                        color:#fff;
+                        font-size:11px;
+                        cursor:pointer;
+                    ">✔</button>
+                </form>
+
+                {{-- Decline --}}
+                <form action="/rooms/{{ $room->id }}/remove/{{ $m->id }}" method="POST">
+                    @csrf
+                    <button style="
+                        background:#e74c3c;
+                        border:none;
+                        padding:4px 10px;
+                        border-radius:6px;
+                        color:#fff;
+                        font-size:11px;
+                        cursor:pointer;
+                    ">✖</button>
+                </form>
+
+            </div>
+        @endif
+
+    </li>
+@endforeach
     </ul>
   </div>
 </div>
@@ -195,8 +243,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
            
             .listen('.user.joined', (e) => {
-                console.log(e); 
-
+                
+                window.location.reload();
+                
                 let logList = document.getElementById('logList');
 
                 let li = document.createElement('li');

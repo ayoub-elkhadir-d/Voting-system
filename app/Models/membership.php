@@ -7,6 +7,14 @@ use App\Models\User;
 use App\Models\Room;
 class membership extends Model
 {
+     protected $fillable = [
+        'room_id',
+        'user_id',
+        'username',
+        'role',
+        'status',
+    ];
+    
     public function room()
 {
     return $this->belongsTo(Room::class);

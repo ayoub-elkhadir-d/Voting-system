@@ -18,13 +18,16 @@ class UserJoined implements ShouldBroadcast
     public $roomId;
     public $count;
 
-    public function __construct($username, $roomId, $count)
-    {
-        $this->username = $username;
-        $this->roomId = $roomId;
-        $this->count = $count;
-    }
-
+ public $status;
+public $memberId;
+public function __construct($username, $roomId, $count, $status, $memberId)
+{
+    $this->username = $username;
+    $this->roomId = $roomId;
+    $this->count = $count;
+    $this->status = $status;
+    $this->memberId = $memberId;
+}
     public function broadcastOn()
     {
         return new Channel('room.' . $this->roomId);
