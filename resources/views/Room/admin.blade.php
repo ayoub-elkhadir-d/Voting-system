@@ -529,13 +529,7 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
 <body>
 @include('components.navbar')
 
-@php
-    $completed = $topics->where('status', 'completed');
-    $active    = $topics->firstWhere('status', 'active');
-    $pending   = \App\Models\Topic::where('room_id', $room->id)
-                    ->where('status', 'pending')
-                    ->get();
-@endphp
+
 
 <div class="layout">
 
@@ -725,8 +719,30 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
                 @php $totalVotes = $topic->choix->sum('vote_count'); @endphp
                 <div class="topic-card">
                     <div class="topic-header">
-                        <div class="topic-name" style="font-size:20px; background:none; color:#1f3a6b;">{{ $topic->name }}</div>
-                        <span class="badge-completed">✓ Completed</span>
+                        <div class="topic-name" style="font-size:20px; background:none; color:#1f3a6b;">
+                            {{ $topic->name }}
+                        </div>
+
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <span class="badge-completed">✓ Completed</span>
+
+                            <!-- Restart Button -->
+                            <form action="/rooms/{{ $room->id }}/topic/{{ $topic->id }}/restart" method="POST">
+                                @csrf
+                                <button style="
+                                    background:#f39c12;
+                                    border:none;
+                                    padding:6px 14px;
+                                    border-radius:20px;
+                                    color:#fff;
+                                    font-size:12px;
+                                    font-weight:700;
+                                    cursor:pointer;
+                                ">
+                                    ↺ Restart
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                     @foreach($topic->choix as $choice)
@@ -790,9 +806,7 @@ document.addEventListener('DOMContentLoaded', function () {
         users: document.getElementById('users-section')
     };
 
-    // =========================
-    // ✅ TAB SWITCHING + SAVE
-    // =========================
+
     navItems.forEach(item => {
         item.addEventListener('click', function () {
             const tab = this.dataset.tab;
@@ -811,9 +825,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // =========================
-    // ✅ RESTORE TAB AFTER RELOAD
-    // =========================
+
     const savedTab = localStorage.getItem('activeTab');
 
     if (savedTab && sections[savedTab]) {
@@ -830,9 +842,6 @@ document.addEventListener('DOMContentLoaded', function () {
         sections[savedTab].classList.add('active');
     }
 
-    // =========================
-    // ✅ ECHO LISTENERS
-    // =========================
     function initEcho() {
         if (typeof Echo === 'undefined') {
             setTimeout(initEcho, 100);
@@ -841,9 +850,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Echo.channel('room.' + roomId)
 
-            // 👇 user joined
+        
             .listen('.user.joined', function () {
-                // save current tab before reload
+             
                 const active = document.querySelector('.sidebar-nav-item.active');
                 if (active) {
                     localStorage.setItem('activeTab', active.dataset.tab);
@@ -852,28 +861,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.reload();
             })
 
-            // 👇 votes update
+        
             .listen('.vote.updated', function (e) {
                 if (typeof updateVotes === 'function') {
                     updateVotes(e.choices);
                 }
             })
 
-            // 👇 topic changes
+           
             .listen('.topic.started', function () {
                 window.location.reload();
             })
             .listen('.topic.ended', function () {
                 window.location.reload();
+            })
+            .listen('.user.left', (e) => {
+     
+                location.reload();
             });
     }
 
     initEcho();
 
-    // =========================
-    // ✅ TIMER + VOTE LOGIC (if active)
-    // =========================
-
+ 
     @if($active)
 
     const activeTopicId = {{ $active->id }};

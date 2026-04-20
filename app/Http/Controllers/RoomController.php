@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Events\UserJoined;
+use App\Events\UserAccepted;
 use App\Models\Room;
 use App\Models\membership;
 use App\Events\UserRemoved;
+use App\Events\UserLeft;
 
 class RoomController extends Controller
 {
@@ -180,14 +182,21 @@ class RoomController extends Controller
             $status,
             $isMember->id
         ));
-
-   return redirect("/rooms/{$request->room_id}/waiting");
+if($isMember->status === "accepted"){
+  return redirect("/rooms/{$request->room_id}/vote");
+}else{
+     return redirect("/rooms/{$request->room_id}/waiting"); 
+}
+ 
 
     }
 
     public function left_room($room_id)
     {
         membership::where('user_id', Auth::id())->delete();
+
+           broadcast(new UserLeft($room_id,auth()->id()));
+
         return redirect('/rooms/join');
     }
 
@@ -258,6 +267,10 @@ class RoomController extends Controller
             $member->status,
             $memberId
         ));
+    broadcast(new UserAccepted(
+        $roomId,
+        $member->user_id,
+    ));
 
     return back();
 }

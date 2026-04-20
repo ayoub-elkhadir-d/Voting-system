@@ -267,7 +267,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 li.appendChild(timeSpan);
 
                 logList.prepend(li);
-});
+            })   
+            .listen('.user.left', (e) => {
+     
+                location.reload();
+            });
 
            
 

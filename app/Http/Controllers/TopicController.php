@@ -110,5 +110,26 @@ class TopicController extends Controller
      
       return $room->topics;
     }
+
+  public function restart($roomId, $topicId)
+{
+    $topic = Topic::where('room_id', $roomId)
+        ->where('id', $topicId)
+        ->first();
+
+    if (!$topic) {
+        return back();
+    }
+
+   
+    $topic->status = 'pending';
+    $topic->started_at = null;
+    $topic->save();
+
+  
+
+
+    return back();
+}
    
 }

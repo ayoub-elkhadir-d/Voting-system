@@ -136,6 +136,7 @@
 <script>
 
 window.addEventListener('DOMContentLoaded', () => {
+    const USER_ID = {{ auth()->id() }};
     let roomId = "{{ $room_id }}";
 
     let totalElement = document.getElementById('total');
@@ -145,6 +146,14 @@ window.addEventListener('DOMContentLoaded', () => {
     totalElement.innerText = users_total;
 
     if (roomId && typeof Echo !== 'undefined') {
+        Echo.channel('accepteduser.' + USER_ID)
+        .listen('.user.accepted', (e) => {
+
+             
+               window.location.href = `/rooms/${roomId}/vote`;
+             
+            });
+
        Echo.channel('room.' + roomId)
             .listen('.user.joined', (e) => {
                 users_total = e.count;

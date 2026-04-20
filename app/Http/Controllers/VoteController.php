@@ -80,7 +80,13 @@ public function adminShow(Room $room)
         ->orderBy('updated_at')
         ->get();
 
-    return view('Room.admin', compact('room', 'topics','members'));
+    $completed = $topics->where('status', 'completed');
+    $active    = $topics->firstWhere('status', 'active');
+    $pending   = Topic::where('room_id', $room->id)
+                    ->where('status', 'pending')
+                    ->get();
+
+    return view('Room.admin', compact('room', 'topics','members','completed','active','pending'));
 }
 
 public function stopTopic(Room $room, Topic $topic)

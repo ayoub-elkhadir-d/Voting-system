@@ -138,7 +138,7 @@ Route::middleware('room.owner')->group(function () {
     Route::post('/rooms/{room}/topic/{topic}/start', [VoteController::class, 'startTopic']);
     Route::get('/rooms/{room}/topic/{topic}/votes', [VoteController::class, 'topicVotes']);
  Route::get('/rooms/{room}/admin', [VoteController::class, 'adminShow']);
-
+Route::post('/rooms/{room}/topic/{topic}/restart', [TopicController::class, 'restart']);
  Route::delete('/rooms/{room}/remove-user/{id}', [RoomController::class, 'removeUser']);
 
  Route::post('/rooms/{room}/approve/{member}', [RoomController::class, 'approveUser']);
