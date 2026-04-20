@@ -152,7 +152,9 @@ window.addEventListener('DOMContentLoaded', () => {
             })
 
             .listen('.started.room', () => {
+              
              window.location.href = `/rooms/${roomId}/vote`;
+
             }).listen('.user.removed',()=>{
               window.location.href = `/rooms/join`;
             });

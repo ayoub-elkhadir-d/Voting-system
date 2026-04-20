@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — {{ $room->name }}</title>
 @vite(['resources/js/app.js'])
+
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
 
@@ -599,28 +600,56 @@ body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-d
                         Members 
                         <span style="color: #1a73e8;">({{ count($members) }})</span>
                     </div>
-                    @foreach($members as $member)
-                       <div class="sidebar-item" style="justify-content: space-between;">
+ @foreach($members as $member)
+<div class="sidebar-item" style="justify-content: space-between;">
 
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="user-avatar">
-                                    {{ strtoupper(substr($member->username ?? 'U', 0, 1)) }}
-                                </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div class="user-avatar">
+            {{ strtoupper(substr($member->username ?? 'U', 0, 1)) }}
+        </div>
 
-                                <div class="user-info">
-                                    <div class="user-name">{{ $member->username ?? 'Unknown User' }}</div>
-                                </div>
-                            </div>
+        <div class="user-info">
+            <div class="user-name">{{ $member->username ?? 'Unknown User' }}</div>
 
-                            <!-- remove button -->
-                            <form action="/rooms/{{ $room->id }}/remove-user/{{ $member->id }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="remove-btn">✕</button>
-                            </form>
+            @if($member->status === 'pending')
+                <div style="font-size:12px; color:#f39c12;">pending</div>
+            @else
+                <div style="font-size:12px; color:#2ecc71;">accepted</div>
+            @endif
+        </div>
+    </div>
 
-                        </div>
-                    @endforeach
+    <div style="display:flex; gap:6px;">
+
+       
+        @if($member->status !== 'accepted')
+        <form action="/rooms/{{ $room->id }}/approve/{{ $member->id }}" method="POST">
+            @csrf
+            <button style="
+                background:#2ecc71;
+                border:none;
+                padding:5px 10px;
+                border-radius:6px;
+                color:#fff;
+                font-size:12px;
+                cursor:pointer;
+            ">
+                ✔
+            </button>
+        </form>
+        @endif
+
+    
+        <form action="/rooms/{{ $room->id }}/remove-user/{{ $member->id }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="remove-btn">✕</button>
+        </form>
+
+    </div>
+
+</div>
+@endforeach
                 @else
                     <div class="empty-state" style="padding: 40px 20px;">
                         <div style="font-size: 14px; color: #bbb;">No members yet</div>
@@ -750,128 +779,192 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 <script>
-const roomId = {{ $room->id }};
+document.addEventListener('DOMContentLoaded', function () {
 
-@if($active)
+    const roomId = {{ $room->id }};
 
-const activeTopicId = {{ $active->id }};
-const activeDuration = @json($active->duration);
-const startedAt = {{ strtotime($active->started_at) }};
+    const navItems = document.querySelectorAll('.sidebar-nav-item');
+    const sections = {
+        topics: document.getElementById('topics-section'),
+        users: document.getElementById('users-section')
+    };
 
-let interval = null;
-let timeout = null;
+    // =========================
+    // ✅ TAB SWITCHING + SAVE
+    // =========================
+    navItems.forEach(item => {
+        item.addEventListener('click', function () {
+            const tab = this.dataset.tab;
 
-function toSeconds(t) {
-    var p = t.split(':');
-    var h = +p[0];
-    var m = +p[1];
-    var s = +p[2];
+            // save tab
+            localStorage.setItem('activeTab', tab);
 
-    return h * 3600 + m * 60 + s;
-}
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
 
-function format(s) {
-    var m = Math.floor(s / 60);
-    var sec = s % 60;
+            Object.keys(sections).forEach(key => {
+                if (sections[key]) sections[key].classList.remove('active');
+            });
 
-    if (m < 10) m = '0' + m;
-    if (sec < 10) sec = '0' + sec;
+            if (sections[tab]) sections[tab].classList.add('active');
+        });
+    });
 
-    return m + ':' + sec;
-}
+    // =========================
+    // ✅ RESTORE TAB AFTER RELOAD
+    // =========================
+    const savedTab = localStorage.getItem('activeTab');
 
-function updateVotes(data) {
-    let total = 0;
+    if (savedTab && sections[savedTab]) {
 
-    for (let i = 0; i < data.length; i++) {
-        total += data[i].votes;
+        navItems.forEach(nav => nav.classList.remove('active'));
+
+        const activeNav = document.querySelector(`[data-tab="${savedTab}"]`);
+        if (activeNav) activeNav.classList.add('active');
+
+        Object.keys(sections).forEach(key => {
+            if (sections[key]) sections[key].classList.remove('active');
+        });
+
+        sections[savedTab].classList.add('active');
     }
 
-    for (let i = 0; i < data.length; i++) {
-        let item = data[i];
-
-        let row = document.querySelector('[data-choice-id="' + item.id + '"]');
-        if (!row) continue;
-
-        let percent = total > 0 ? Math.round((item.votes / total) * 100) : 0;
-
-        let fill = row.querySelector('.bar-fill');
-        let count = row.querySelector('.count-val');
-
-        if (fill) fill.style.width = percent + '%';
-        if (count) count.innerText = item.votes;
-    }
-}
-
-function startTimer() {
-    let total = toSeconds(activeDuration);
-    let now = Math.floor(Date.now() / 1000);
-    let remaining = total - (now - startedAt);
-
-    if (remaining < 0) remaining = 0;
-
-    let span = document.getElementById('compactTimerDigits');
-    let card = document.getElementById('compactTimerCard');
-
-    if (!span) return;
-
-    clearInterval(interval);
-    clearTimeout(timeout);
-
-    span.innerText = format(remaining);
-
-    interval = setInterval(function () {
-        remaining--;
-
-        if (remaining < 0) {
-            clearInterval(interval);
+    // =========================
+    // ✅ ECHO LISTENERS
+    // =========================
+    function initEcho() {
+        if (typeof Echo === 'undefined') {
+            setTimeout(initEcho, 100);
             return;
         }
 
-        span.innerText = format(remaining);
+        Echo.channel('room.' + roomId)
 
-        if (remaining <= 5) {
-            card.classList.add('warning-timer');
-        }
+            // 👇 user joined
+            .listen('.user.joined', function () {
+                // save current tab before reload
+                const active = document.querySelector('.sidebar-nav-item.active');
+                if (active) {
+                    localStorage.setItem('activeTab', active.dataset.tab);
+                }
 
-    }, 1000);
+                window.location.reload();
+            })
 
-    timeout = setTimeout(function () {
-        fetch('/rooms/' + roomId + '/topic/' + activeTopicId + '/stop', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
-    }, remaining * 1000);
-}
+            // 👇 votes update
+            .listen('.vote.updated', function (e) {
+                if (typeof updateVotes === 'function') {
+                    updateVotes(e.choices);
+                }
+            })
 
-function listen() {
-    if (typeof Echo === 'undefined') {
-        setTimeout(listen, 100);
-        return;
+            // 👇 topic changes
+            .listen('.topic.started', function () {
+                window.location.reload();
+            })
+            .listen('.topic.ended', function () {
+                window.location.reload();
+            });
     }
 
-    Echo.channel('room.' + roomId)
-        .listen('.vote.updated', function (e) {
-            if (e.topicId === activeTopicId) {
-                updateVotes(e.choices);
-            }
-        })
-        .listen('.topic.ended', function () {
-            location.reload();
-        })
-        .listen('.topic.started', function () {
-            location.reload();
+    initEcho();
+
+    // =========================
+    // ✅ TIMER + VOTE LOGIC (if active)
+    // =========================
+
+    @if($active)
+
+    const activeTopicId = {{ $active->id }};
+    const activeDuration = @json($active->duration);
+    const startedAt = {{ strtotime($active->started_at) }};
+
+    let interval = null;
+    let timeout = null;
+
+    function toSeconds(t) {
+        let p = t.split(':');
+        return (+p[0]) * 3600 + (+p[1]) * 60 + (+p[2]);
+    }
+
+    function format(s) {
+        let m = Math.floor(s / 60);
+        let sec = s % 60;
+
+        if (m < 10) m = '0' + m;
+        if (sec < 10) sec = '0' + sec;
+
+        return m + ':' + sec;
+    }
+
+    function updateVotes(data) {
+        let total = 0;
+
+        data.forEach(i => total += i.votes);
+
+        data.forEach(item => {
+            let row = document.querySelector('[data-choice-id="' + item.id + '"]');
+            if (!row) return;
+
+            let percent = total > 0 ? Math.round((item.votes / total) * 100) : 0;
+
+            let fill = row.querySelector('.bar-fill');
+            let count = row.querySelector('.count-val');
+
+            if (fill) fill.style.width = percent + '%';
+            if (count) count.innerText = item.votes;
         });
-}
+    }
 
-startTimer();
-listen();
+    function startTimer() {
+        let total = toSeconds(activeDuration);
+        let now = Math.floor(Date.now() / 1000);
+        let remaining = total - (now - startedAt);
 
-@endif
+        if (remaining < 0) remaining = 0;
+
+        let span = document.getElementById('compactTimerDigits');
+        let card = document.getElementById('compactTimerCard');
+
+        if (!span) return;
+
+        clearInterval(interval);
+        clearTimeout(timeout);
+
+        span.innerText = format(remaining);
+
+        interval = setInterval(() => {
+            remaining--;
+
+            if (remaining < 0) {
+                clearInterval(interval);
+                return;
+            }
+
+            span.innerText = format(remaining);
+
+            if (remaining <= 5) {
+                card.classList.add('warning-timer');
+            }
+
+        }, 1000);
+
+        timeout = setTimeout(() => {
+            fetch('/rooms/' + roomId + '/topic/' + activeTopicId + '/stop', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            });
+        }, remaining * 1000);
+    }
+
+    startTimer();
+
+    @endif
+
+});
 </script>
 </body>
 </html>

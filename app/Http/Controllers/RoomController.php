@@ -86,6 +86,7 @@ class RoomController extends Controller
             "room" =>$room_id,
             'members' => $members,
         ]);
+        
     }
 
     public function get_join()
@@ -119,7 +120,7 @@ class RoomController extends Controller
             }
 
             else{
-               $count = membership::where('room_id', $room->id)->count();
+               $count = membership::where('room_id', $room->id)->count();;
 
                 return view('Room.waiting', [
                     'user_name'   => $isMember->username,
@@ -180,11 +181,7 @@ class RoomController extends Controller
             $isMember->id
         ));
 
-        return view('Room.waiting', [
-            'room_id'     => $request->room_id,
-            'total_users' => $participantsCount,
-            'user_name'   => $request->user_name,
-        ]);
+   return redirect("/rooms/{$request->room_id}/waiting");
 
     }
 
@@ -211,7 +208,28 @@ class RoomController extends Controller
         return back();
     }
 
+    public function waiting(Room $room)
+    {
+        $member = DB::table('memberships')
+            ->where('room_id', $room->id)
+            ->where('user_id', Auth::id())
+            ->first();
 
+        if (!$member) {
+            return redirect('/rooms/join');
+        }
+
+        $participantsCount = DB::table('memberships')
+            ->where('room_id', $room->id)
+            ->where('status', 'accepted')
+            ->count();
+
+        return view('Room.waiting', [
+            'room_id'     => $room->id,
+            'total_users' => $participantsCount,
+            'user_name'   => $member->username,
+        ]);
+    }
 
     public function approveUser($roomId, $memberId)
 {

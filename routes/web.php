@@ -79,8 +79,8 @@ Route::middleware('room.owner')->group(function () {
      Route::get('/rooms/join/{code}', [RoomController::class, 'join']);
 
      Route::post('/rooms/confirm-join', [RoomController::class, 'join_confirm']);
-
-
+         
+    Route::get('/rooms/{room}/waiting', [RoomController::class, 'waiting']);
   
 
     /*
@@ -130,7 +130,7 @@ Route::middleware('room.owner')->group(function () {
     | Submit votes, manage topics voting, and view results
     */
     Route::post('/rooms/vote/submit', [VoteController::class, 'submit']);
-    Route::get('/rooms/{room}/vote', [VoteController::class, 'show']);
+    Route::get('/rooms/{room}/vote', [VoteController::class, 'show'])->middleware('accepted.member');
   
 
 Route::middleware('room.owner')->group(function () {
@@ -138,7 +138,7 @@ Route::middleware('room.owner')->group(function () {
     Route::post('/rooms/{room}/topic/{topic}/start', [VoteController::class, 'startTopic']);
     Route::get('/rooms/{room}/topic/{topic}/votes', [VoteController::class, 'topicVotes']);
  Route::get('/rooms/{room}/admin', [VoteController::class, 'adminShow']);
- 
+
  Route::delete('/rooms/{room}/remove-user/{id}', [RoomController::class, 'removeUser']);
 
  Route::post('/rooms/{room}/approve/{member}', [RoomController::class, 'approveUser']);

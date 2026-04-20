@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         'check.login' => \App\Http\Middleware\CheckLogin::class,
           'room.owner' => \App\Http\Middleware\CheckRoomOwner::class,
           'room.started' => \App\Http\Middleware\CheckRoomStarted::class,
+            'accepted.member' => \App\Http\Middleware\EnsureAcceptedMember::class,
     ]);
 })
     ->withExceptions(function (Exceptions $exceptions): void {

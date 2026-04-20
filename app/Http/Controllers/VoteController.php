@@ -18,11 +18,13 @@ class VoteController extends Controller
 {
     public function show(Room $room)
 {
+    
     $topics = Topic::where('room_id', $room->id)->with('choix')->get();
 
     $activeTopic = $topics->firstWhere('status', 'active');
 
     return view('Room.vote', compact('room', 'topics', 'activeTopic'));
+
 }
 
     public function submit(Request $request)
@@ -67,7 +69,7 @@ class VoteController extends Controller
 public function adminShow(Room $room)
 { 
     $members = membership::where('room_id', $room->id)->get();
-    
+
     $topics = Topic::where('room_id', $room->id)
         ->with(['choix' => function ($q) use ($room) {
             $q->withCount(['votes as vote_count' => function ($q) use ($room) {
