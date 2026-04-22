@@ -534,6 +534,7 @@ function listenEvents() {
         }).listen('.user.removed', (e) => {
 
             if (e.userId == USER_ID) {
+                {{-- console.log("hi") --}}
                     window.location.href = "/rooms/join";
                 }
             });
