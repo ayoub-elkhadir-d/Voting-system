@@ -59,9 +59,9 @@ class TopicController extends Controller
                 "updated_at" => now(),
             ]);
         }
-           
-        return redirect()->route('room.show', $room->id);
-
+    return redirect(session('return_url',route('room.show', $room->id)));
+ 
+        
    }
 }
     

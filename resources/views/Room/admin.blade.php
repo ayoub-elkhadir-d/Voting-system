@@ -486,33 +486,7 @@
             </div>
             <!-- Topics Content -->
             <div class="sidebar-content-section active" id="topics-section">
-               <div class="sidebar-body">
-                  @if($active)
-                  <div class="sidebar-section-label">Active</div>
-                  <div class="sidebar-item is-active">
-                     <div class="sidebar-dot dot-active"></div>
-                     <div class="sidebar-item-name">{{ $active->name }}</div>
-                     <span class="sidebar-item-badge badge-live">Live</span>
-                  </div>
-                  @endif
-                  @if($pending->isNotEmpty())
-                  <div class="sidebar-section-label">Pending</div>
-                  @foreach($pending as $pt)
-                  <div class="sidebar-item is-pending">
-                     <div class="sidebar-dot dot-pending"></div>
-                     <div class="sidebar-item-name">{{ $pt->name }}</div>
-                     @if(!$active)
-                     <form action="/rooms/{{ $room->id }}/topic/{{ $pt->id }}/start" method="POST">
-                        @csrf
-                        <button type="submit" class="sidebar-start-btn">Start</button>
-                     </form>
-                     @else
-                     <span class="sidebar-item-badge badge-pending">Pending</span>
-                     @endif
-                  </div>
-                  @endforeach
-                  @endif
-               </div>
+               @livewire('sidebar-topics', ['roomId' => $room->id])
             </div>
             <!-- Users Content -->
 
@@ -520,8 +494,7 @@
            <div class="sidebar-content-section" id="users-section">
                  @livewire('room-users', ['roomId' => $room->id])
            </div>
-
-
+        
 
 
          </aside>
@@ -585,9 +558,9 @@
                   <div style="display:flex; gap:10px; align-items:center;">
                      <span class="badge-completed">✓ Completed</span>
                      <!-- Restart Button -->
-                     <form action="/rooms/{{ $room->id }}/topic/{{ $topic->id }}/restart" method="POST">
-                        @csrf
-                        <button style="
+                     <button
+                        onclick="Livewire.dispatch('restart-topic', { topicId: {{ $topic->id }} })"
+                        style="
                            background:#f39c12;
                            border:none;
                            padding:6px 14px;
@@ -598,8 +571,7 @@
                            cursor:pointer;
                            ">
                         ↺ Restart
-                        </button>
-                     </form>
+                     </button>
                   </div>
                </div>
                @foreach($topic->choix as $choice)

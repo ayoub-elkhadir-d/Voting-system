@@ -40,7 +40,6 @@ class RoomActivity extends Component
     #[On('refresh-activity')]
     public function refreshActivity()
     {
-        // غير refresh component
         $this->dispatch('$refresh');
     }
 

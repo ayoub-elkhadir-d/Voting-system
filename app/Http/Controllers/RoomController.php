@@ -71,6 +71,7 @@ class RoomController extends Controller
 
     public function show(Room $room)
     {
+        session(['return_url' => request('from')]);
         return view("Topic.create", ["data" => $room, "topics" => $room->topics]);
     }
 
@@ -182,6 +183,7 @@ class RoomController extends Controller
             $status,
             $isMember->id
         ));
+
 if($isMember->status === "accepted"){
   return redirect("/rooms/{$request->room_id}/vote");
 }else{
@@ -240,40 +242,40 @@ if($isMember->status === "accepted"){
         ]);
     }
 
-    public function approveUser($roomId, $memberId)
-{
-    $member = membership::where('room_id', $roomId)
-        ->where('id', $memberId)
-        ->first();
+//     public function approveUser($roomId, $memberId)
+// {
+//     $member = membership::where('room_id', $roomId)
+//         ->where('id', $memberId)
+//         ->first();
 
-    if (!$member) {
-        return back();
-    }
+//     if (!$member) {
+//         return back();
+//     }
 
-    $member->status = 'accepted';
-    $member->save();
+//     $member->status = 'accepted';
+//     $member->save();
 
 
-    $participantsCount = membership::where('room_id', $roomId)
-        ->where('status', 'accepted')
-        ->count();
+//     $participantsCount = membership::where('room_id', $roomId)
+//         ->where('status', 'accepted')
+//         ->count();
 
    
 
-      broadcast(new UserJoined(
-            $member->username,
-            $roomId,
-            $participantsCount,
-            $member->status,
-            $memberId
-        ));
-    broadcast(new UserAccepted(
-        $roomId,
-        $member->user_id,
-    ));
+//       broadcast(new UserJoined(
+//             $member->username,
+//             $roomId,
+//             $participantsCount,
+//             $member->status,
+//             $memberId
+//         ));
+//     broadcast(new UserAccepted(
+//         $roomId,
+//         $member->user_id,
+//     ));
 
-    return back();
-}
+//     return back();
+// }
 
 
 
