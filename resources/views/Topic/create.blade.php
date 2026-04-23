@@ -141,7 +141,15 @@ button{
                 <label class="label">Choices</label>
                 <div id="choices-container"></div>
 
-                <button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
+                <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+                    <button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
+
+                   
+                    <label class="add-btn">
+                         Import File
+                        <input type="file" accept=".txt,.csv" style="display:none;" onchange="importChoices(this)">
+                    </label>
+                </div>
 
                 <label class="label">Duration</label>
                 <select name="duration" class="input">
@@ -218,6 +226,24 @@ function changeMethod(method){
     if(method === "percentage"){ createChoice("0","0%"); createChoice("50","50%"); createChoice("100","100%"); }
     if(method === "scale"){ for(let i=1;i<=10;i++) createChoice(i); }
     if(method === "fibonacci"){ [1,2,3,5,8,13].forEach(v=> createChoice(v)); }
+}
+
+function importChoices(input) {
+    let file = input.files[0];
+    if (!file) return;
+
+    let reader = new FileReader();
+    reader.onload = function (e) {
+        
+        let lines = e.target.result.split(/\r?\n/).map(l => l.trim()).filter(l => l !== '');
+
+ 
+        lines.forEach(line => createChoice(line));
+    };
+    reader.readAsText(file);
+
+   
+    input.value = '';
 }
 
 window.onload = () => { createChoice("", "Choice 1"); };
