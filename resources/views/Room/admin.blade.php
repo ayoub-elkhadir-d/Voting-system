@@ -101,7 +101,7 @@
          .badge-user      { background:#e8f5e9; color:#2e7d32; }
          .sidebar-start-btn {
          margin-left:auto;
-         background:#1a73e8;
+         background:#98fb98;
          color:#fff;
          border:none;
          padding:4px 12px;
@@ -546,53 +546,18 @@
                @endif
             </div>
             @endif
-            @if($completed->isNotEmpty())
-            <div class="section-label"> Completed Topics</div>
-            @foreach($completed as $topic)
-            @php $totalVotes = $topic->choix->sum('vote_count'); @endphp
-            <div class="topic-card">
-               <div class="topic-header">
-                  <div class="topic-name" style="font-size:20px; background:none; color:#1f3a6b;">
-                     {{ $topic->name }}
-                  </div>
-                  <div style="display:flex; gap:10px; align-items:center;">
-                     <span class="badge-completed">✓ Completed</span>
-                     <!-- Restart Button -->
-                     <button
-                        onclick="Livewire.dispatch('restart-topic', { topicId: {{ $topic->id }} })"
-                        style="
-                           background:#f39c12;
-                           border:none;
-                           padding:6px 14px;
-                           border-radius:20px;
-                           color:#fff;
-                           font-size:12px;
-                           font-weight:700;
-                           cursor:pointer;
-                           ">
-                        ↺ Restart
-                     </button>
-                  </div>
-               </div>
-               @foreach($topic->choix as $choice)
-               @php $pct = $totalVotes > 0 ? round($choice->vote_count / $totalVotes * 100) : 0; @endphp
-               <div class="choice-row">
-                  <div class="choice-label">{{ $choice->name }}</div>
-                  <div class="bar-wrap">
-                     <div class="bar-fill" style="width:{{ $pct }}%; background:#9aaebf;"></div>
-                  </div>
-                  <div class="vote-count">
-                     {{ $choice->vote_count }}
-                     <small style="color:#8895aa;">({{ $pct }}%)</small>
-                  </div>
-               </div>
-               @endforeach
-            </div>
-            @endforeach
-            @endif
+
+
+
+
+
+            @livewire('completed-topics', ['roomId' => $room->id])
+
+
+
+            
          </main>
       </div>
-      <!-- Tab Switching Script -->
       <script>
          document.addEventListener('DOMContentLoaded', function() {
              const navItems = document.querySelectorAll('.sidebar-nav-item');
@@ -803,6 +768,15 @@
          
              @endif
          
+         });
+      </script>
+      
+      <script src="https://www.gstatic.com/charts/loader.js"></script>
+      <script>
+         
+         google.charts.load('current', { packages: ['corechart'] });
+         google.charts.setOnLoadCallback(function () {
+             (window.chartsToLoad || []).forEach(function (fn) { fn(); });
          });
       </script>
       @livewireScripts

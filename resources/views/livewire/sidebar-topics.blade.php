@@ -9,7 +9,16 @@
     @endif
 
     @if($pending->isNotEmpty())
-    <div class="sidebar-section-label">Pending</div>
+    
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 20px 6px;">
+    <div class="sidebar-section-label" style="padding:0;">Pending</div>
+
+    <a href="{{ route('room.show', [$room->id, 'from' => url()->current()]) }}"
+       style="background:#1a73e8; color:#fff; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:700; text-decoration:none;">
+         + New Topic
+    </a>
+</div>
     @foreach($pending as $pt)
     <div class="sidebar-item is-pending">
         <div class="sidebar-dot dot-pending"></div>
@@ -26,10 +35,4 @@
     @endforeach
     @endif
 
-    <div style="padding: 12px 20px;">
-       <a href="{{ route('room.show', [$room->id, 'from' => url()->current()]) }}"
-   style="display:block; text-align:center; background:#1a73e8; color:#fff; padding:8px 0; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none;">
-    + New Topic
-      </a>
-    </div>
 </div>

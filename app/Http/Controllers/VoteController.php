@@ -86,7 +86,7 @@ public function adminShow(Room $room)
                     ->where('status', 'pending')
                     ->get();
 
-    return view('Room.admin', compact('room', 'topics','members','completed','active','pending'));
+    return view('Room.admin', compact('room', 'topics', 'members', 'completed', 'active', 'pending'));
 }
 
 public function stopTopic(Room $room, Topic $topic)
