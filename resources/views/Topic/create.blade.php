@@ -103,7 +103,40 @@ button{
 
 .title{ margin-bottom:10px; color:#1a73e8; }
 
-.navbar{ position:absolute; top:0; width:100%; }
+/* ── Vote Method Cards ── */
+.method-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 6px;
+}
+.method-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    background: #f5f7fa;
+    text-align: center;
+    user-select: none;
+}
+.method-card:hover {
+    border-color: #1a73e8;
+    background: #eef4ff;
+}
+.method-card.active {
+    border-color: #1a73e8;
+    background: #e8f0fe;
+    box-shadow: 0 2px 10px rgba(26,115,232,0.15);
+}
+.method-card .icon { font-size: 22px; }
+.method-card .name { font-size: 12px; font-weight: 700; color: #1a1a2e; }
+.method-card .desc { font-size: 10px; color: #888; }
+
 </style>
 
 </head>
@@ -131,14 +164,40 @@ button{
                 <input type="text" name="topic_name" class="input" placeholder="Enter topic">
 
                 <label class="label">Vote Method</label>
-                <select name="vote_method" class="input" onchange="changeMethod(this.value)">
-                    <option value="custom">Custom</option>
-                    <option value="percentage">Percentage</option>
-                    <option value="scale">Scale 1-10</option>
-                    <option value="fibonacci">Fibonacci</option>
-                </select>
+                <input type="hidden" name="vote_method" id="vote_method_input" value="custom">
+                <div class="method-grid">
+                    <div class="method-card active" onclick="selectMethod('custom', this)">
+                       
+                        <span class="name">Custom</span>
+                        <span class="desc">Your own choices</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('percentage', this)">
+                       
+                        <span class="name">Percentage</span>
+                        <span class="desc">0% – 50% – 100%</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('scale', this)">
+                       
+                        <span class="name">Scale 1-10</span>
+                        <span class="desc">Numeric rating</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('fibonacci', this)">
+                       
+                        <span class="name">Fibonacci</span>
+                        <span class="desc">1,2,3,5,8,13</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('countries', this)">
+                        
+                        <span class="name">Countries</span>
+                        <span class="desc">Pick from list</span>
+                    </div>
+                </div>
+
+
+
 
                 <label class="label">Choices</label>
+
                 <div id="choices-container"></div>
 
                 <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
@@ -219,6 +278,16 @@ function createChoice(value = "", placeholder="New Choice"){
 
 function addChoice(){ createChoice(); }
 
+function selectMethod(method, card) {
+ 
+    document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+ 
+    document.getElementById('vote_method_input').value = method;
+
+    changeMethod(method);
+}
+
 function changeMethod(method){
     let c = document.getElementById("choices-container");
     c.innerHTML = "";
@@ -226,6 +295,7 @@ function changeMethod(method){
     if(method === "percentage"){ createChoice("0","0%"); createChoice("50","50%"); createChoice("100","100%"); }
     if(method === "scale"){ for(let i=1;i<=10;i++) createChoice(i); }
     if(method === "fibonacci"){ [1,2,3,5,8,13].forEach(v=> createChoice(v)); }
+    if(method === "countries"){ openCountryPicker(); }
 }
 
 function importChoices(input) {
@@ -247,6 +317,66 @@ function importChoices(input) {
 }
 
 window.onload = () => { createChoice("", "Choice 1"); };
+</script>
+
+<!-- Country Picker Modal -->
+<div id="picker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;width:420px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+        <div style="padding:16px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:700;font-size:15px;">Select Countries</span>
+            <button onclick="closePicker()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#888;">&times;</button>
+        </div>
+        <div style="padding:12px 20px;border-bottom:1px solid #eee;">
+            <input id="picker-search" type="text" placeholder="Search country..." oninput="filterPicker(this.value)"
+                style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;">
+        </div>
+        <div id="picker-list" style="overflow-y:auto;flex:1;padding:8px 0;"></div>
+        <div style="padding:12px 20px;border-top:1px solid #eee;text-align:right;">
+            <button onclick="closePicker()" style="background:#1a73e8;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Done</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const COUNTRIES = @json(json_decode(file_get_contents(database_path('countries.json')), true));
+
+function openCountryPicker() {
+    document.getElementById('picker-search').value = '';
+    document.getElementById('picker-modal').style.display = 'flex';
+    renderPicker(COUNTRIES);
+}
+
+function closePicker() {
+    document.getElementById('picker-modal').style.display = 'none';
+}
+
+function filterPicker(q) {
+    renderPicker(COUNTRIES.filter(c => c.name.toLowerCase().includes(q.toLowerCase())));
+}
+
+function renderPicker(items) {
+    const list = document.getElementById('picker-list');
+    list.innerHTML = items.map(c => {
+        const exists = [...document.querySelectorAll('#choices-container input')].some(i => i.value === c.name);
+        return `<div onclick="toggleCountry('${c.name.replace(/'/g, "\\'")}')"
+            style="padding:10px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;font-size:13px;background:${exists ? '#e8f0fe' : '#fff'};transition:0.15s;"
+            onmouseover="this.style.background='#f5f9ff'" onmouseout="this.style.background='${exists ? '#e8f0fe' : '#fff'}'">
+            <img src="https://flagcdn.com/24x18/${c.code}.png" width="24" height="18" style="border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+            <span style="flex:1;">${c.name}</span>
+            <span style="font-size:16px;">${exists ? '✅' : ''}</span>
+        </div>`;
+    }).join('');
+}
+
+function toggleCountry(name) {
+    const existing = [...document.querySelectorAll('#choices-container input')].find(i => i.value === name);
+    if (existing) {
+        existing.closest('.choice-item').remove();
+    } else {
+        createChoice(name);
+    }
+    filterPicker(document.getElementById('picker-search').value);
+}
 </script>
 
 </body>
