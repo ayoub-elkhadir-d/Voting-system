@@ -121,7 +121,17 @@ public function adminShow(Room $room)
         'total_votes'      => DB::table('votes')->where('room_id', $room->id)->count(),
     ];
 
-    return view('Room.admin', compact('room', 'topics', 'members', 'completed', 'active', 'pending', 'stats'));
+    $voteTimelines = [];
+    foreach ($completed as $topic) {
+        $voteTimelines[$topic->id] = DB::table('votes')
+            ->where('topic_id', $topic->id)
+            ->selectRaw("DATE_FORMAT(created_at, '%H:%i') as minute, COUNT(*) as cnt")
+            ->groupBy('minute')
+            ->orderBy('minute')
+            ->get();
+    }
+
+    return view('Room.admin', compact('room', 'topics', 'members', 'completed', 'active', 'pending', 'stats', 'voteTimelines'));
 }
 
 public function stopTopic(Room $room, Topic $topic)

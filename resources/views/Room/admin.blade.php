@@ -5,6 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Admin — {{ $room->name }}</title>
       @vite(['resources/js/app.js'])
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
       <style>
          * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
          body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; display:flex; flex-direction:column; }
@@ -531,12 +532,12 @@
             </div>
             <!-- Navigation Tabs -->
             <div class="sidebar-nav">
-               <div class="sidebar-nav-item active" data-tab="topics">Topics</div>
+               <div class="sidebar-nav-item active" data-tab="topics"><i class="fa-solid fa-list-check"></i> Topics</div>
                <div class="sidebar-nav-item" data-tab="users">
-                  Users
+                  <i class="fa-solid fa-users"></i> Users
                   @if(isset($members))<span class="user-count">{{ count($members) }}</span>@endif
                </div>
-               <div class="sidebar-nav-item" data-tab="stats">Statistics</div>
+               <div class="sidebar-nav-item" data-tab="stats"><i class="fa-solid fa-chart-pie"></i> Stats</div>
             </div>
             <!-- Topics Content -->
             <div class="sidebar-content-section active" id="topics-section">
@@ -556,26 +557,26 @@
 
             <!-- Stats full-page view -->
             <div class="stats-view" id="stats-view">
-               <button class="back-btn" id="backBtn">← Back</button>
-               <div class="main-title"> Statistics — <span>{{ $room->name }}</span></div>
+               <button class="back-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+               <div class="main-title"><i class="fa-solid fa-chart-pie" style="color:#1a73e8;"></i> Statistics — <span>{{ $room->name }}</span></div>
                <div class="stats-grid">
                   <div class="stat-card">
-                     <div class="stat-icon" style="background:#e3f2fd;"></div>
+                     <div class="stat-icon" style="background:#e3f2fd;"><i class="fa-solid fa-users" style="color:#1565c0;font-size:22px;"></i></div>
                      <div class="stat-value">{{ $stats['total_members'] }}</div>
                      <div class="stat-label">Members</div>
                   </div>
                   <div class="stat-card">
-                     <div class="stat-icon" style="background:#f3e5f5;"></div>
+                     <div class="stat-icon" style="background:#f3e5f5;"><i class="fa-solid fa-clipboard-list" style="color:#7b1fa2;font-size:22px;"></i></div>
                      <div class="stat-value">{{ $stats['total_topics'] }}</div>
                      <div class="stat-label">Topics</div>
                   </div>
                   <div class="stat-card">
-                     <div class="stat-icon" style="background:#e8f5e9;"></div>
+                     <div class="stat-icon" style="background:#e8f5e9;"><i class="fa-solid fa-circle-check" style="color:#2e7d32;font-size:22px;"></i></div>
                      <div class="stat-value">{{ $stats['completed_topics'] }}</div>
                      <div class="stat-label">Completed</div>
                   </div>
                   <div class="stat-card">
-                     <div class="stat-icon" style="background:#fff8e1;"></div>
+                     <div class="stat-icon" style="background:#fff8e1;"><i class="fa-solid fa-ballot-check" style="color:#f57f17;font-size:22px;"></i></div>
                      <div class="stat-value">{{ $stats['total_votes'] }}</div>
                      <div class="stat-label">Total Votes</div>
                   </div>
@@ -583,19 +584,89 @@
                @if($completed->isNotEmpty())
                <div class="stats-section-title">Completed Topics</div>
                @foreach($completed as $t)
-               @php $tv = $t->choix->sum('vote_count'); @endphp
-               <div class="stats-topic-row">
+               @php
+                  $tv        = $t->choix->sum('vote_count');
+                  $topChoice = $t->choix->sortByDesc('vote_count')->first();
+                  $timeline  = $voteTimelines[$t->id] ?? collect();
+               @endphp
+
+               <!-- collapsed row -->
+               <div class="stats-topic-row" id="row-{{ $t->id }}">
                   <div class="stats-topic-name">{{ $t->name }}</div>
                   <span class="stats-topic-votes">{{ $tv }} votes</span>
                   <span class="stats-topic-badge" style="background:#e8f5e9;color:#2e7d32;">Completed</span>
+                  <button onclick="toggleTopicStats({{ $t->id }})" id="btn-{{ $t->id }}" style="background:#1a73e8;border:none;padding:6px 16px;border-radius:20px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;transition:0.2s;display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-chart-bar"></i> Statistics</button>
                </div>
+
+               <!-- expanded stats panel -->
+               <div id="stats-panel-{{ $t->id }}" style="display:none;background:#fff;border-radius:16px;padding:24px;margin-top:-6px;margin-bottom:12px;border:1px solid #e6eaf0;box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+
+                  <!-- summary cards -->
+                  <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+                     <div style="flex:1;min-width:100px;background:#f0f7ff;border-radius:14px;padding:14px;text-align:center;">
+                        <div style="font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;">Total Votes</div>
+                        <div style="font-size:28px;font-weight:800;color:#1a73e8;">{{ $tv }}</div>
+                     </div>
+                     <div style="flex:1;min-width:100px;background:#fffbf0;border-radius:14px;padding:14px;text-align:center;">
+                        <div style="font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;">Top Choice</div>
+                        <div style="font-size:15px;font-weight:800;color:#f39c12;margin-top:6px;">{{ $topChoice?->name ?? '—' }}</div>
+                     </div>
+                  </div>
+
+                  <!-- charts -->
+                  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                     <div style="flex:1;min-width:200px;background:#f8faff;border-radius:14px;padding:16px;">
+                        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Vote Share</div>
+                        <div id="pie-{{ $t->id }}" style="height:200px;"></div>
+                        <script>
+                           window.chartsToLoad = window.chartsToLoad || [];
+                           window.chartsToLoad.push(function () {
+                              var data = new google.visualization.DataTable();
+                              data.addColumn('string', 'Choice');
+                              data.addColumn('number', 'Votes');
+                              data.addRows([
+                                 @foreach($t->choix->sortByDesc('vote_count') as $choice)
+                                 ['{{ addslashes($choice->name) }}', {{ $choice->vote_count }}],
+                                 @endforeach
+                              ]);
+                              var chart = new google.visualization.PieChart(document.getElementById('pie-{{ $t->id }}'));
+                              chart.draw(data, { pieHole:0.45, height:200, legend:{position:'right',textStyle:{fontSize:11}}, chartArea:{left:10,top:10,width:'60%',height:'85%'}, tooltip:{text:'both'}, backgroundColor:'transparent' });
+                           });
+                        </script>
+                     </div>
+                     <div style="flex:2;min-width:220px;background:#f8faff;border-radius:14px;padding:16px;">
+                        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Votes Over Time</div>
+                        <div id="timeline-{{ $t->id }}" style="height:200px;"></div>
+                        <script>
+                           window.chartsToLoad = window.chartsToLoad || [];
+                           window.chartsToLoad.push(function () {
+                              var data = new google.visualization.DataTable();
+                              data.addColumn('string', 'Time');
+                              data.addColumn('number', 'Votes');
+                              @if($timeline->isEmpty())
+                              data.addRows([['No data', 0]]);
+                              @else
+                              data.addRows([
+                                 @foreach($timeline as $row)
+                                 ['{{ $row->minute }}', {{ $row->cnt }}],
+                                 @endforeach
+                              ]);
+                              @endif
+                              var chart = new google.visualization.ColumnChart(document.getElementById('timeline-{{ $t->id }}'));
+                              chart.draw(data, { height:200, legend:{position:'none'}, bar:{groupWidth:'60%'}, chartArea:{left:35,top:10,width:'90%',height:'75%'}, colors:['#1a73e8'], backgroundColor:'transparent', hAxis:{textStyle:{fontSize:10}}, vAxis:{minValue:0,format:'0',textStyle:{fontSize:10}} });
+                           });
+                        </script>
+                     </div>
+                  </div>
+               </div>
+
                @endforeach
                @endif
             </div>
 
             <!-- Normal admin view -->
             <div class="admin-view" id="admin-view">
-            <div class="main-title">Admin — <span>{{ $room->name }}</span></div>
+            <div class="main-title"><i class="fa-solid fa-shield-halved" style="color:#1a73e8;"></i> Admin — <span>{{ $room->name }}</span></div>
             <div class="section-label">Currently Voting</div>
             @if($active)
             @php $totalVotes = $active->choix->sum('vote_count'); @endphp
@@ -625,7 +696,7 @@
                <div class="action-buttons">
                   <form action="/rooms/{{ $room->id }}/topic/{{ $active->id }}/stop" method="POST">
                      @csrf
-                     <button type="submit" class="stop-btn"> Stop Voting</button>
+                     <button type="submit" class="stop-btn"><i class="fa-solid fa-stop"></i> Stop Voting</button>
                   </form>
                </div>
             </div>
@@ -635,7 +706,7 @@
                @if($pending->isNotEmpty())
                <form action="/rooms/{{ $room->id }}/topic/{{ $pending->first()->id }}/start" method="POST" style="margin-top:20px">
                   @csrf
-                  <button type="submit" class="next-btn">  Start Next Topic</button>
+                  <button type="submit" class="next-btn"><i class="fa-solid fa-play"></i> Start Next Topic</button>
                </form>
                @else
                <br>Start one from the sidebar.
@@ -894,11 +965,19 @@
       
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script>
-         
          google.charts.load('current', { packages: ['corechart'] });
          google.charts.setOnLoadCallback(function () {
              (window.chartsToLoad || []).forEach(function (fn) { fn(); });
          });
+
+         function toggleTopicStats(id) {
+             var panel = document.getElementById('stats-panel-' + id);
+             var btn   = document.getElementById('btn-' + id);
+             var open  = panel.style.display === 'block';
+             panel.style.display = open ? 'none' : 'block';
+             btn.innerHTML      = open ? '<i class="fa-solid fa-chart-bar"></i> Statistics' : '<i class="fa-solid fa-arrow-left"></i> Close';
+             btn.style.background = open ? '#1a73e8' : '#6c757d';
+         }
       </script>
       @livewireScripts
    </body>
