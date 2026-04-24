@@ -298,6 +298,9 @@ body {
     .vote-card { padding: 24px; }
     .topic-name { font-size: 26px; }
 }
+
+
+
 </style>
 </head>
 <body>
@@ -311,6 +314,7 @@ body {
         <div class="waiting-screen" id="waitingScreen" style="{{ $activeTopic ? 'display:none' : '' }}">
             <h2> Waiting for the next topic…</h2>
             <div class="dots">
+                <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -345,9 +349,12 @@ const USER_ID = {{ auth()->id() }};
 const roomId = {{ $room->id }};
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-let selectedChoice = null;
+let selectedChoice = null;   // single mode
+let selectedChoices = [];    // multiple mode
 let hasVoted = false;
 let currentTopicId = null;
+let currentVoteMode = 'select_one';
+let currentMaxChoices = 1;
 let countdownInterval = null;
 let autoStopTimeout = null;
 
@@ -422,49 +429,88 @@ function startCountdown(duration, startTime) {
 function showVote(topic) {
     stopTimers();
 
-    currentTopicId = topic.id;
-    selectedChoice = null;
-    hasVoted = false;
+    currentTopicId    = topic.id;
+    currentVoteMode   = topic.vote_methode || 'select_one';
+    currentMaxChoices = topic.max_choices || 1;
+    selectedChoice    = null;
+    selectedChoices   = [];
+    hasVoted          = false;
 
     topicLabel.innerText = topic.name;
     topicTitle.innerText = topic.name;
-
     submitButton.style.display = 'none';
-    votedBadge.style.display = 'none';
-
+    votedBadge.style.display   = 'none';
     choicesContainer.innerHTML = '';
+
+    // How many votes the user already cast (from server on page load, 0 on live event)
+    var alreadyVotedCount    = topic.user_voted_count    || 0;
+    var alreadyVotedChoiceIds = topic.user_voted_choice_ids || [];
+
+    // If user already used all their votes, mark as voted immediately
+    if (alreadyVotedCount >= currentMaxChoices) {
+        hasVoted = true;
+    }
+
+    // hint for multiple mode
+    var oldHint = document.getElementById('vote-hint');
+    if (oldHint) oldHint.remove();
+    if (currentVoteMode === 'select_multiple') {
+        var hint = document.createElement('p');
+        hint.id = 'vote-hint';
+        hint.style.cssText = 'font-size:12px;color:#aaa;margin-bottom:12px;text-align:center;';
+        hint.innerText = 'Select up to ' + currentMaxChoices + ' choice(s)';
+        choicesContainer.before(hint);
+    }
 
     for (var i = 0; i < topic.choices.length; i++) {
         (function (choice) {
             var button = document.createElement('button');
             button.className = 'choice-btn';
             button.innerText = choice.name;
+            button.dataset.choiceId = choice.id;
+
+            // Restore previously selected state on page refresh
+            if (alreadyVotedChoiceIds.indexOf(choice.id) > -1) {
+                button.classList.add('selected');
+            }
+
+            // Disable interaction if already voted
+            if (hasVoted) {
+                button.style.pointerEvents = 'none';
+            }
 
             button.onclick = function () {
                 if (hasVoted) return;
 
-                var allButtons = document.querySelectorAll('.choice-btn');
-                for (var j = 0; j < allButtons.length; j++) {
-                    allButtons[j].classList.remove('selected');
+                if (currentVoteMode === 'select_one') {
+                    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedChoice = { topicId: topic.id, choiceId: choice.id };
+                    submitButton.style.display = 'block';
+                } else {
+                    var idx = selectedChoices.findIndex(c => c.choiceId === choice.id);
+                    if (idx > -1) {
+                        selectedChoices.splice(idx, 1);
+                        button.classList.remove('selected');
+                    } else if (selectedChoices.length < currentMaxChoices) {
+                        selectedChoices.push({ topicId: topic.id, choiceId: choice.id });
+                        button.classList.add('selected');
+                    }
+                    submitButton.style.display = selectedChoices.length > 0 ? 'block' : 'none';
                 }
-
-                button.classList.add('selected');
-
-                selectedChoice = {
-                    topicId: topic.id,
-                    choiceId: choice.id
-                };
-
-                submitButton.style.display = 'block';
             };
 
             choicesContainer.appendChild(button);
         })(topic.choices[i]);
     }
 
-    waitingScreen.style.display = 'none';
-    voteCard.style.display = 'block';
+    // Show voted badge if already voted
+    if (hasVoted) {
+        votedBadge.style.display = 'block';
+    }
 
+    waitingScreen.style.display = 'none';
+    voteCard.style.display      = 'block';
     startCountdown(topic.duration, topic.started_at);
 }
 
@@ -475,29 +521,23 @@ function hideVote() {
 }
 
 submitButton.onclick = function () {
-    if (!selectedChoice || hasVoted) return;
+    if (hasVoted) return;
+    if (currentVoteMode === 'select_one' && !selectedChoice) return;
+    if (currentVoteMode === 'select_multiple' && selectedChoices.length === 0) return;
 
     hasVoted = true;
-
     submitButton.style.display = 'none';
-    votedBadge.style.display = 'block';
+    votedBadge.style.display   = 'block';
+    document.querySelectorAll('.choice-btn').forEach(b => b.style.pointerEvents = 'none');
 
-    var allButtons = document.querySelectorAll('.choice-btn');
-    for (var i = 0; i < allButtons.length; i++) {
-        allButtons[i].style.pointerEvents = 'none';
-    }
+    var toSubmit = currentVoteMode === 'select_one' ? [selectedChoice] : selectedChoices;
 
-    fetch('/rooms/vote/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken
-        },
-        body: JSON.stringify({
-            topic_id: selectedChoice.topicId,
-            choix_id: selectedChoice.choiceId,
-            room_id: roomId
-        })
+    toSubmit.forEach(function(sel) {
+        fetch('/rooms/vote/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+            body: JSON.stringify({ topic_id: sel.topicId, choix_id: sel.choiceId, room_id: roomId })
+        });
     });
 };
 
@@ -510,9 +550,13 @@ var topic = {
     name: @json($activeTopic->name),
     duration: @json($activeTopic->duration),
     started_at: {{ strtotime($activeTopic->started_at) }},
+    vote_methode: @json($activeTopic->vote_methode),
+    max_choices: {{ $activeTopic->max_choices }},
     choices: @json($activeTopic->choix->map(function($c) {
         return ['id' => $c->id, 'name' => $c->name];
-    }))
+    })),
+    user_voted_count: {{ $userVotedCount }},
+    user_voted_choice_ids: @json($userVotedChoiceIds)
 };
 
 showVote(topic);

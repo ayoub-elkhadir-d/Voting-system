@@ -163,51 +163,48 @@ button{
                 <label class="label">Topic</label>
                 <input type="text" name="topic_name" class="input" placeholder="Enter topic">
 
-                <label class="label">Vote Method</label>
-                <input type="hidden" name="vote_method" id="vote_method_input" value="custom">
-                <div class="method-grid">
-                    <div class="method-card active" onclick="selectMethod('custom', this)">
-                       
-                        <span class="name">Custom</span>
-                        <span class="desc">Your own choices</span>
+                <!-- ── Choices section ── -->
+                <div style="border:2px solid #e0e0e0;border-radius:14px;padding:18px;margin-top:14px;">
+
+                    <!-- Vote type toggle -->
+                    <div style="display:flex;gap:10px;margin-bottom:14px;">
+                        <input type="hidden" name="vote_method" id="vote_method_input" value="select_one">
+                        <div id="btn_single" onclick="setVoteType('select_one')" style="flex:1;padding:10px;border:2px solid #1a73e8;border-radius:10px;text-align:center;cursor:pointer;background:#e8f0fe;font-weight:700;font-size:13px;transition:0.2s;">
+                             Single Choice
+                        </div>
+                        <div id="btn_multi" onclick="setVoteType('select_multiple')" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:10px;text-align:center;cursor:pointer;background:#f5f7fa;font-weight:700;font-size:13px;transition:0.2s;">
+                         Multiple Choice
+                        </div>
                     </div>
-                    <div class="method-card" onclick="selectMethod('percentage', this)">
-                       
-                        <span class="name">Percentage</span>
-                        <span class="desc">0% – 50% – 100%</span>
+
+                    <!-- Max choices (only shown for multiple) -->
+                    <div id="max_choices_row" style="display:none;margin-bottom:14px;">
+                        <label class="label" style="margin-top:0;">Max choices allowed</label>
+                        <input type="number" name="max_choices" id="max_choices_input" class="input" value="2" min="2" max="20" style="width:120px;">
                     </div>
-                    <div class="method-card" onclick="selectMethod('scale', this)">
-                       
-                        <span class="name">Scale 1-10</span>
-                        <span class="desc">Numeric rating</span>
+
+                    <!-- Choice type cards -->
+                    <label class="label" style="margin-top:0;">Choice Type</label>
+                    <input type="hidden" name="choice_type" id="choice_type_input" value="custom">
+                    <div class="method-grid" style="margin-bottom:12px;">
+                        <div class="method-card active" onclick="selectChoiceType('custom', this)"><span class="icon"></span><span class="name">Custom</span><span class="desc">Your own choices</span></div>
+                        <div class="method-card" onclick="selectChoiceType('percentage', this)"><span class="icon"></span><span class="name">Percentage</span><span class="desc">0% – 50% – 100%</span></div>
+                        <div class="method-card" onclick="selectChoiceType('scale', this)"><span class="icon"></span><span class="name">Scale 1-10</span><span class="desc">Numeric rating</span></div>
+                        <div class="method-card" onclick="selectChoiceType('fibonacci', this)"><span class="icon"></span><span class="name">Fibonacci</span><span class="desc">1,2,3,5,8,13</span></div>
+                        <div class="method-card" onclick="selectChoiceType('countries', this)"><span class="icon"></span><span class="name">Countries</span><span class="desc">Pick from list</span></div>
                     </div>
-                    <div class="method-card" onclick="selectMethod('fibonacci', this)">
-                       
-                        <span class="name">Fibonacci</span>
-                        <span class="desc">1,2,3,5,8,13</span>
+
+                    <label class="label" style="margin-top:0;">Choices</label>
+                    <div id="choices-container"></div>
+
+                    <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+                        <button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
+                        <label class="add-btn">
+                            Import File
+                            <input type="file" accept=".txt,.csv" style="display:none;" onchange="importChoices(this)">
+                        </label>
                     </div>
-                    <div class="method-card" onclick="selectMethod('countries', this)">
-                        
-                        <span class="name">Countries</span>
-                        <span class="desc">Pick from list</span>
-                    </div>
-                </div>
 
-
-
-
-                <label class="label">Choices</label>
-
-                <div id="choices-container"></div>
-
-                <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
-                    <button type="button" class="add-btn" onclick="addChoice()">+ Add Choice</button>
-
-                   
-                    <label class="add-btn">
-                         Import File
-                        <input type="file" accept=".txt,.csv" style="display:none;" onchange="importChoices(this)">
-                    </label>
                 </div>
 
                 <label class="label">Duration</label>
@@ -278,14 +275,25 @@ function createChoice(value = "", placeholder="New Choice"){
 
 function addChoice(){ createChoice(); }
 
-function selectMethod(method, card) {
- 
+function setVoteType(type) {
+    document.getElementById('vote_method_input').value = type;
+    var isSingle = type === 'select_one';
+    document.getElementById('btn_single').style.borderColor  = isSingle ? '#1a73e8' : '#e0e0e0';
+    document.getElementById('btn_single').style.background   = isSingle ? '#e8f0fe' : '#f5f7fa';
+    document.getElementById('btn_multi').style.borderColor   = isSingle ? '#e0e0e0' : '#1a73e8';
+    document.getElementById('btn_multi').style.background    = isSingle ? '#f5f7fa' : '#e8f0fe';
+    document.getElementById('max_choices_row').style.display = isSingle ? 'none' : 'block';
+}
+
+function selectChoiceType(type, card) {
     document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
- 
-    document.getElementById('vote_method_input').value = method;
+    document.getElementById('choice_type_input').value = type;
+    changeMethod(type);
+}
 
-    changeMethod(method);
+function selectMethod(method, card) {
+    selectChoiceType(method, card);
 }
 
 function changeMethod(method){

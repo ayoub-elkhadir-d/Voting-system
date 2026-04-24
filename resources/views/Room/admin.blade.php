@@ -452,6 +452,63 @@
          color:#fff;
          transform:scale(1.1);
          }
+         /* Stats view */
+         .admin-view { display:block; }
+         .admin-view.hidden { display:none; }
+         .stats-view { display:none; }
+         .stats-view.active { display:block; }
+         .back-btn {
+         display:inline-flex;
+         align-items:center;
+         gap:8px;
+         background:#f0f4fc;
+         color:#1a73e8;
+         border:none;
+         padding:9px 22px;
+         border-radius:40px;
+         font-size:13px;
+         font-weight:700;
+         cursor:pointer;
+         margin-bottom:28px;
+         transition:0.2s;
+         }
+         .back-btn:hover { background:#dce8fb; }
+         .stats-grid {
+         display:grid;
+         grid-template-columns:repeat(4,1fr);
+         gap:16px;
+         margin-bottom:32px;
+         }
+         .stat-card {
+         background:#fff;
+         border-radius:20px;
+         padding:28px 16px;
+         display:flex;
+         flex-direction:column;
+         align-items:center;
+         gap:10px;
+         box-shadow:0 4px 16px rgba(0,0,0,0.07);
+         border:1px solid #e6eaf0;
+         }
+         .stat-icon { font-size:26px; width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+         .stat-value { font-size:36px; font-weight:800; color:#1a1a2e; }
+         .stat-label { font-size:11px; font-weight:700; color:#aaa; text-transform:uppercase; letter-spacing:0.8px; }
+         .stats-section-title { font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#aaa; margin-bottom:14px; }
+         .stats-topic-row {
+         background:#fff;
+         border-radius:16px;
+         padding:18px 24px;
+         margin-bottom:10px;
+         display:flex;
+         align-items:center;
+         gap:16px;
+         box-shadow:0 2px 8px rgba(0,0,0,0.05);
+         border:1px solid #e6eaf0;
+         }
+         .stats-topic-name { font-size:15px; font-weight:700; flex:1; color:#1a1a2e; }
+         .stats-topic-votes { font-size:13px; font-weight:700; color:#1a73e8; background:#e3f2fd; padding:3px 12px; border-radius:20px; }
+         .stats-topic-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+         @media (max-width:680px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
          @media (max-width: 680px) {
          .main { padding: 20px; }
          .topic-name-large { font-size: 26px; }
@@ -474,15 +531,12 @@
             </div>
             <!-- Navigation Tabs -->
             <div class="sidebar-nav">
-               <div class="sidebar-nav-item active" data-tab="topics">
-                  Topics
-               </div>
+               <div class="sidebar-nav-item active" data-tab="topics">Topics</div>
                <div class="sidebar-nav-item" data-tab="users">
-                  Users 
-                  @if(isset($members))
-                  <span class="user-count">{{ count($members) }}</span>
-                  @endif
+                  Users
+                  @if(isset($members))<span class="user-count">{{ count($members) }}</span>@endif
                </div>
+               <div class="sidebar-nav-item" data-tab="stats">Statistics</div>
             </div>
             <!-- Topics Content -->
             <div class="sidebar-content-section active" id="topics-section">
@@ -499,6 +553,48 @@
 
          </aside>
          <main class="main">
+
+            <!-- Stats full-page view -->
+            <div class="stats-view" id="stats-view">
+               <button class="back-btn" id="backBtn">← Back</button>
+               <div class="main-title"> Statistics — <span>{{ $room->name }}</span></div>
+               <div class="stats-grid">
+                  <div class="stat-card">
+                     <div class="stat-icon" style="background:#e3f2fd;"></div>
+                     <div class="stat-value">{{ $stats['total_members'] }}</div>
+                     <div class="stat-label">Members</div>
+                  </div>
+                  <div class="stat-card">
+                     <div class="stat-icon" style="background:#f3e5f5;"></div>
+                     <div class="stat-value">{{ $stats['total_topics'] }}</div>
+                     <div class="stat-label">Topics</div>
+                  </div>
+                  <div class="stat-card">
+                     <div class="stat-icon" style="background:#e8f5e9;"></div>
+                     <div class="stat-value">{{ $stats['completed_topics'] }}</div>
+                     <div class="stat-label">Completed</div>
+                  </div>
+                  <div class="stat-card">
+                     <div class="stat-icon" style="background:#fff8e1;"></div>
+                     <div class="stat-value">{{ $stats['total_votes'] }}</div>
+                     <div class="stat-label">Total Votes</div>
+                  </div>
+               </div>
+               @if($completed->isNotEmpty())
+               <div class="stats-section-title">Completed Topics</div>
+               @foreach($completed as $t)
+               @php $tv = $t->choix->sum('vote_count'); @endphp
+               <div class="stats-topic-row">
+                  <div class="stats-topic-name">{{ $t->name }}</div>
+                  <span class="stats-topic-votes">{{ $tv }} votes</span>
+                  <span class="stats-topic-badge" style="background:#e8f5e9;color:#2e7d32;">Completed</span>
+               </div>
+               @endforeach
+               @endif
+            </div>
+
+            <!-- Normal admin view -->
+            <div class="admin-view" id="admin-view">
             <div class="main-title">Admin — <span>{{ $room->name }}</span></div>
             <div class="section-label">Currently Voting</div>
             @if($active)
@@ -552,10 +648,8 @@
 
 
             @livewire('completed-topics', ['roomId' => $room->id])
+            </div><!-- end admin-view -->
 
-
-
-            
          </main>
       </div>
       <script>
@@ -602,6 +696,18 @@
              navItems.forEach(item => {
                  item.addEventListener('click', function () {
                      const tab = this.dataset.tab;
+
+                     if (tab === 'stats') {
+                         navItems.forEach(nav => nav.classList.remove('active'));
+                         this.classList.add('active');
+                         document.getElementById('admin-view').classList.add('hidden');
+                         document.getElementById('stats-view').classList.add('active');
+                         localStorage.setItem('activeTab', 'stats');
+                         return;
+                     }
+
+                     document.getElementById('admin-view').classList.remove('hidden');
+                     document.getElementById('stats-view').classList.remove('active');
          
                      // save tab
                      localStorage.setItem('activeTab', tab);
@@ -616,11 +722,26 @@
                      if (sections[tab]) sections[tab].classList.add('active');
                  });
              });
+
+             document.getElementById('backBtn').addEventListener('click', function () {
+                 document.getElementById('stats-view').classList.remove('active');
+                 document.getElementById('admin-view').classList.remove('hidden');
+                 navItems.forEach(nav => nav.classList.remove('active'));
+                 const topicsNav = document.querySelector('[data-tab="topics"]');
+                 if (topicsNav) topicsNav.classList.add('active');
+                 document.getElementById('topics-section').classList.add('active');
+                 localStorage.setItem('activeTab', 'topics');
+             });
          
          
              const savedTab = localStorage.getItem('activeTab');
          
-             if (savedTab && sections[savedTab]) {
+             if (savedTab === 'stats') {
+                 navItems.forEach(nav => nav.classList.remove('active'));
+                 document.querySelector('[data-tab="stats"]').classList.add('active');
+                 document.getElementById('admin-view').classList.add('hidden');
+                 document.getElementById('stats-view').classList.add('active');
+             } else if (savedTab && sections[savedTab]) {
          
                  navItems.forEach(nav => nav.classList.remove('active'));
          

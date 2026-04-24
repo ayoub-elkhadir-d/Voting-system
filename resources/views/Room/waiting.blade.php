@@ -76,6 +76,9 @@
         50%{ transform:scale(1.5); opacity:0.4; }
     }
 
+
+
+
     .btn-leave {
         background-color:#e74c3c;
         color:#fff;

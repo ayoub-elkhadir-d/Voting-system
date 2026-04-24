@@ -39,13 +39,14 @@ class TopicController extends Controller
 
          if ($data) {
        $topic = Topic::create([
-            "name" => $data["topic_name"],
-            "duration" => $data["duration"],
-            "vote_methode" =>$r->vote_method,
-            "user_id" => Auth::id(),
-            "room_id" => $room->id,
-            "created_at" => now(),
-            "updated_at" => now(),
+            "name"         => $data["topic_name"],
+            "duration"     => $data["duration"],
+            "vote_methode" => $r->vote_method,
+            "max_choices"  => $r->vote_method === 'select_multiple' ? (int)$r->max_choices : 1,
+            "user_id"      => Auth::id(),
+            "room_id"      => $room->id,
+            "created_at"   => now(),
+            "updated_at"   => now(),
           ]);
 
 
@@ -125,11 +126,6 @@ class TopicController extends Controller
     $topic->status = 'pending';
     $topic->started_at = null;
     $topic->save();
-
-  
-
-
     return back();
 }
-   
 }

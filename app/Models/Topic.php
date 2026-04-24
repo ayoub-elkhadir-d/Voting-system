@@ -10,7 +10,7 @@ use App\Models\choix;
 class Topic extends Model
 {
 
-protected $fillable = ['name','duration','room_id','user_id','vote_methode'];
+protected $fillable = ['name','duration','room_id','user_id','vote_methode','max_choices'];
 
      public function user()
     {
