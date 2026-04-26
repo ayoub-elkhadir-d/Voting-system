@@ -116,7 +116,7 @@
     </div>
 
     <ul class="nav-links">
-        <li><a href="#">Dashboard</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/myrooms">Rooms</a></li>
         <li><a href="#">Statistiques</a></li>
     </ul>

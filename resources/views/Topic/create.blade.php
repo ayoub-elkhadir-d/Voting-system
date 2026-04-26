@@ -232,6 +232,7 @@ button{
 
             <h3 class="title">Topics</h3>
 
+            <div style="max-height:420px;overflow-y:auto;padding-right:4px;">
             @if(isset($topics))
                 @foreach($topics as $index => $q)
                 <a href="/update/topic/{{$q->id}}/room/{{$q->room_id}}" style="text-decoration:none;color:inherit;">
@@ -245,6 +246,7 @@ button{
                 </a>
                 @endforeach
             @endif
+            </div>
         </div>
 
     </div>

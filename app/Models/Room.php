@@ -8,7 +8,7 @@ use App\Models\Topic;
 use App\Models\membership;
 class Room extends Model
 {
-    protected $fillable = ['name', 'description', 'user_id'];
+    protected $fillable = ['name', 'code', 'description', 'user_id', 'member_limit', 'visibility', 'vote_method', 'status'];
 
     public function user()
     {
