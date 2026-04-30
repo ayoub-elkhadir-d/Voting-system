@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code')->unique();
             $table->text('description');
-            $table->unsignedBigInteger('user_id'); 
+            $table->unsignedBigInteger('user_id');
+            $table->integer('member_limit')->nullable()->default(null);
+            $table->enum('visibility', ['public', 'private'])->default('public');
+            $table->enum('status', ['pending', 'started', 'ended'])->default('pending');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

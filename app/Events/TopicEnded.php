@@ -31,4 +31,5 @@ class TopicEnded implements ShouldBroadcastNow
     {
         return 'topic.ended';
     }
+  
 }

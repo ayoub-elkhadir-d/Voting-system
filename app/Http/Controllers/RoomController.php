@@ -26,12 +26,11 @@ class RoomController extends Controller
     public function store(Request $r)
     {
         $r->validate([
-            'room_name'    => 'required|max:255',
-            'room_desc'    => 'required',
-            'member_type'  => 'required',
-            'member_limit' => 'required|integer|min:1',
-            'visibility'   => 'required|in:public,private',
-            'vote_method'  => 'required',
+            'room_name'   => 'required|max:255',
+            'room_desc'   => 'nullable',
+            'member_type' => 'required|in:unlimited,limited',
+            'member_limit'=> 'required_if:member_type,limited|nullable|integer|min:1',
+            'visibility'  => 'required|in:public,private',
         ]);
 
         Room::create([
@@ -39,9 +38,8 @@ class RoomController extends Controller
             'code'         => str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT),
             'description'  => $r->room_desc,
             'user_id'      => Auth::id(),
-            'member_limit' => $r->member_limit,
+            'member_limit' => $r->member_type === 'limited' ? $r->member_limit : null,
             'visibility'   => $r->visibility,
-            'vote_method'  => $r->vote_method,
         ]);
 
         return redirect('/roomcreate')->with('success', 'Room created successfully!');
@@ -68,18 +66,17 @@ class RoomController extends Controller
     {
         $r->validate([
             'room_name'    => 'required|max:255',
-            'room_desc'    => 'required',
-            'member_limit' => 'required|integer|min:1',
+            'room_desc'    => 'nullable',
+            'member_type'  => 'required|in:unlimited,limited',
+            'member_limit' => 'required_if:member_type,limited|nullable|integer|min:1',
             'visibility'   => 'required|in:public,private',
-            'vote_method'  => 'required',
         ]);
 
         Room::findOrFail($id)->update([
             'name'         => $r->room_name,
             'description'  => $r->room_desc,
-            'member_limit' => $r->member_limit,
+            'member_limit' => $r->member_type === 'limited' ? $r->member_limit : null,
             'visibility'   => $r->visibility,
-            'vote_method'  => $r->vote_method,
         ]);
 
         return redirect('/myrooms')->with('success', 'Room updated successfully!');

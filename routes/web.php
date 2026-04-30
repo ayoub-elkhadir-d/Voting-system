@@ -78,10 +78,11 @@ Route::middleware('check.login')->group(function () {
     | Topics Management
     |--------------------------------------------------------------------------
     */
-    Route::post('/rooms/{room}/topic',              [TopicController::class, 'store']);
-    Route::get('/rooms/{room}/gettopics',           [TopicController::class, 'all']);
-    Route::get('/rooms/{room}/topics/{topic}/edit', [RoomController::class,  'editTopic']);
-    Route::post('/rooms/{room}/topics/{topic}',     [TopicController::class, 'update']);
+    Route::post('/rooms/{room}/topic',                   [TopicController::class, 'store']);
+    Route::get('/rooms/{room}/gettopics',                [TopicController::class, 'all']);
+    Route::get('/rooms/{room}/topics/{topic}/edit',      [TopicController::class, 'edit']);
+    Route::post('/rooms/{room}/topics/{topic}',          [TopicController::class, 'update']);
+    Route::delete('/rooms/{room}/topics/{topic}',        [TopicController::class, 'destroy']);
 
     /*
     |--------------------------------------------------------------------------

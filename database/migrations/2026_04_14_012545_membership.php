@@ -22,9 +22,8 @@ return new class extends Migration
                   ->constrained('users')
                   ->onDelete('cascade');
 
-            $table->string('role')->default('member'); 
-            
-
+            $table->string('username')->nullable();
+            $table->string('role')->default('member');
             $table->string('status')->default('active'); 
            
 

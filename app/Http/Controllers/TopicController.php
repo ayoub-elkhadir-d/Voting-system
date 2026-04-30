@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Auth;
 
 class TopicController extends Controller
 {
+    // ── Edit ─────────────────────────────────────────────────────────
+
+    public function edit(Room $room, Topic $topic)
+    {
+        return view('Topic.update', [
+            'room'   => $room,
+            'topic'  => $topic,
+            'topics' => $room->topics,
+            'choixes'=> $topic->choix()->get(),
+        ]);
+    }
+
     // ── Create ───────────────────────────────────────────────────────
 
     public function store(Request $r, Room $room)
@@ -40,7 +52,7 @@ class TopicController extends Controller
             'updated_at' => $now,
         ], $r->choices));
 
-        return redirect(session('return_url', route('room.show', $room->id)));
+        return redirect()->to(session('return_url') ?? route('room.show', $room->id));
     }
 
     // ── Update ───────────────────────────────────────────────────────
@@ -53,24 +65,36 @@ class TopicController extends Controller
             'choices'    => 'required|array|min:1',
         ]);
 
-        Topic::findOrFail($id)->update([
+        $topic = Topic::findOrFail($id);
+
+        $topic->update([
             'name'         => $r->topic_name,
             'duration'     => $r->duration,
             'vote_methode' => $r->vote_method,
+            'max_choices'  => $r->vote_method === 'select_multiple' ? (int) $r->max_choices : 1,
         ]);
 
         choix::where('topic_id', $id)->delete();
 
         $now = now();
         choix::insert(array_map(fn($name) => [
-            'name'       => $name,
+            'name'       => trim($name),
             'topic_id'   => $id,
             'room_id'    => $room->id,
             'created_at' => $now,
             'updated_at' => $now,
-        ], $r->choices));
+        ], array_filter($r->choices, fn($c) => trim($c) !== '')));
 
-        return back()->with('success', 'Topic updated successfully!');
+        return redirect("/rooms/{$room->id}/topics/{$id}/edit")->with('success', 'Topic updated successfully!');
+    }
+
+    // ── Destroy ───────────────────────────────────────────────────────
+
+    public function destroy(Room $room, Topic $topic)
+    {
+        choix::where('topic_id', $topic->id)->delete();
+        $topic->delete();
+        return redirect()->route('room.show', $room->id)->with('success', 'Topic deleted successfully!');
     }
 
     // ── Lifecycle ────────────────────────────────────────────────────

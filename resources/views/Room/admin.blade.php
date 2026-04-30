@@ -827,6 +827,7 @@
              }
          
              function initEcho() {
+
                  if (typeof Echo === 'undefined') {
                      setTimeout(initEcho, 100);
                      return;
@@ -947,11 +948,13 @@
                  }, 1000);
          
                  timeout = setTimeout(() => {
+
                      fetch('/rooms/' + roomId + '/topic/' + activeTopicId + '/stop', {
                          method: 'POST',
                          headers: {
                              'X-CSRF-TOKEN': '{{ csrf_token() }}'
                          }
+
                      });
                  }, remaining * 1000);
              }
@@ -966,7 +969,7 @@
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script>
          google.charts.load('current', { packages: ['corechart'] });
-         google.charts.setOnLoadCallback(function () {
+         google.charts.setOnLoadCallback(function () {²
              (window.chartsToLoad || []).forEach(function (fn) { fn(); });
          });
 

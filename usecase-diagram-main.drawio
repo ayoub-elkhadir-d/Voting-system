@@ -1,0 +1,261 @@
+<mxGraphModel>
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- System Boundary -->
+    <mxCell id="boundary" value="SystemVote - Voting Platform" style="shape=rectangle;html=1;rounded=0;whiteSpace=wrap;strokeWidth=3;fillColor=none;strokeColor=#000000;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="40" width="1000" height="700" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ACTORS (Left side) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Guest Actor -->
+    <mxCell id="actor1" value="Guest" style="shape=ellipse;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="150" width="60" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- Registered User Actor -->
+    <mxCell id="actor2" value="Registered User" style="shape=ellipse;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="300" width="60" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- Room Owner Actor -->
+    <mxCell id="actor3" value="Room Owner" style="shape=ellipse;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="450" width="60" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- Participant Actor -->
+    <mxCell id="actor4" value="Participant" style="shape=ellipse;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="600" width="60" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- USE CASES - AUTHENTICATION (Top) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Register Account -->
+    <mxCell id="uc1" value="Register Account" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="150" y="60" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Login -->
+    <mxCell id="uc2" value="Login" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="60" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Request Password Reset -->
+    <mxCell id="uc3" value="Request Password Reset" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="410" y="60" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- USE CASES - ROOM MANAGEMENT (Middle-Left) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Create Room -->
+    <mxCell id="uc4" value="Create Room" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="150" y="200" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- View My Rooms -->
+    <mxCell id="uc5" value="View My Rooms" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="200" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Edit Room -->
+    <mxCell id="uc6" value="Edit Room" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="410" y="200" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Delete Room -->
+    <mxCell id="uc7" value="Delete Room" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="540" y="200" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- USE CASES - TOPIC MANAGEMENT (Middle-Center) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Create Topic -->
+    <mxCell id="uc8" value="Create Topic" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="150" y="320" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Edit Topic -->
+    <mxCell id="uc9" value="Edit Topic" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="320" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Delete Topic -->
+    <mxCell id="uc10" value="Delete Topic" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="410" y="320" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Start Topic -->
+    <mxCell id="uc11" value="Start Topic" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="540" y="320" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Stop Topic -->
+    <mxCell id="uc12" value="Stop Topic" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="670" y="320" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- USE CASES - ROOM PARTICIPATION (Middle-Right) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Join Room -->
+    <mxCell id="uc13" value="Join Room" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="540" y="440" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Enter Username -->
+    <mxCell id="uc14" value="Enter Username" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="670" y="440" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Wait for Approval -->
+    <mxCell id="uc15" value="Wait for Approval" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="800" y="440" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Leave Room -->
+    <mxCell id="uc16" value="Leave Room" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="930" y="440" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- USE CASES - VOTING (Bottom) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Cast Vote -->
+    <mxCell id="uc17" value="Cast Vote" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="150" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- View Live Results -->
+    <mxCell id="uc18" value="View Live Results" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- View Vote Statistics -->
+    <mxCell id="uc19" value="View Vote Statistics" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="410" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- USE CASES - ADMIN FUNCTIONS (Bottom-Right) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Approve Member -->
+    <mxCell id="uc20" value="Approve Member" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="540" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Remove Member -->
+    <mxCell id="uc21" value="Remove Member" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="670" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- View Admin Panel -->
+    <mxCell id="uc22" value="View Admin Panel" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="800" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Start Room -->
+    <mxCell id="uc23" value="Start Room" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="930" y="560" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ASSOCIATIONS - GUEST -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <mxCell id="assoc1" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor1" target="uc1"/>
+    <mxCell id="assoc2" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor1" target="uc2"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ASSOCIATIONS - REGISTERED USER -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <mxCell id="assoc3" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor2" target="uc2"/>
+    <mxCell id="assoc4" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor2" target="uc3"/>
+    <mxCell id="assoc5" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor2" target="uc4"/>
+    <mxCell id="assoc6" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor2" target="uc5"/>
+    <mxCell id="assoc7" style="endArrow=none;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor2" target="uc13"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ASSOCIATIONS - ROOM OWNER -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <mxCell id="assoc8" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc6"/>
+    <mxCell id="assoc9" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc7"/>
+    <mxCell id="assoc10" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc8"/>
+    <mxCell id="assoc11" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc9"/>
+    <mxCell id="assoc12" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc10"/>
+    <mxCell id="assoc13" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc11"/>
+    <mxCell id="assoc14" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc12"/>
+    <mxCell id="assoc15" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc20"/>
+    <mxCell id="assoc16" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc21"/>
+    <mxCell id="assoc17" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc22"/>
+    <mxCell id="assoc18" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor3" target="uc23"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ASSOCIATIONS - PARTICIPANT -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <mxCell id="assoc19" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor4" target="uc13"/>
+    <mxCell id="assoc20" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor4" target="uc14"/>
+    <mxCell id="assoc21" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor4" target="uc15"/>
+    <mxCell id="assoc22" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor4" target="uc17"/>
+    <mxCell id="assoc23" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor4" target="uc18"/>
+    <mxCell id="assoc24" style="endArrow=none;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor4" target="uc16"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- INCLUDE RELATIONSHIPS -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Join Room includes Enter Username -->
+    <mxCell id="inc1" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontSize=9;" edge="1" parent="1" source="uc13" target="uc14"/>
+
+    <!-- Enter Username includes Wait for Approval (for private rooms) -->
+    <mxCell id="inc2" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontSize=9;" edge="1" parent="1" source="uc14" target="uc15"/>
+
+    <!-- Cast Vote includes View Live Results -->
+    <mxCell id="inc3" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontSize=9;" edge="1" parent="1" source="uc17" target="uc18"/>
+
+    <!-- Start Topic includes Start Room -->
+    <mxCell id="inc4" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontSize=9;" edge="1" parent="1" source="uc11" target="uc23"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- LEGEND -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <mxCell id="legend" value="Legend" style="swimlane;fontStyle=1;startSize=20;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+      <mxGeometry x="150" y="680" width="900" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="leg1" value="Actor" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=9;" vertex="1" parent="legend">
+      <mxGeometry x="10" y="20" width="50" height="25" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="leg2" value="Use Case" style="ellipse;html=1;align=center;verticalAlign=middle;fontSize=9;" vertex="1" parent="legend">
+      <mxGeometry x="80" y="20" width="50" height="25" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="leg3" value="" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="legend" source="leg2" target="leg4"/>
+    <mxCell id="leg4" value="Association" style="text;align=left;fontSize=9;" vertex="1" parent="legend">
+      <mxGeometry x="160" y="20" width="70" height="25" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="leg5" value="" style="endArrow=open;dashed=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontSize=9;" edge="1" parent="legend" source="leg4" target="leg6"/>
+    <mxCell id="leg6" value="Include/Extend" style="text;align=left;fontSize=9;" vertex="1" parent="legend">
+      <mxGeometry x="280" y="20" width="80" height="25" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

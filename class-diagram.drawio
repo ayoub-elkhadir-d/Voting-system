@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2025-01-01T00:00:00.000Z" agent="Mozilla/5.0" version="22.1.0" etag="systemvote-uml" type="device">
+  <diagram name="UML Class Diagram" id="systemvote-uml">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pkg-ctrl" value="Controllers" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=140;tabHeight=24;tabPosition=left;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1120" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-model" value="Models" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=140;tabHeight=24;tabPosition=left;html=1;rounded=0;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="340" width="1120" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="User" value="User" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="380" width="200" height="144" as="geometry" />
+        </mxCell>
+        <mxCell id="User_attrs" value="+ id: int&amp;#10;+ name: string&amp;#10;+ email: string&amp;#10;+ password: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="User">
+          <mxGeometry y="26" width="200" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="User_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="User">
+          <mxGeometry y="90" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="User_methods" value="+ rooms(): HasMany&amp;#10;+ memberships(): HasMany&amp;#10;+ votes(): HasMany" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="User">
+          <mxGeometry y="98" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Room" value="Room" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="360" y="380" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Room_attrs" value="+ id: int&amp;#10;+ name: string&amp;#10;+ code: string&amp;#10;+ description: string&amp;#10;+ member_limit: int&amp;#10;+ visibility: string&amp;#10;+ status: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Room">
+          <mxGeometry y="26" width="200" height="106" as="geometry" />
+        </mxCell>
+        <mxCell id="Room_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="Room">
+          <mxGeometry y="132" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Room_methods" value="+ user(): BelongsTo&amp;#10;+ topics(): HasMany&amp;#10;+ memberships(): HasMany&amp;#10;+ votes(): HasMany" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Room">
+          <mxGeometry y="140" width="200" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="Topic" value="Topic" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="640" y="380" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Topic_attrs" value="+ id: int&amp;#10;+ name: string&amp;#10;+ duration: int&amp;#10;+ vote_methode: string&amp;#10;+ max_choices: int&amp;#10;+ status: string&amp;#10;+ started_at: datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Topic">
+          <mxGeometry y="26" width="200" height="106" as="geometry" />
+        </mxCell>
+        <mxCell id="Topic_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="Topic">
+          <mxGeometry y="132" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Topic_methods" value="+ user(): BelongsTo&amp;#10;+ room(): BelongsTo&amp;#10;+ choix(): HasMany&amp;#10;+ votes(): HasMany" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Topic">
+          <mxGeometry y="140" width="200" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="Choix" value="Choix" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="920" y="380" width="200" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Choix_attrs" value="+ id: int&amp;#10;+ name: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Choix">
+          <mxGeometry y="26" width="200" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="Choix_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="Choix">
+          <mxGeometry y="62" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Choix_methods" value="+ topic(): BelongsTo&amp;#10;+ votes(): HasMany" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Choix">
+          <mxGeometry y="70" width="200" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="Vote" value="Vote" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="500" y="640" width="200" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="Vote_attrs" value="+ id: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Vote">
+          <mxGeometry y="26" width="200" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="Vote_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="Vote">
+          <mxGeometry y="48" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Vote_methods" value="+ user(): BelongsTo&amp;#10;+ topic(): BelongsTo&amp;#10;+ choix(): BelongsTo&amp;#10;+ room(): BelongsTo" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Vote">
+          <mxGeometry y="56" width="200" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="Membership" value="Membership" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="640" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Membership_attrs" value="+ id: int&amp;#10;+ username: string&amp;#10;+ role: string&amp;#10;+ status: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Membership">
+          <mxGeometry y="26" width="200" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="Membership_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="Membership">
+          <mxGeometry y="90" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Membership_methods" value="+ user(): BelongsTo&amp;#10;+ room(): BelongsTo" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="Membership">
+          <mxGeometry y="98" width="200" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-room" value="owns" style="endArrow=open;endSize=12;startArrow=diamond;startFill=0;startSize=14;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="User" target="Room">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-room_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-user-room">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-room_dst" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-user-room">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-room-topic" value="contains" style="endArrow=open;endSize=12;startArrow=diamond;startFill=1;startSize=14;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="Room" target="Topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-room-topic_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-room-topic">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-room-topic_dst" value="1..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-room-topic">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-topic-choix" value="has choices" style="endArrow=open;endSize=12;startArrow=diamond;startFill=1;startSize=14;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="Topic" target="Choix">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-topic-choix_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-topic-choix">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-topic-choix_dst" value="1..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-topic-choix">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-room-membership" value="has members" style="endArrow=open;endSize=12;startArrow=diamond;startFill=1;startSize=14;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="Room" target="Membership">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="620" />
+              <mxPoint x="230" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-room-membership_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-room-membership">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-room-membership_dst" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-room-membership">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-membership" value="joins" style="endArrow=open;endSize=12;startArrow=diamond;startFill=0;startSize=14;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="User" target="Membership">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-membership_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-user-membership">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-membership_dst" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-user-membership">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-vote" value="casts" style="endArrow=open;endSize=12;startArrow=none;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="User" target="Vote">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="500" />
+              <mxPoint x="340" y="675" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-vote_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-user-vote">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-vote_dst" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-user-vote">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-topic-vote" value="receives" style="endArrow=open;endSize=12;startArrow=none;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="Topic" target="Vote">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-topic-vote_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-topic-vote">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-topic-vote_dst" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-topic-vote">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-choix-vote" value="receives" style="endArrow=open;endSize=12;startArrow=none;html=1;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="Choix" target="Vote">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="485" />
+              <mxPoint x="880" y="745" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-choix-vote_src" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-choix-vote">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="-5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-choix-vote_dst" value="0..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel-choix-vote">
+          <mxGeometry x="0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="5" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend" value="Legend" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="980" y="660" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text" value="&amp;#9670;--- Aggregation&amp;#10;&amp;#9670;--- Composition&amp;#10;&amp;rarr; Association" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry y="26" width="160" height="94" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
