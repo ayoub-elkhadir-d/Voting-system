@@ -91,6 +91,7 @@ Route::middleware(['check.login', 'user.only'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::post('/rooms/vote/submit', [VoteController::class, 'submit']);
+    Route::post('/rooms/vote/cancel', [VoteController::class, 'cancel']);
     Route::get('/rooms/{room}/vote',  [VoteController::class, 'show'])->middleware('accepted.member');
 
     Route::middleware('room.owner')->group(function () {

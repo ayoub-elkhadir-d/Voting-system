@@ -31,9 +31,46 @@ class VoteController extends Controller
             $userVotedCount = count($userVotedChoiceIds);
         }
 
+        $totalTopics     = Topic::where('room_id', $room->id)->count();
+        $completedTopics = Topic::where('room_id', $room->id)->where('status', 'completed')->count();
+        $memberCount     = $room->memberships()->count();
+        $members         = $room->memberships()->where('status', 'accepted')->get(['user_id', 'username']);
+
         return view('Room.vote', compact(
-            'room', 'activeTopic', 'userVotedCount', 'userVotedChoiceIds'
+            'room', 'activeTopic', 'userVotedCount', 'userVotedChoiceIds',
+            'totalTopics', 'completedTopics', 'memberCount', 'members'
         ));
+    }
+
+    public function cancel(Request $request)
+    {
+        $request->validate([
+            'topic_id' => 'required|exists:topics,id',
+            'room_id'  => 'required|exists:rooms,id',
+        ]);
+
+        $topic = Topic::findOrFail($request->topic_id);
+
+        if ($topic->status !== 'active') {
+            return response()->json(['status' => 'topic_not_active']);
+        }
+
+        Vote::where('user_id', Auth::id())
+            ->where('topic_id', $request->topic_id)
+            ->where('room_id', $request->room_id)
+            ->delete();
+
+        $choices = choix::where('topic_id', $request->topic_id)
+            ->withCount(['votes as vote_count' => fn($q) => $q->where('room_id', $request->room_id)])
+            ->get(['id', 'name']);
+
+        broadcast(new VoteUpdated(
+            $request->room_id,
+            $request->topic_id,
+            $choices->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'votes' => $c->vote_count])
+        ));
+
+        return response()->json(['status' => 'cancelled']);
     }
 
     public function submit(Request $request)
