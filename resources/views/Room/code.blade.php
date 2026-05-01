@@ -10,12 +10,13 @@
          body { background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
          .title { text-align:center; margin-top:40px; font-size:32px; font-weight:bold; }
          .title span { color:#1a73e8; }
-         .main { display:flex; justify-content:center; gap: 30px; margin-top:50px; flex-wrap: wrap; }
+         .main { display:flex; justify-content:center; gap: 30px; margin-top:50px; flex-wrap: wrap; padding: 0 16px 60px; }
          .activity-card {
          background:#fff;
          padding:30px;
          border-radius:20px;
-         width: 320px;
+         width: 100%;
+         max-width: 320px;
          box-shadow:0 8px 32px rgba(0,0,0,0.08);
          border:1px solid #e0e0e0;
          }
@@ -32,8 +33,10 @@
          align-items:center;
          box-shadow:0 8px 32px rgba(0,0,0,0.08);
          border:1px solid #e0e0e0;
+         flex-wrap: wrap;
+         justify-content: center;
          }
-         .code { display:flex; gap:10px; }
+         .code { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
          .box {
          width:55px; height:75px;
          background:#dfdfdf;
@@ -78,7 +81,7 @@
          border-radius:10px;
          border:1px solid #e0e0e0;
          }
-         .copy-box input { background:transparent; border:none; color:#1a1a2e; width:150px; outline:none; }
+         .copy-box input { background:transparent; border:none; color:#1a1a2e; width:150px; outline:none; font-size:13px; }
          .copy-box button {
          background:#1a73e8;
          border:none;
@@ -105,6 +108,12 @@
          box-shadow:0 4px 15px rgba(26,115,232,0.25);
          }
          .start-btn:hover { background:#1558b0; transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,115,232,0.35); }
+         @media(max-width:600px){
+             .title{ font-size:24px; }
+             .box{ width:44px; height:62px; font-size:22px; }
+             .card{ padding:20px; }
+             .activity-card{ max-width:100%; }
+         }
       </style>
    </head>
    <body>

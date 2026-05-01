@@ -9,7 +9,7 @@
 body{ background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
 .title{ text-align:center; margin-top:60px; font-size:34px; font-weight:800; position:relative; z-index:2; color:#1a1a2e; }
 .title span{ color:#1a73e8; }
-.container{ display:flex; justify-content:center; margin-top:50px; position:relative; z-index:2; padding-bottom:60px; }
+.container{ display:flex; justify-content:center; margin-top:50px; position:relative; z-index:2; padding-bottom:60px; padding-left:16px; padding-right:16px; }
 
 .card{
     background:#fff;
@@ -21,9 +21,10 @@ body{ background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
     align-items:center;
     gap:28px;
     box-shadow:0 8px 32px rgba(0,0,0,0.08);
-    min-width:420px;
+    width:100%;
+    max-width:480px;
 }
-.code-inputs{ display:flex; gap:12px; }
+.code-inputs{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
 .code-inputs input{
     width:62px; height:82px;
     text-align:center;
@@ -79,17 +80,15 @@ body{ background:#dfdfdf; color:#1a1a2e; min-height:100vh; overflow-x:hidden; }
     box-shadow:0 6px 20px rgba(0,0,0,0.1);
 }
 @media(max-width:520px){
-    .card{ min-width:unset; padding:30px 20px; }
-    .code-inputs input{ width:46px; height:66px; font-size:24px; }
+    .card{ padding:30px 20px; }
+    .code-inputs input{ width:44px; height:62px; font-size:22px; }
+    .title{ font-size:26px; margin-top:40px; }
 }
 </style>
 </head>
 <body>
 @include('components.navbar')
-
-@if (session('success'))
-<div class="alert-success">✔ {{ session('success') }}</div>
-@endif
+@include('components.toast')
 
 <div class="title"><span>Join</span> Room</div>
 

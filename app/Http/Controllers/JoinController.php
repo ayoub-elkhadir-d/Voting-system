@@ -80,6 +80,10 @@ class JoinController extends Controller
         $room   = Room::findOrFail($request->room_id);
         $status = $room->visibility === 'private' ? 'pending' : 'accepted';
 
+        if ($room->member_limit !== null && $this->acceptedCount($room->id) >= $room->member_limit) {
+            return redirect('/rooms/join')->with('error', 'This room is full!');
+        }
+
         $nameTaken = membership::where('room_id', $request->room_id)
             ->where('username', $request->user_name)
             ->exists();

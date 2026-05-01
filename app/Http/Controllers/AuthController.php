@@ -29,6 +29,16 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            if (Auth::user()->is_banned) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Your account has been banned.']);
+            }
+
+            if (Auth::user()->isSuperAdmin()) {
+                return redirect('/superadmin');
+            }
+
             return redirect('/dashboard');
         }
 

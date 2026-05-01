@@ -14,6 +14,11 @@ class CheckLogin
             return redirect('/login');
         }
 
+        if (Auth::user()->is_banned) {
+            Auth::logout();
+            return redirect('/login')->withErrors(['email' => 'Your account has been banned.']);
+        }
+
         return $next($request);
     }
 }

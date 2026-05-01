@@ -442,11 +442,9 @@ function showVote(topic) {
     votedBadge.style.display   = 'none';
     choicesContainer.innerHTML = '';
 
-    // How many votes the user already cast (from server on page load, 0 on live event)
     var alreadyVotedCount    = topic.user_voted_count    || 0;
     var alreadyVotedChoiceIds = topic.user_voted_choice_ids || [];
 
-    // If user already used all their votes, mark as voted immediately
     if (alreadyVotedCount >= currentMaxChoices) {
         hasVoted = true;
     }
@@ -578,7 +576,6 @@ function listenEvents() {
         }).listen('.user.removed', (e) => {
 
             if (e.userId == USER_ID) {
-                {{-- console.log("hi") --}}
                     window.location.href = "/rooms/join";
                 }
             });

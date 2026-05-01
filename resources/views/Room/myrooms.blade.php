@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Rooms</title>
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <style>
+.material-symbols-rounded{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
 *{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
 
 body{ background:#f5f7fb; color:#1a1a2e; padding-top:90px; }
@@ -36,8 +38,14 @@ body{ background:#f5f7fb; color:#1a1a2e; padding-top:90px; }
 /* grid */
 .rooms-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
     gap:24px;
+}
+
+@media(max-width:600px){
+    .rooms-grid{ grid-template-columns:1fr; }
+    .rooms-container{ padding:20px 14px; }
+    .title{ font-size:20px; }
 }
 
 /* card */
@@ -56,7 +64,6 @@ body{ background:#f5f7fb; color:#1a1a2e; padding-top:90px; }
     box-shadow:0 12px 30px rgba(0,0,0,0.08);
 }
 
-/* 🔥 BIG HEADER (new) */
 .room-header{
     height:110px;
     display:flex;
@@ -90,9 +97,22 @@ body{ background:#f5f7fb; color:#1a1a2e; padding-top:90px; }
 .menu{ position:absolute; top:12px; right:12px; }
 
 .menu-btn{
-    font-size:20px;
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
     cursor:pointer;
-    color:#999;
+    color:#666;
+    transition:.2s;
+}
+.menu-btn:hover{
+    background:#f0f4ff;
+    color:#1a73e8;
+}
+.menu-btn .material-symbols-rounded{
+    font-size:26px;
 }
 
 .menu-content{
@@ -146,10 +166,7 @@ body{ background:#f5f7fb; color:#1a1a2e; padding-top:90px; }
 <body>
 
 @include('components.navbar')
-
-@if (session('success'))
-<div class="alert-success">✔ {{ session('success') }}</div>
-@endif
+@include('components.toast')
 
 <div class="rooms-container">
     <h2 class="title">My Rooms</h2>
@@ -165,14 +182,14 @@ body{ background:#f5f7fb; color:#1a1a2e; padding-top:90px; }
         <div class="room-card" onclick="goToRoom(event, {{$room->id}})">
 
             <div class="menu">
-                <div class="menu-btn" onclick="toggleMenu(event,this)">⋮</div>
+                <div class="menu-btn" onclick="toggleMenu(event,this)"><span class="material-symbols-rounded">more_vert</span></div>
                 <div class="menu-content">
-                    <a href="/show/{{$room->id}}">▶ Start</a>
-                    <a href="/update/{{$room->id}}">✏ Edit</a>
+                    <a href="/show/{{$room->id}}"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;margin-right:6px;">play_arrow</span>Start</a>
+                    <a href="/update/{{$room->id}}"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;margin-right:6px;">edit</span>Edit</a>
                     <form action="/delete/{{$room->id}}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit">🗑 Delete</button>
+                        <button type="submit"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;margin-right:6px;">delete</span>Delete</button>
                     </form>
                 </div>
             </div>

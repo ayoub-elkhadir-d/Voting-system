@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JoinController;
 use App\Http\Controllers\RoomController;
@@ -29,7 +30,7 @@ Route::get('/login-link/{token}', [AuthController::class, 'verify']);
 | Protected Routes (requires login)
 |--------------------------------------------------------------------------
 */
-Route::middleware('check.login')->group(function () {
+Route::middleware(['check.login', 'user.only'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
@@ -56,10 +57,10 @@ Route::middleware('check.login')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/rooms/join',          [JoinController::class, 'index']);
-    Route::post('/rooms/join',         [JoinController::class, 'join'])->middleware('room.started');
-    Route::get('/rooms/join/{code}',   [JoinController::class, 'join']);
-    Route::post('/rooms/confirm-join', [JoinController::class, 'confirm']);
-    Route::get('/rooms/{room}/waiting',[JoinController::class, 'waiting']);
+    Route::post('/rooms/join',         [JoinController::class, 'join'])->middleware(['room.started', 'no.owner.join']);
+    Route::get('/rooms/join/{code}',   [JoinController::class, 'join'])->middleware('no.owner.join');
+    Route::post('/rooms/confirm-join', [JoinController::class, 'confirm'])->middleware('no.owner.join');
+    Route::get('/rooms/{room}/waiting',[JoinController::class, 'waiting'])->middleware('no.owner.join');
     Route::post('/rooms/{room}/left',  [JoinController::class, 'leave']);
 
     /*
@@ -102,4 +103,19 @@ Route::middleware('check.login')->group(function () {
         Route::post('/rooms/{room}/members/{member}/approve', [RoomController::class, 'approveUser']);
     });
 
+});
+
+/*
+|--------------------------------------------------------------------------
+| Super Admin Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['check.login', 'superadmin'])->prefix('superadmin')->group(function () {
+    Route::get('/',                          [SuperAdminController::class, 'index']);
+    Route::post('/users/{user}/ban',         [SuperAdminController::class, 'banUser']);
+    Route::post('/users/{user}/unban',       [SuperAdminController::class, 'unbanUser']);
+    Route::delete('/users/{user}',           [SuperAdminController::class, 'deleteUser']);
+    Route::post('/users/{user}/promote',     [SuperAdminController::class, 'promoteUser']);
+    Route::post('/users/{user}/demote',      [SuperAdminController::class, 'demoteUser']);
+    Route::delete('/rooms/{room}',           [SuperAdminController::class, 'deleteRoom']);
 });

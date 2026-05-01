@@ -152,15 +152,25 @@
         .action-sub   { font-size:11px; color:#aaa; margin-top:2px; }
 
         @media(max-width:768px) {
-            .stats-grid { grid-template-columns:repeat(2,1fr); }
-            .actions-grid { grid-template-columns:1fr; }
-            .welcome { flex-direction:column; gap:20px; }
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            .actions-grid { grid-template-columns: 1fr 1fr; }
+            .welcome { flex-direction: column; gap: 20px; }
+            .welcome-actions { flex-wrap: wrap; }
+        }
+        @media(max-width:480px) {
+            .dash { padding: 20px 14px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .actions-grid { grid-template-columns: 1fr; }
+            .welcome { padding: 22px 20px; }
+            .welcome-text h1 { font-size: 20px; }
+            .recent-grid { grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); }
         }
     </style>
 </head>
 <body>
 
 @include('components.navbar')
+@include('components.toast')
 
 <div class="dash">
 

@@ -15,7 +15,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px 60px;
+            padding: 20px 20px 60px;
             color: #1a1a2e;
         }
 
@@ -84,6 +84,10 @@
             box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
         }
         .field textarea { height: 100px; resize: none; }
+        .field input.is-invalid, .field textarea.is-invalid { border-color: #e74c3c !important; background: #fff8f8; }
+        .field input.is-valid, .field textarea.is-valid   { border-color: #27ae60 !important; }
+        .field-error { color: #e74c3c; font-size: 11px; font-weight: 600; margin-top: 4px; display: none; }
+        .field-error.show { display: block; }
 
         /* ── Divider ── */
         .divider {
@@ -221,6 +225,16 @@
         .fade-out { animation: fadeOut 0.35s forwards; }
         @keyframes fadeOut { to { opacity:0; transform:translateX(60px); } }
 
+        .page-title {
+            text-align: center;
+            margin: 60px;
+            font-size: 34px;
+            font-weight: 800;
+            color: #1a1a2e;
+            width: 100%;
+        }
+        .page-title span { color: #1a73e8; }
+
         @media (max-width: 480px) {
             .card { padding: 28px 20px; }
             .row-2 { grid-template-columns: 1fr; }
@@ -230,12 +244,9 @@
 <body>
     @include('components.navbar')
 
-    @if(session('success'))
-    <div id="toast" class="toast">
-        <div class="t-icon"><span class="material-icons-round" style="font-size:15px">check</span></div>
-        <div><strong>Room Created!</strong><span>{{ session('success') }}</span></div>
-    </div>
-    @endif
+    <div class="page-title"><span>Create</span> Room</div>
+
+    @include('components.toast')
 
     <div class="card">
         <div class="card-header">
@@ -254,7 +265,8 @@
             {{-- Room Info --}}
             <div class="field">
                 <label>Room Name</label>
-                <input type="text" name="room_name" placeholder="e.g. Sprint Planning Q3" required>
+                <input type="text" name="room_name" id="room_name" placeholder="e.g. Sprint Planning Q3" value="{{ old('room_name') }}">
+                <span class="field-error" id="err_room_name">Room name is required (min 2 characters).</span>
             </div>
 
             <div class="field">
@@ -288,11 +300,12 @@
                             <label for="mem-limited"><span class="material-icons-round">group</span> Limited</label>
                         </div>
                         <input type="number" id="limitInput" name="member_limit" placeholder="Max members..." min="1">
+                        <span class="field-error" id="err_limit">Please enter a valid member limit (min 1).</span>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">
+            <button type="button" class="submit-btn" onclick="submitRoomForm()">
                 Create Room
                 <span class="material-icons-round" style="font-size:18px;vertical-align:middle;margin-left:6px">arrow_forward</span>
             </button>
@@ -311,8 +324,40 @@
                     inp.classList.remove('show');
                     inp.required = false;
                     inp.value = '';
+                    inp.classList.remove('is-invalid', 'is-valid');
+                    const e = document.getElementById('err_limit'); if(e) e.classList.remove('show');
                 }
             });
+        });
+
+        function validateField(input, errorId, condition, msg) {
+            const err = document.getElementById(errorId);
+            if (!condition) {
+                input.classList.add('is-invalid'); input.classList.remove('is-valid');
+                if (err) { err.textContent = msg; err.classList.add('show'); }
+                return false;
+            }
+            input.classList.remove('is-invalid'); input.classList.add('is-valid');
+            if (err) err.classList.remove('show');
+            return true;
+        }
+
+        function submitRoomForm() {
+            let valid = true;
+            const nameInput = document.getElementById('room_name');
+            valid &= validateField(nameInput, 'err_room_name', nameInput.value.trim().length >= 2, 'Room name is required (min 2 characters).');
+
+            const isLimited = document.getElementById('mem-limited').checked;
+            if (isLimited) {
+                const limitInput = document.getElementById('limitInput');
+                valid &= validateField(limitInput, 'err_limit', limitInput.value >= 1, 'Please enter a valid member limit (min 1).');
+            }
+
+            if (valid) document.getElementById('roomForm').submit();
+        }
+
+        document.getElementById('room_name').addEventListener('input', function() {
+            validateField(this, 'err_room_name', this.value.trim().length >= 2, 'Room name is required (min 2 characters).');
         });
 
         // Toast auto-dismiss

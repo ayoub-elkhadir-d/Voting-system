@@ -5,8 +5,8 @@
     <title>Register — SystemVote</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-        body{background:#f5f7fa;min-height:100vh;display:flex;justify-content:center;align-items:center;}
-        .card{background:#fff;padding:44px 40px;border-radius:16px;width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border-top:4px solid #1a73e8;}
+        body{background:#f5f7fa;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+        .card{background:#fff;padding:44px 40px;border-radius:16px;width:100%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border-top:4px solid #1a73e8;}
         h2{color:#1a1a2e;text-align:center;margin-bottom:28px;font-size:1.6rem;font-weight:800;}
         h2 span{color:#1a73e8;}
         .input-group{margin-bottom:16px;}
@@ -25,6 +25,7 @@
     </style>
 </head>
 <body>
+    @include('components.toast')
     <div class="card">
         <h2>Create <span>Account</span></h2>
         @if ($errors->any())

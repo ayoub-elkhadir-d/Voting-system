@@ -13,10 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 ->withMiddleware(function (Middleware $middleware): void {
     $middleware->alias([
-        'check.login' => \App\Http\Middleware\CheckLogin::class,
-          'room.owner' => \App\Http\Middleware\CheckRoomOwner::class,
-          'room.started' => \App\Http\Middleware\CheckRoomStarted::class,
-            'accepted.member' => \App\Http\Middleware\EnsureAcceptedMember::class,
+        'check.login'     => \App\Http\Middleware\CheckLogin::class,
+        'room.owner'      => \App\Http\Middleware\CheckRoomOwner::class,
+        'room.started'    => \App\Http\Middleware\CheckRoomStarted::class,
+        'accepted.member' => \App\Http\Middleware\EnsureAcceptedMember::class,
+        'superadmin'      => \App\Http\Middleware\CheckSuperAdmin::class,
+        'user.only'       => \App\Http\Middleware\EnsureUserRole::class,
+        'no.owner.join'   => \App\Http\Middleware\PreventOwnerFromJoining::class,
     ]);
 })
     ->withExceptions(function (Exceptions $exceptions): void {

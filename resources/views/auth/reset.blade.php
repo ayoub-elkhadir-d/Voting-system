@@ -5,8 +5,8 @@
       <title>Reset Password</title>
       <style>
          *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-         body{background:#f5f7fa;height:100vh;display:flex;justify-content:center;align-items:center;}
-         .container{background:#fff;padding:40px;border-radius:16px;width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border-top:4px solid #1a73e8;}
+         body{background:#f5f7fa;height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+         .container{background:#fff;padding:40px;border-radius:16px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border-top:4px solid #1a73e8;}
          h2{color:#1a1a2e;text-align:center;margin-bottom:24px;font-size:1.5rem;font-weight:800;}
          .input-group{margin-bottom:18px;}
          .input-group label{color:#555;font-size:13px;font-weight:600;display:block;margin-bottom:6px;}
@@ -24,19 +24,14 @@
       </style>
    </head>
    <body>
+      @include('components.toast')
       <div class="container">
          <h2>Reset Password</h2>
          @if (session('status'))
-         <div class="success-box">{{ session('status') }}</div>
+         {{-- handled by toast --}}
          @endif
          @if ($errors->any())
-         <div class="error-box">
-            <ul>
-               @foreach ($errors->all() as $error)
-               <li>{{ $error }}</li>
-               @endforeach
-            </ul>
-         </div>
+         {{-- handled by toast --}}
          @endif
          <form method="POST" action="/resetpassword">
             @csrf

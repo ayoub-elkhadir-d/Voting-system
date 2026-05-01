@@ -29,7 +29,7 @@
 
     .participant-stats {
         position: absolute;
-        top: 50px; right: 60px;
+        top: 50px; right: 30px;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -42,19 +42,27 @@
 
     .room-display {
         background:#fff;
-        padding:25px 80px;
+        padding:25px 40px;
         border-radius:12px;
         margin-bottom:60px;
         text-align:center;
         box-shadow:0 4px 20px rgba(0,0,0,0.08);
         border:1px solid #e0e0e0;
+        max-width:90%;
     }
 
     .room-display h1 { color:#1a1a2e; font-size:1.5rem; font-weight:700; letter-spacing:1px; }
 
-    .loading-wrapper { display:flex; align-items:center; gap:20px; margin-bottom:70px; }
+    .loading-wrapper { display:flex; align-items:center; gap:20px; margin-bottom:70px; flex-wrap:wrap; justify-content:center; }
 
-    .waiting-text { font-size:2.2rem; font-weight:800; color:#1a1a2e; }
+    .waiting-text { font-size:1.8rem; font-weight:800; color:#1a1a2e; text-align:center; }
+
+    @media(max-width:600px){
+        .participant-stats{ top:20px; right:16px; font-size:1.4rem; }
+        .waiting-text{ font-size:1.3rem; }
+        .room-display{ padding:20px; }
+        .btn-leave{ padding:12px 32px; font-size:1.1rem; }
+    }
 
     .loading-spinner { display:flex; align-items:center; }
     .loading-spinner-inner { display:flex; gap:6px; }

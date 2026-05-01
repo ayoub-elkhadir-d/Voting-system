@@ -524,11 +524,19 @@
    </head>
    <body>
       @include('components.navbar')
+      @include('components.toast')
       <div class="layout">
          <aside class="sidebar">
             <div class="sidebar-header">
                <div class="sidebar-title">Room</div>
                <div class="room-name">{{ $room->name }}</div>
+               <div style="margin-top:10px;display:flex;align-items:center;gap:8px;background:#f0f4ff;border-radius:10px;padding:8px 12px;">
+                  <span style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.8px;">Code</span>
+                  <span id="roomCodeText" style="font-size:18px;font-weight:800;color:#1a73e8;letter-spacing:4px;flex:1;">{{ $room->code }}</span>
+                  <button onclick="copyRoomCode()" title="Copy code" style="background:none;border:none;cursor:pointer;padding:2px;color:#1a73e8;display:flex;align-items:center;">
+                     <i class="fa-regular fa-copy" id="copyIcon" style="font-size:16px;"></i>
+                  </button>
+               </div>
             </div>
             <!-- Navigation Tabs -->
             <div class="sidebar-nav">
@@ -723,254 +731,287 @@
 
          </main>
       </div>
-      <script>
-         document.addEventListener('DOMContentLoaded', function() {
-             const navItems = document.querySelectorAll('.sidebar-nav-item');
-             const sections = {
-                 topics: document.getElementById('topics-section'),
-                 users: document.getElementById('users-section')
-             };
-         
-             navItems.forEach(item => {
-                 item.addEventListener('click', function(e) {
-                     const tab = this.dataset.tab;
-                     
-                     navItems.forEach(nav => nav.classList.remove('active'));
-                     this.classList.add('active');
-                     
-                     
-                     Object.keys(sections).forEach(key => {
-                         if (sections[key]) {
-                             sections[key].classList.remove('active');
-                         }
-                     });
-                     
-                     if (sections[tab]) {
-                         sections[tab].classList.add('active');
-                     }
-                 });
-             });
-         });
-      </script>
-      <script>
-         document.addEventListener('DOMContentLoaded', function () {
-         
-             const roomId = {{ $room->id }};
-         
-             const navItems = document.querySelectorAll('.sidebar-nav-item');
-             const sections = {
-                 topics: document.getElementById('topics-section'),
-                 users: document.getElementById('users-section')
-             };
-         
-         
-             navItems.forEach(item => {
-                 item.addEventListener('click', function () {
-                     const tab = this.dataset.tab;
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
 
-                     if (tab === 'stats') {
-                         navItems.forEach(nav => nav.classList.remove('active'));
-                         this.classList.add('active');
-                         document.getElementById('admin-view').classList.add('hidden');
-                         document.getElementById('stats-view').classList.add('active');
-                         localStorage.setItem('activeTab', 'stats');
-                         return;
-                     }
+    /* =========================
+       Sidebar Navigation Setup
+    ========================= */
 
-                     document.getElementById('admin-view').classList.remove('hidden');
-                     document.getElementById('stats-view').classList.remove('active');
-         
-                     // save tab
-                     localStorage.setItem('activeTab', tab);
-         
-                     navItems.forEach(nav => nav.classList.remove('active'));
-                     this.classList.add('active');
-         
-                     Object.keys(sections).forEach(key => {
-                         if (sections[key]) sections[key].classList.remove('active');
-                     });
-         
-                     if (sections[tab]) sections[tab].classList.add('active');
-                 });
-             });
+    var sidebarItems = document.querySelectorAll('.sidebar-nav-item');
 
-             document.getElementById('backBtn').addEventListener('click', function () {
-                 document.getElementById('stats-view').classList.remove('active');
-                 document.getElementById('admin-view').classList.remove('hidden');
-                 navItems.forEach(nav => nav.classList.remove('active'));
-                 const topicsNav = document.querySelector('[data-tab="topics"]');
-                 if (topicsNav) topicsNav.classList.add('active');
-                 document.getElementById('topics-section').classList.add('active');
-                 localStorage.setItem('activeTab', 'topics');
-             });
-         
-         
-             const savedTab = localStorage.getItem('activeTab');
-         
-             if (savedTab === 'stats') {
-                 navItems.forEach(nav => nav.classList.remove('active'));
-                 document.querySelector('[data-tab="stats"]').classList.add('active');
-                 document.getElementById('admin-view').classList.add('hidden');
-                 document.getElementById('stats-view').classList.add('active');
-             } else if (savedTab && sections[savedTab]) {
-         
-                 navItems.forEach(nav => nav.classList.remove('active'));
-         
-                 const activeNav = document.querySelector(`[data-tab="${savedTab}"]`);
-                 if (activeNav) activeNav.classList.add('active');
-         
-                 Object.keys(sections).forEach(key => {
-                     if (sections[key]) sections[key].classList.remove('active');
-                 });
-         
-                 sections[savedTab].classList.add('active');
-             }
-         
-             function initEcho() {
+    var pageSections = {
+        topics: document.getElementById('topics-section'),
+        users: document.getElementById('users-section')
+    };
 
-                 if (typeof Echo === 'undefined') {
-                     setTimeout(initEcho, 100);
-                     return;
-                 }
-         
-                 Echo.channel('room.' + roomId)
-         
-                 
-                     .listen('.user.joined', function () {
-                      
-                         const active = document.querySelector('.sidebar-nav-item.active');
-                         if (active) {
-                             localStorage.setItem('activeTab', active.dataset.tab);
-                         }
-                         Livewire.dispatch('refreshUsers');
-         
-                         {{-- window.location.reload(); --}}
+    var adminPanel = document.getElementById('admin-view');
+    var statsPanel = document.getElementById('stats-view');
 
-                     })
-         
-                 
-                     .listen('.vote.updated', function (e) {
-                         if (typeof updateVotes === 'function') {
-                             updateVotes(e.choices);
-                         }
-                     })
-         
-                    
-                     .listen('.topic.started', function () {
-                         window.location.reload();
-                     })
-                     .listen('.topic.ended', function () {
-                         window.location.reload();
-                     })
-                     .listen('.user.left', (e) => {
-              
-                         location.reload();
-                     });
-             }
-         
-             initEcho();
-         
+
+    /* =========================
+       Tab Switching Logic
+    ========================= */
+
+    function changeTab(activeTab) {
+
+        // remove active class from all sidebar items
+        for (var i = 0; i < sidebarItems.length; i++) {
+            sidebarItems[i].classList.remove('active');
+        }
+
+        // set active tab item
+        var activeItem = document.querySelector('[data-tab="' + activeTab + '"]');
+
+        if (activeItem) {
+            activeItem.classList.add('active');
+        }
+
+        // stats view handling
+        if (activeTab === 'stats') {
+
+            if (adminPanel) {
+                adminPanel.classList.add('hidden');
+            }
+
+            if (statsPanel) {
+                statsPanel.classList.add('active');
+            }
+
+            return;
+        }
+
+        // normal admin views
+        if (adminPanel) {
+            adminPanel.classList.remove('hidden');
+        }
+
+        if (statsPanel) {
+            statsPanel.classList.remove('active');
+        }
+
+        // hide all sections first
+        for (var key in pageSections) {
+            if (pageSections[key]) {
+                pageSections[key].classList.remove('active');
+            }
+        }
+
+        // show selected section
+        if (pageSections[activeTab]) {
+            pageSections[activeTab].classList.add('active');
+        }
+    }
+
+
+    /* =========================
+       Sidebar Click Events
+    ========================= */
+
+    for (var i = 0; i < sidebarItems.length; i++) {
+
+        sidebarItems[i].addEventListener('click', function () {
+
+            var selectedTab = this.getAttribute('data-tab');
+
+            if (selectedTab) {
+                changeTab(selectedTab);
+            }
+
+        });
+    }
+
+    var backButton = document.getElementById('backBtn');
+
+    if (backButton) {
+        backButton.addEventListener('click', function () {
+            changeTab('topics');
+        });
+    }
+
+
+    /* =========================
+       Real-time (Echo)
+    ========================= */
+
+    var currentRoomId = {{ $room->id }};
+
+    function initializeRealtime() {
+
+        if (typeof Echo === 'undefined') {
+            setTimeout(initializeRealtime, 100);
+            return;
+        }
+
+        Echo.channel('room.' + currentRoomId)
+
+            .listen('.user.joined', function () {
+                Livewire.dispatch('refreshUsers');
+            })
+
+            .listen('.vote.updated', function (event) {
+                updateVoteResults(event.choices);
+            })
+
+            .listen('.topic.started', function () {
+                location.reload();
+            })
+
+            .listen('.topic.ended', function () {
+                location.reload();
+            })
+
+            .listen('.user.left', function () {
+                location.reload();
+            });
+    }
+
+    initializeRealtime();
+
+
+    /* =========================
+       Countdown Timer
+    ========================= */
+
+    @if($active)
+
+    var timeParts = '{{ $active->duration }}'.split(':');
+
+    var totalSeconds =
+        (parseInt(timeParts[0]) * 3600) +
+        (parseInt(timeParts[1]) * 60) +
+        parseInt(timeParts[2]);
+
+    var startTimestamp = {{ strtotime($active->started_at) }};
+    var currentTimestamp = Math.floor(Date.now() / 1000);
+
+    var timeRemaining = totalSeconds - (currentTimestamp - startTimestamp);
+
+    if (timeRemaining < 0) {
+        timeRemaining = 0;
+    }
+
+    var timerDisplay = document.getElementById('compactTimerDigits');
+    var timerContainer = document.getElementById('compactTimerCard');
+
+    function renderTimer() {
+
+        var minutes = Math.floor(timeRemaining / 60);
+        var seconds = timeRemaining % 60;
+
+        if (minutes < 10) minutes = '0' + minutes;
+        if (seconds < 10) seconds = '0' + seconds;
+
+        if (timerDisplay) {
+            timerDisplay.innerText = minutes + ':' + seconds;
+        }
+    }
+
+    renderTimer();
+
+    var timerInterval = setInterval(function () {
+
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+
           
-             @if($active)
-         
-             const activeTopicId = {{ $active->id }};
-             const activeDuration = @json($active->duration);
-             const startedAt = {{ strtotime($active->started_at) }};
-         
-             let interval = null;
-             let timeout = null;
-         
-             function toSeconds(t) {
-                 let p = t.split(':');
-                 return (+p[0]) * 3600 + (+p[1]) * 60 + (+p[2]);
-             }
-         
-             function format(s) {
-                 let m = Math.floor(s / 60);
-                 let sec = s % 60;
-         
-                 if (m < 10) m = '0' + m;
-                 if (sec < 10) sec = '0' + sec;
-         
-                 return m + ':' + sec;
-             }
-         
-             function updateVotes(data) {
-                 let total = 0;
-         
-                 data.forEach(i => total += i.votes);
-         
-                 data.forEach(item => {
-                     let row = document.querySelector('[data-choice-id="' + item.id + '"]');
-                     if (!row) return;
-         
-                     let percent = total > 0 ? Math.round((item.votes / total) * 100) : 0;
-         
-                     let fill = row.querySelector('.bar-fill');
-                     let count = row.querySelector('.count-val');
-         
-                     if (fill) fill.style.width = percent + '%';
-                     if (count) count.innerText = item.votes;
-                 });
-             }
-         
-             function startTimer() {
-                 let total = toSeconds(activeDuration);
-                 let now = Math.floor(Date.now() / 1000);
-                 let remaining = total - (now - startedAt);
-         
-                 if (remaining < 0) remaining = 0;
-         
-                 let span = document.getElementById('compactTimerDigits');
-                 let card = document.getElementById('compactTimerCard');
-         
-                 if (!span) return;
-         
-                 clearInterval(interval);
-                 clearTimeout(timeout);
-         
-                 span.innerText = format(remaining);
-         
-                 interval = setInterval(() => {
-                     remaining--;
-         
-                     if (remaining < 0) {
-                         clearInterval(interval);
-                         return;
-                     }
-         
-                     span.innerText = format(remaining);
-         
-                     if (remaining <= 5) {
-                         card.classList.add('warning-timer');
-                     }
-         
-                 }, 1000);
-         
-                 timeout = setTimeout(() => {
+            fetch('/rooms/{{ $room->id }}/topic/{{ $active->id }}/stop', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
 
-                     fetch('/rooms/' + roomId + '/topic/' + activeTopicId + '/stop', {
-                         method: 'POST',
-                         headers: {
-                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                         }
+            return;
+        }
 
-                     });
-                 }, remaining * 1000);
-             }
-         
-             startTimer();
-         
-             @endif
-         
-         });
-      </script>
-      
+        timeRemaining--;
+
+        renderTimer();
+
+        if (timeRemaining <= 5 && timerContainer) {
+            timerContainer.classList.add('warning-timer');
+        }
+
+    }, 1000);
+
+
+    /* =========================
+       Vote Update Logic
+    ========================= */
+
+    function updateVoteResults(voteData) {
+
+        var totalVotes = 0;
+
+        // calculate total votes
+        for (var i = 0; i < voteData.length; i++) {
+            totalVotes += voteData[i].votes;
+        }
+
+        // update each choice UI
+        for (var i = 0; i < voteData.length; i++) {
+
+            var choiceRow = document.querySelector('[data-choice-id="' + voteData[i].id + '"]');
+
+            if (!choiceRow) {
+                continue;
+            }
+
+            var percentage = 0;
+
+            if (totalVotes > 0) {
+                percentage = Math.round((voteData[i].votes / totalVotes) * 100);
+            }
+
+            var progressBar = choiceRow.querySelector('.bar-fill');
+            var voteCount = choiceRow.querySelector('.count-val');
+
+            if (progressBar) {
+                progressBar.style.width = percentage + '%';
+            }
+
+            if (voteCount) {
+                voteCount.innerText = voteData[i].votes;
+            }
+        }
+    }
+
+    @endif
+
+});
+function copyRoomCode() {
+    var code = document.getElementById('roomCodeText').innerText;
+    navigator.clipboard.writeText(code).then(function () {
+        var icon = document.getElementById('copyIcon');
+        icon.className = 'fa-solid fa-check';
+        icon.style.color = '#27ae60';
+        setTimeout(function () {
+            icon.className = 'fa-regular fa-copy';
+            icon.style.color = '#1a73e8';
+        }, 1500);
+    });
+}
+</script>
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script>
+         var chartsReady = false;
          google.charts.load('current', { packages: ['corechart'] });
-         google.charts.setOnLoadCallback(function () {²
+         google.charts.setOnLoadCallback(function () {
+             chartsReady = true;
+         });
+
+         function drawAllCharts() {
+             if (!chartsReady) { setTimeout(drawAllCharts, 100); return; }
              (window.chartsToLoad || []).forEach(function (fn) { fn(); });
+         }
+
+         // draw charts when stats tab becomes visible
+         document.addEventListener('DOMContentLoaded', function () {
+             var statsTab = document.querySelector('[data-tab="stats"]');
+             if (statsTab) {
+                 statsTab.addEventListener('click', function () {
+                     setTimeout(drawAllCharts, 50);
+                 });
+             }
          });
 
          function toggleTopicStats(id) {
@@ -980,6 +1021,8 @@
              panel.style.display = open ? 'none' : 'block';
              btn.innerHTML      = open ? '<i class="fa-solid fa-chart-bar"></i> Statistics' : '<i class="fa-solid fa-arrow-left"></i> Close';
              btn.style.background = open ? '#1a73e8' : '#6c757d';
+             
+             if (!open) { setTimeout(drawAllCharts, 50); }
          }
       </script>
       @livewireScripts

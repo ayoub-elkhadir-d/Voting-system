@@ -21,7 +21,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'is_banned',
     ];
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

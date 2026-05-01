@@ -12,7 +12,7 @@ body{ background:#dfdfdf; color:#1a1a2e; overflow-x:hidden; }
 .title{ text-align:center; margin-top:50px; font-size:32px; font-weight:bold; position:relative; z-index:2; }
 .title span{ color:#1a73e8; }
 
-.container{ display:flex; justify-content:center; margin-top:60px; position:relative; z-index:2; }
+.container{ display:flex; justify-content:center; margin-top:60px; position:relative; z-index:2; padding:0 16px 60px; }
 
 .card{
     background:#fff;
@@ -24,10 +24,12 @@ body{ background:#dfdfdf; color:#1a1a2e; overflow-x:hidden; }
     align-items:center;
     gap:15px;
     box-shadow:0 8px 32px rgba(0,0,0,0.08);
+    width:100%;
+    max-width:380px;
 }
 
 .card input{
-    width:280px; height:70px;
+    width:100%; height:70px;
     font-size:20px;
     text-align:center;
     border-radius:12px;
@@ -53,6 +55,7 @@ input::placeholder{ font-size:18px; color:#aaa; }
     color:#fff;
     box-shadow:0 6px 20px rgba(26,115,232,0.25);
     transition:0.3s;
+    width:100%;
 }
 
 .join-btn:hover{ background:#1558b0; transform:scale(1.05); }
@@ -65,9 +68,10 @@ input::placeholder{ font-size:18px; color:#aaa; }
     border-radius:12px;
     cursor:pointer;
     transition:0.3s;
+    width:100%;
 }
 
-.random-btn:hover{ background:#f0f4ff; color:#1a73e8; border-color:#1a73e8; transform:scale(1.05); }
+.random-btn:hover{ background:#f0f4ff; color:#1a73e8; border-color:#1a73e8; }
 
 .alert-success{
     position:fixed; top:20px; right:20px;
@@ -80,16 +84,17 @@ input::placeholder{ font-size:18px; color:#aaa; }
     font-weight:600;
     box-shadow:0 6px 20px rgba(0,0,0,0.1);
 }
+@media(max-width:480px){
+    .card{ padding:28px 20px; }
+    .title{ font-size:26px; }
+}
 </style>
 </head>
 
 <body>
 
 @include('components.navbar')
-
-@if (session('success'))
-<div class="alert-success">{{ session('success') }}</div>
-@endif
+@include('components.toast')
 
 <div class="title"><span>Join</span> Room</div>
 

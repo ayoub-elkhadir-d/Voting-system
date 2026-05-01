@@ -162,12 +162,7 @@
 <body>
     @include('components.navbar')
 
-    @if(session('success'))
-    <div id="toast" class="toast">
-        <div class="t-icon"><span class="material-icons-round" style="font-size:15px">check</span></div>
-        <div><strong>Room Updated!</strong><span>{{ session('success') }}</span></div>
-    </div>
-    @endif
+    @include('components.toast')
 
     @isset($data)
     <div class="card">
